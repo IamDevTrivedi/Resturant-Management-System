@@ -325,3 +325,107 @@
 
 #### Constraints
 - Menu must be editable only during manager login.
+
+
+---
+
+## Story 13 – Earn Loyalty Points
+
+### Front of Card
+- *As a* frequent user  
+- *I want to* earn loyalty points for reservations  
+- *So that* I can get rewards  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Points are credited after reservation completion.  
+2. Dashboard shows accumulated points.  
+
+#### Notes
+- Points calculation should be consistent (e.g., fixed % of booking amount).  
+- Expiry rules for points (if any) must be clearly communicated.  
+- Points must be updated in real-time after booking completion.  
+
+#### Constraints
+- Points cannot be transferred between accounts.  
+
+
+---
+
+## Story 14 – Redeem Loyalty Points
+
+### Front of Card
+- *As a* user  
+- *I want to* redeem my loyalty points  
+- *So that* I can save money on future bookings  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Points are deducted upon redemption.  
+2. Discount is applied immediately at checkout.  
+
+#### Notes
+- Redemption must happen only during checkout flow.  
+- System should show available balance and points applied before confirmation.  
+- Redemption history should be visible to users.  
+
+#### Constraints
+- Minimum redemption threshold may apply.  
+
+
+---
+
+## Story 15 – Manager Notifications for Bookings
+
+### Front of Card
+- *As a* restaurant manager  
+- *I want to* receive instant notifications for bookings  
+- *So that* I can prepare accordingly  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Manager gets SMS/Email/App notification instantly.  
+2. Notification contains date, time, customer, and party size.  
+
+#### Notes
+- Push notifications require mobile app or web app support.  
+- Notifications should be configurable (enable/disable or select channel).  
+- Delivery logs must be maintained for audit.  
+
+#### Constraints
+- Notifications must be delivered within *10 seconds* under normal conditions.  
+
+
+---
+
+## Story 16 – Block Online Reservations
+
+### Front of Card
+- *As a* restaurant manager  
+- *I want to* stop online reservations for particular dates and times  
+- *So that* I can handle walk-in customers easily  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Manager can block specific slots.  
+2. Blocked slots are not shown to customers.  
+
+#### Notes
+- Important for handling festive rush or large group bookings.  
+- Blocking rules must allow recurring blocks (e.g., every Monday lunch).  
+- System must keep history of blocked slots for reports.  
+
+#### Constraints
+- Blocking must reflect on the customer side within *5 seconds*.  
