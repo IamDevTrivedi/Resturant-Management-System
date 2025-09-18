@@ -129,3 +129,100 @@
 - Menu must load in under **5 seconds** under normal conditions.  
 - System should handle at least **5000 concurrent menu views** without performance issues.  
 - All updates made by managers must propagate to the user interface within **2 seconds**.  
+
+---
+
+
+## Story 5 – Book a Table
+
+### Front of Card
+- *As a* user  
+- *I want to* book a table by selecting date, time, and number of people  
+- *So that* I can secure my dining slot  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. System checks real-time table availability.  
+2. Each booking generates a unique reservation ID.  
+3. Confirmation is sent via email/SMS/app.  
+
+#### Notes
+- Reservation ID must be searchable in the system.  
+
+#### Constraints
+- Booking must not exceed restaurant seating capacity.  
+
+
+---
+
+## Story 6 – Modify/Cancel Reservation
+
+### Front of Card
+- *As a* user  
+- *I want to* modify or cancel my reservation  
+- *So that* I can adjust plans if needed  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Modification is allowed only before cutoff time.  
+2. Cancellation must notify both user and restaurant.  
+
+#### Notes
+- Refund policies may apply for cancellations.  
+
+#### Constraints
+- Modifications must be processed within *5 seconds*.  
+
+
+---
+
+## Story 7 – Booking Confirmation
+
+### Front of Card
+- *As a* user  
+- *I want to* receive booking confirmations by giving tokens  
+- *So that* I have proof of my reservation  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Confirmation message is sent immediately after token payment.  
+2. Message contains reservation ID, date, time, and restaurant details.  
+3. Token payment must be logged and linked to the reservation.  
+
+#### Notes
+- Reservation ID must remain searchable in the system.  
+- Token policies (refundable/non-refundable) may vary per restaurant.  
+
+#### Constraints
+- Notifications must be delivered via at least *two channels* (email + SMS).  
+- Token validation must complete within *3 seconds* to confirm booking.  
+
+
+---
+
+## Story 8 – Reservation Reminder
+
+### Front of Card
+- *As a* user  
+- *I want to* receive reminders before my booking  
+- *So that* I do not forget my reservation  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Reminder sent *X hours* before scheduled time.  
+2. Includes booking details and restaurant contact.  
+
+#### Constraints
+- Reminders must not be missed during system outages.
