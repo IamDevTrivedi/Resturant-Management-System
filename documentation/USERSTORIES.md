@@ -429,3 +429,27 @@
 
 #### Constraints
 - Blocking must reflect on the customer side within *5 seconds*.  
+
+---
+## Story 17 – Monitor System
+
+### Front of Card
+- *As an* administrator  
+- *I want to* monitor system activity  
+- *So that* I can ensure smooth operations  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Dashboard displays active users, reservations, and system load.  
+2. Alerts are generated for unusual activity.  
+
+#### Notes
+- Monitoring dashboard should be real-time with auto-refresh.  
+- Alert thresholds must be configurable by administrators.  
+- Logs of alerts and activities must be stored for audit.  
+
+#### Constraints
+- Monitoring must not affect system performance.
