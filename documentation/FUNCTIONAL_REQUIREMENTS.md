@@ -44,66 +44,66 @@
 
 
 6.  *Table Management*
-   - *Description:* Restaurant owners must be able to configure and update table arrangements to optimize seating.  
-   - *Actors:* Restaurant Owner  
-   - *Details:*  
-     - Owners can add, update, or remove tables in their restaurant.  
-     - Owners can specify table capacity (e.g., 2-seater, 4-seater).  
-     - The system should automatically update availability when reservations are made.  
+   * *Description:* Restaurant owners must be able to configure and update table arrangements to optimize seating.  
+   * *Actors:* Restaurant Owner  
+   * *Details:*  
+     * Owners can add, update, or remove tables in their restaurant.  
+     * Owners can specify table capacity (e.g., 2*seater, 4*seater).  
+     * The system should automatically update availability when reservations are made.  
 
 7. *Customer Notifications and Reminders*  
-   - *Description:* The system should notify customers about reservation confirmations, cancellations, or reminders.  
-   - *Actors:* Customer, System  
-   - *Details:*  
-     - Send real-time notifications via email/SMS/app for booking confirmations and cancellations.  
-     - Send reminders before the reservation time.  
-     - Notify in case of restaurant-initiated changes.  
+   * *Description:* The system should notify customers about reservation confirmations, cancellations, or reminders.  
+   * *Actors:* Customer, System  
+   * *Details:*  
+     * Send real*time notifications via email/SMS/app for booking confirmations and cancellations.  
+     * Send reminders before the reservation time.  
+     * Notify in case of restaurant*initiated changes.  
 
 8. *Payment and Refund Management*  
-   - *Description:* The system must handle secure payments and refund processing for reservations.  
-   - *Actors:* Customer, System  
-   - *Details:*  
-     - Customers can pay securely using integrated payment gateways (e.g., Stripe/PayPal).  
-     - Refunds must be processed automatically in case of cancellations (as per policy).  
-     - The system should keep a transaction history for each customer.  
+   * *Description:* The system must handle secure payments and refund processing for reservations.  
+   * *Actors:* Customer, System  
+   * *Details:*  
+     * Customers can pay securely using integrated payment gateways (e.g., Stripe/PayPal).  
+     * Refunds must be processed automatically in case of cancellations (as per policy).  
+     * The system should keep a transaction history for each customer.  
 
 9. *Reviews and Ratings*  
-   - *Description:* Customers must be able to rate and review restaurants after completing a reservation.  
-   - *Actors:* Customer  
-   - *Details:*  
-     - Customers can submit reviews with star ratings and comments.  
-     - Reviews are linked to completed reservations only (to prevent fake reviews).  
-     - Average ratings should be displayed on restaurant profiles.  
+   * *Description:* Customers must be able to rate and review restaurants after completing a reservation.  
+   * *Actors:* Customer  
+   * *Details:*  
+     * Customers can submit reviews with star ratings and comments.  
+     * Reviews are linked to completed reservations only (to prevent fake reviews).  
+     * Average ratings should be displayed on restaurant profiles.  
 
 10. *Analytics Dashboard for Restaurant Owners*  
-   - *Description:* Restaurant owners should be able to view insights about their reservations and performance.  
-   - *Actors:* Restaurant Owner  
-   - *Details:*  
-     - Dashboard shows metrics like total reservations, peak booking times, cancellation rates.  
-     - Graphs/charts for tracking trends (weekly, monthly).  
-     - Helps owners optimize operations and marketing.  
+   * *Description:* Restaurant owners should be able to view insights about their reservations and performance.  
+   * *Actors:* Restaurant Owner  
+   * *Details:*  
+     * Dashboard shows metrics like total reservations, peak booking times, cancellation rates.  
+     * Graphs/charts for tracking trends (weekly, monthly).  
+     * Helps owners optimize operations and marketing.  
 
-11. *Waitlist and Walk-in Management*  
-   - *Description:* Customers should be able to join a waitlist if no tables are available, and owners should manage walk-ins.  
-   - *Actors:* Customer, Restaurant Owner  
-   - *Details:*  
-     - Customers can request to be added to a waitlist for a specific time slot.  
-     - Owners can mark walk-in reservations in the system.  
-     - The system should notify customers automatically if a table becomes available.  
+11. *Waitlist and Walk*in Management*  
+   * *Description:* Customers should be able to join a waitlist if no tables are available, and owners should manage walk*ins.  
+   * *Actors:* Customer, Restaurant Owner  
+   * *Details:*  
+     * Customers can request to be added to a waitlist for a specific time slot.  
+     * Owners can mark walk*in reservations in the system.  
+     * The system should notify customers automatically if a table becomes available.  
 
-12. *Multi-Device Responsiveness*  
-   - *Description:* The system must be accessible and functional across web and mobile devices.  
-   - *Actors:* Customer, Restaurant Owner  
-   - *Details:*  
-     - Responsive UI/UX design.  
-     - Consistent performance on desktop, tablet, and mobile.  
-     - Cross-browser compatibility.  
+12. *Multi*Device Responsiveness*  
+   * *Description:* The system must be accessible and functional across web and mobile devices.  
+   * *Actors:* Customer, Restaurant Owner  
+   * *Details:*  
+     * Responsive UI/UX design.  
+     * Consistent performance on desktop, tablet, and mobile.  
+     * Cross*browser compatibility.  
 
 13. *Admin Management (Super Admin)*  
-   - *Description:* A super admin must be able to oversee the platform and handle disputes.  
-   - *Actors:* Admin  
-   - *Details:*  
-     - Approve or verify restaurant owner accounts.  
-     - Monitor customer and owner activity.  
-     - Resolve payment/refund disputes.  
-     - Handle reports of inappropriate reviews or fake restaurants.
+   * *Description:* A super admin must be able to oversee the platform and handle disputes.  
+   * *Actors:* Admin  
+   * *Details:*  
+     * Approve or verify restaurant owner accounts.  
+     * Monitor customer and owner activity.  
+     * Resolve payment/refund disputes.  
+     * Handle reports of inappropriate reviews or fake restaurants.
