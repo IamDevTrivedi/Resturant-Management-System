@@ -119,3 +119,21 @@
       - Monitor customer and owner activity.
       - Resolve payment/refund disputes.
       - Handle reports of inappropriate reviews or fake restaurants.
+
+14. _Loyalty & Rewards Program_
+
+    - _Description:_ The system should provide a loyalty program to encourage repeat customers.
+    - _Actors:_ Customer, System
+    - _Details:_
+      - Award loyalty points for each completed reservation or a certain spend amount.
+      - Allow customers to redeem points for discounts or special offers.
+      - Display loyalty balance and redemption history in the customer profile.
+
+15. _Advanced Search & Filtering_
+
+    - _Description:_ Customers must be able to perform advanced searches to quickly find restaurants that match specific criteria.
+    - _Actors:_ Customer
+    - _Details:_
+      - Filter restaurants by cuisine, price range, average rating, and distance.
+      - Combine multiple filters (e.g., “Italian cuisine within 5 km and rating ≥4”).
+      - Provide a real-time search experience with instant suggestions.
