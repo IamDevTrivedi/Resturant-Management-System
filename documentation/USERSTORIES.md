@@ -226,3 +226,102 @@
 
 #### Constraints
 - Reminders must not be missed during system outages.
+
+
+---
+
+## Story 9 – Submit Reviews
+
+### Front of Card
+- *As a* user  
+- *I want to* submit reviews and ratings  
+- *So that* I can share my dining experience  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Only users with completed reservations can post reviews.  
+2. Reviews include a rating (1–5) and optional text.  
+
+#### Notes
+- Offensive language must be filtered.  
+
+#### Constraints
+- Reviews must be stored permanently unless flagged.  
+
+
+---
+
+## Story 10 – View Reviews
+
+### Front of Card
+- *As a* user  
+- *I want to* see other users’ reviews  
+- *So that* I can make informed decisions  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Reviews are displayed with user rating and text.  
+2. Restaurants show aggregated rating scores.  
+
+#### Notes
+- Reviews must be accurate and reflect real customer experiences.  
+- Display order may default to most recent first, with sorting/filtering options.  
+
+#### Constraints
+- Reviews must load in under *2 seconds*.  
+
+
+---
+
+## Story 11 – Update Table Availability
+
+### Front of Card
+- *As a* restaurant manager  
+- *I want to* update table availability  
+- *So that* customers see accurate booking slots  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Updated availability reflects instantly.  
+2. Overbooking must be prevented.  
+
+#### Notes
+- Availability changes should sync across all platforms (web and mobile).  
+- Updates should be logged for audit purposes.  
+
+#### Constraints
+- Updates allowed only by authorized managers.  
+
+
+---
+
+## Story 12 – Update Menus
+
+### Front of Card
+- *As a* restaurant manager  
+- *I want to* update the menu  
+- *So that* customers can view the latest offerings  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Menu changes are reflected in real-time.  
+2. Out-of-stock items are clearly indicated.  
+
+#### Notes
+- Menu updates should support images and detailed descriptions.  
+- Changes must be version-controlled for rollback if needed.  
+
+#### Constraints
+- Menu must be editable only during manager login.
