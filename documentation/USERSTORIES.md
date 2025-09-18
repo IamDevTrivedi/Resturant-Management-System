@@ -453,3 +453,29 @@
 
 #### Constraints
 - Monitoring must not affect system performance.
+
+---
+## Story 18 – Add Payment Gateway
+
+### Front of Card
+- *As an* admin  
+- *I want to* add a payment gateway  
+- *So that* the platform stays secure and manages payments  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Admin can configure payment gateway (Stripe, PayPal, Razorpay).  
+2. Transactions are logged and encrypted.  
+3. Failed transactions are rejected safely.  
+
+#### Notes
+- Must be PCI DSS compliant.  
+- Supports refunds and cancellations.  
+- System should support switching between multiple providers.  
+
+#### Constraints
+- Payment gateway integration must meet industry security standards.  
+- All transactions must complete or fail within **30 seconds**.  
