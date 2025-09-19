@@ -1,7 +1,6 @@
 # Functional Requirements
 
 1.  _User Authentication_
-
     - _Description:_ The system must provide a secure way for both customers and restaurant owners to create accounts, log in, and log out.
     - _Actors:_ Customer, Restaurant Owner
     - _Details:_
@@ -10,7 +9,6 @@
       - The system should authenticate users before granting access to protected features.
 
 2.  _Restaurant Discovery and Search_
-
     - _Description:_ Customers must be able to find and view details of available restaurants.
     - _Actors:_ Customer
     - _Details:_
@@ -19,7 +17,6 @@
       - Allow customers to browse restaurant details, including location, cuisine, menus, and images.
 
 3.  _Table Reservation_
-
     - _Description:_ Customers must be able to make a reservation at a selected restaurant.
     - _Actors:_ Customer
     - _Details:_
@@ -29,7 +26,6 @@
       - Customers should receive a confirmation of their booking.
 
 4.  _Restaurant Profile Management_
-
     - _Description:_ Restaurant owners must be able to manage their restaurant's profile.
     - _Actors:_ Restaurant Owner
     - _Details:_
@@ -39,7 +35,6 @@
       - Owners can update or delete their restaurant profile.
 
 5.  _Reservation Management_
-
     - _Description:_ Restaurant owners must be able to view and manage incoming reservations.
     - _Actors:_ Restaurant Owner
     - _Details:_
@@ -48,7 +43,6 @@
       - Owners can update the status of a reservation (e.g., Confirmed, Canceled, Completed).
 
 6.  _Table Management_
-
     - _Description:_ Restaurant owners must be able to configure and update table arrangements to optimize seating.
     - _Actors:_ Restaurant Owner
     - _Details:_
@@ -57,7 +51,6 @@
       - The system should automatically update availability when reservations are made.
 
 7.  _Customer Notifications and Reminders_
-
     - _Description:_ The system should notify customers about reservation confirmations, cancellations, or reminders.
     - _Actors:_ Customer, System
     - _Details:_
@@ -66,7 +59,6 @@
       - Notify in case of restaurant\*initiated changes.
 
 8.  _Payment and Refund Management_
-
     - _Description:_ The system must handle secure payments and refund processing for reservations.
     - _Actors:_ Customer, System
     - _Details:_
@@ -75,7 +67,6 @@
       - The system should keep a transaction history for each customer.
 
 9.  _Reviews and Ratings_
-
     - _Description:_ Customers must be able to rate and review restaurants after completing a reservation.
     - _Actors:_ Customer
     - _Details:_
@@ -84,7 +75,6 @@
       - Average ratings should be displayed on restaurant profiles.
 
 10. _Analytics Dashboard for Restaurant Owners_
-
     - _Description:_ Restaurant owners should be able to view insights about their reservations and performance.
     - _Actors:_ Restaurant Owner
     - _Details:_
@@ -93,7 +83,6 @@
       - Helps owners optimize operations and marketing.
 
 11. _Waitlist and Walk in Management_
-
     - _Description:_ Customers should be able to join a waitlist if no tables are available, and owners should manage walk\*ins.
     - _Actors:_ Customer, Restaurant Owner
     - _Details:_
@@ -102,7 +91,6 @@
       - The system should notify customers automatically if a table becomes available.
 
 12. _MultiDevice Responsiveness_
-
     - _Description:_ The system must be accessible and functional across web and mobile devices.
     - _Actors:_ Customer, Restaurant Owner
     - _Details:_
@@ -111,7 +99,6 @@
       - Cross\*browser compatibility.
 
 13. _Admin Management (Super Admin)_
-
     - _Description:_ A super admin must be able to oversee the platform and handle disputes.
     - _Actors:_ Admin
     - _Details:_
@@ -121,7 +108,6 @@
       - Handle reports of inappropriate reviews or fake restaurants.
 
 14. _Loyalty & Rewards Program_
-
     - _Description:_ The system should provide a loyalty program to encourage repeat customers.
     - _Actors:_ Customer, System
     - _Details:_
@@ -130,39 +116,37 @@
       - Display loyalty balance and redemption history in the customer profile.
 
 15. _Advanced Search & Filtering_
-
     - _Description:_ Customers must be able to perform advanced searches to quickly find restaurants that match specific criteria.
     - _Actors:_ Customer
     - _Details:_
       - Filter restaurants by cuisine, price range, average rating, and distance.
       - Combine multiple filters (e.g., “Italian cuisine within 5 km and rating ≥4”).
       - Provide a real-time search experience with instant suggestions.
+      15. _Review Summarizer_
 
-      15. _Review Summarizer_  
-    - _Description:_ Customers must be able to see summarized reviews of a restaurant to quickly understand overall feedback.  
-    - _Actors:_ Customer, Restaurant Owner  
-    - _Details:_  
-      - Summarize reviews into short, readable text.  
-      - Display overall sentiment (positive/negative/neutral).  
-      - Summaries update automatically when new reviews are added.  
-      - Restaurant owners get improvement suggestions (e.g., “improve service speed”).  
+    - _Description:_ Customers must be able to see summarized reviews of a restaurant to quickly understand overall feedback.
+    - _Actors:_ Customer, Restaurant Owner
+    - _Details:_
+      - Summarize reviews into short, readable text.
+      - Display overall sentiment (positive/negative/neutral).
+      - Summaries update automatically when new reviews are added.
+      - Restaurant owners get improvement suggestions (e.g., “improve service speed”).
 
-16. _Suggestion Maker (For Owners)_  
-    - _Description:_ Restaurant owners must receive AI-generated suggestions from customer reviews to enhance their services.  
-    - _Actors:_ Restaurant Owner  
-    - _Details:_  
-      - Extract actionable suggestions from customer feedback (e.g., hygiene, wait time).  
-      - Display top 3 improvement areas in the admin dashboard.  
-      - Suggestions refresh weekly.  
-      - Must handle at least 1,000 reviews per restaurant.  
+16. _Suggestion Maker (For Owners)_
+    - _Description:_ Restaurant owners must receive AI-generated suggestions from customer reviews to enhance their services.
+    - _Actors:_ Restaurant Owner
+    - _Details:_
+      - Extract actionable suggestions from customer feedback (e.g., hygiene, wait time).
+      - Display top 3 improvement areas in the admin dashboard.
+      - Suggestions refresh weekly.
+      - Must handle at least 1,000 reviews per restaurant.
 
-17. _Auto-Suggestion (Search Bar)_  
-    - _Description:_ Customers must get real-time auto-suggestions while typing in the search bar to quickly find restaurants, cuisines, or dishes.  
-    - _Actors:_ Customer  
-    - _Details:_  
-      - Suggestions appear after typing at least 2 characters.  
-      - Include restaurants, cuisines, and popular dishes.  
-      - Handle misspellings and intent (e.g., “cheap pizza” → budget pizza places).  
-      - Personalized suggestions based on past searches.  
-      - Exclude closed/inactive restaurants.  
-
+17. _Auto-Suggestion (Search Bar)_
+    - _Description:_ Customers must get real-time auto-suggestions while typing in the search bar to quickly find restaurants, cuisines, or dishes.
+    - _Actors:_ Customer
+    - _Details:_
+      - Suggestions appear after typing at least 2 characters.
+      - Include restaurants, cuisines, and popular dishes.
+      - Handle misspellings and intent (e.g., “cheap pizza” → budget pizza places).
+      - Personalized suggestions based on past searches.
+      - Exclude closed/inactive restaurants.

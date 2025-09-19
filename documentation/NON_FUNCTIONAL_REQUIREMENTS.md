@@ -5,52 +5,57 @@ The following non-functional requirements ensure that the system is reliable, se
 ---
 
 ## 1. Performance Requirements
-- The system should handle *at least 1000 concurrent users* without performance degradation.
-- API response time should not exceed *1500ms* for 95% of requests under normal load.
-- The homepage and restaurant discovery pages should load within *2 seconds* under average network conditions.
-- Database queries must be optimized to return results within *500ms*.
-- Reservation confirmation and payment processing must complete within *5 seconds*.
+
+- The system should handle _at least 1000 concurrent users_ without performance degradation.
+- API response time should not exceed _1500ms_ for 95% of requests under normal load.
+- The homepage and restaurant discovery pages should load within _2 seconds_ under average network conditions.
+- Database queries must be optimized to return results within _500ms_.
+- Reservation confirmation and payment processing must complete within _5 seconds_.
 
 ---
 
 ## 2. Scalability Requirements
-- The system should support *horizontal scaling* to accommodate growing user demand.
-- Database design must support *partitioning and sharding* for large datasets.
-- The architecture should allow *adding more servers* (backend/frontend) without major redesign.
-- *Caching (via Redis)* should be used to handle frequently accessed data (e.g., restaurant list, table availability).
-- System components should follow *microservices principles* for independent scaling.
+
+- The system should support _horizontal scaling_ to accommodate growing user demand.
+- Database design must support _partitioning and sharding_ for large datasets.
+- The architecture should allow _adding more servers_ (backend/frontend) without major redesign.
+- _Caching (via Redis)_ should be used to handle frequently accessed data (e.g., restaurant list, table availability).
+- System components should follow _microservices principles_ for independent scaling.
 
 ---
 
 ## 3. Security Requirements
-- All communication must be encrypted using *HTTPS (TLS 1.2 or higher)*.
-- Passwords must be stored securely using *bcrypt hashing with salting*.
-- Authentication should use *JWT with refresh tokens* or *OAuth 2.0*.
-- The system should implement *Role-Based Access Control (RBAC)* to separate customer and restaurant owner permissions.
-- Sensitive data (payment details, tokens) should *never be logged*.
+
+- All communication must be encrypted using _HTTPS (TLS 1.2 or higher)_.
+- Passwords must be stored securely using _bcrypt hashing with salting_.
+- Authentication should use _JWT with refresh tokens_ or _OAuth 2.0_.
+- The system should implement _Role-Based Access Control (RBAC)_ to separate customer and restaurant owner permissions.
+- Sensitive data (payment details, tokens) should _never be logged_.
 - Implement protections against:
-  - *SQL Injection*
-  - *XSS (Cross-Site Scripting)*
-  - *CSRF (Cross-Site Request Forgery)*
-  - *Brute-force login attacks*
-- Payment gateway integration must comply with *PCI DSS standards*.
+  - _SQL Injection_
+  - _XSS (Cross-Site Scripting)_
+  - _CSRF (Cross-Site Request Forgery)_
+  - _Brute-force login attacks_
+- Payment gateway integration must comply with _PCI DSS standards_.
 
 ---
 
 ## 4. Availability & Reliability Requirements
-- The system should provide *99.9% uptime*.
-- The system must include *auto-restart mechanisms* for crashed services.
-- Database must support *replication and failover* to ensure continuity.
+
+- The system should provide _99.9% uptime_.
+- The system must include _auto-restart mechanisms_ for crashed services.
+- Database must support _replication and failover_ to ensure continuity.
 - Session persistence must be ensured during server restarts.
 - Reservation and payment data must not be lost in case of system failure.
 
 ---
 
 ## 5. Usability Requirements
-- The UI should follow *responsive design principles* to work on mobile, tablet, and desktop.
-- Pages should follow *consistent layout and navigation structure*.
-- The system should support *multi-language support* for a wider user base.
-- Error messages should be *clear, actionable, and user-friendly*.
-- The booking process should not require more than *5 clicks*.
+
+- The UI should follow _responsive design principles_ to work on mobile, tablet, and desktop.
+- Pages should follow _consistent layout and navigation structure_.
+- The system should support _multi-language support_ for a wider user base.
+- Error messages should be _clear, actionable, and user-friendly_.
+- The booking process should not require more than _5 clicks_.
 
 ---

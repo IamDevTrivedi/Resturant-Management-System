@@ -8,38 +8,38 @@ This system provides functionalities for two main types of users: Customers and 
 
 ### Customer Features
 
-- *User Authentication:* Create an account, log in, and log out securely.
-- *Restaurant Discovery:* View a list of all available restaurants and browse details for specific ones.
-- *Table Availability:* Check for available tables at a selected restaurant.
-- *Reservations:* Make a reservation by selecting a date, time, and number of guests, with a secure token payment.
-- *Reservation History:* View and manage past and upcoming reservations.
+- _User Authentication:_ Create an account, log in, and log out securely.
+- _Restaurant Discovery:_ View a list of all available restaurants and browse details for specific ones.
+- _Table Availability:_ Check for available tables at a selected restaurant.
+- _Reservations:_ Make a reservation by selecting a date, time, and number of guests, with a secure token payment.
+- _Reservation History:_ View and manage past and upcoming reservations.
 
 ### Restaurant Owner Features
 
-- *User Authentication:* Create a restaurant owner account, log in, and log out.
-- *Restaurant Profile Management:* Add, view, update, and delete restaurant details, including:
+- _User Authentication:_ Create a restaurant owner account, log in, and log out.
+- _Restaurant Profile Management:_ Add, view, update, and delete restaurant details, including:
   - Name, location, and cuisine type.
   - Contact information.
   - Menus and images.
   - Opening hours and table configurations.
-- *Reservation Management:* View a list of all reservations and update their status (e.g., confirmed, canceled, completed).
-- *Table Management:* Manage table availability based on incoming reservations.
+- _Reservation Management:_ View a list of all reservations and update their status (e.g., confirmed, canceled, completed).
+- _Table Management:_ Manage table availability based on incoming reservations.
 
 ## Tech Stack (tentative)
 
-- *Frontend:* React.js (or Next.js)
-- *Backend:* Node.js with Express.js
-- *Database:* MongoDB, Redis (for caching and session management)
-- *Authentication:* JWT (JSON Web Tokens) or OAuth
-- *Payment Integration:* To be determined (e.g., Stripe, PayPal)
-- *Deployment:* AWS or (Vercel + Render)
-- *Version Control:* Git and GitHub
+- _Frontend:_ React.js (or Next.js)
+- _Backend:_ Node.js with Express.js
+- _Database:_ MongoDB, Redis (for caching and session management)
+- _Authentication:_ JWT (JSON Web Tokens) or OAuth
+- _Payment Integration:_ To be determined (e.g., Stripe, PayPal)
+- _Deployment:_ AWS or (Vercel + Render)
+- _Version Control:_ Git and GitHub
 
 ## Team
 
 This project is developed by a team of 10 students.
 
-*Group Leader:* TRIVEDI DEV JITENDRABHAI (202301150)
+_Group Leader:_ TRIVEDI DEV JITENDRABHAI (202301150)
 
 | Roll No   | Name                         | Email               |
 | --------- | ---------------------------- | ------------------- |
