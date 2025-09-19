@@ -1,0 +1,1 @@
+console.log("Hello, pnpm + Nodemon + TypeScript!");
