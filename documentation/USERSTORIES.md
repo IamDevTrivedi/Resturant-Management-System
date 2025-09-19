@@ -503,3 +503,80 @@
 
 #### Constraints
 - Report generation must not exceed *10 seconds*.
+
+---
+
+  ## Story 20 – Review Summarizer  
+
+### Front of Card  
+- As a customer  
+- I want to see summarized reviews of a restaurant  
+- So that I can quickly understand overall customer feedback  
+
+---
+
+### Back of Card  
+
+#### Acceptance Criteria  
+1. Reviews are summarized into short, readable text.  
+2. Sentiment (positive/negative/neutral) is displayed.  
+3. Summaries are updated automatically when new reviews are added.  
+
+#### Notes  
+- LLM should generate summaries in a crisp and non-biased format.  
+- Restaurant owners should get improvement suggestions (e.g., “improve service speed”).  
+
+#### Constraints  
+- Summarization must complete in <5 seconds.  
+- Avoid hallucinated or fake information.  
+
+---
+
+## Story 21 – Suggestion Maker (For Owners)  
+
+### Front of Card  
+- As a restaurant owner  
+- I want AI-generated improvement suggestions from customer reviews  
+- So that I can enhance my services and attract more customers  
+
+---
+
+### Back of Card  
+
+#### Acceptance Criteria  
+1. Suggestions are actionable (e.g., improve hygiene, reduce wait time).  
+2. Suggestions must be based only on actual customer reviews.  
+3. Suggestions are displayed in the admin dashboard.  
+
+#### Notes  
+- Uses LLM/NLP to extract common complaints or praises.  
+- Should highlight top 3 improvement areas.  
+
+#### Constraints  
+- Suggestions must refresh weekly.  
+- Must handle at least 1,000 reviews per restaurant.  
+
+---
+## Story 23 – Auto-Suggestion (Search Bar)  
+
+### Front of Card  
+- As a customer  
+- I want auto-suggestions while typing in the search bar  
+- So that I can quickly find restaurants, cuisines, or dishes  
+
+---
+
+### Back of Card  
+
+#### Acceptance Criteria  
+1. Suggestions appear after typing at least 2 characters.  
+2. Must show restaurants, cuisines, and popular dishes.  
+3. Suggestions update dynamically as user types more.  
+
+#### Notes  
+- LLM/NLP can handle misspellings and intent (e.g., “cheap pizza” → budget pizza places).  
+- Personalized suggestions based on past searches.  
+
+#### Constraints  
+- Load time <1 second.  
+- Should not show closed/inactive restaurants. 
