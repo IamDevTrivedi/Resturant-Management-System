@@ -557,7 +557,7 @@
 - Must handle at least 1,000 reviews per restaurant.  
 
 ---
-## Story 23 – Auto-Suggestion (Search Bar)  
+## Story 22 – Auto-Suggestion (Search Bar)  
 
 ### Front of Card  
 - As a customer  
