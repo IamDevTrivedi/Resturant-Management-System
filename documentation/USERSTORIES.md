@@ -478,4 +478,28 @@
 
 #### Constraints
 - Payment gateway integration must meet industry security standards.  
-- All transactions must complete or fail within **30 seconds**.  
+- All transactions must complete or fail within **30 seconds**.
+
+  
+## Story 19 – Generate Reports
+
+### Front of Card
+- As an administrator  
+- I want to generate reports on reservations, activity, and revenue  
+- So that I can support decision-making  
+
+---
+
+### Back of Card
+
+#### Acceptance Criteria
+1. Reports are exportable in PDF/Excel formats.  
+2. Reports are available daily, weekly, and monthly.  
+
+#### Notes
+- Reports should include filters (e.g., by date range, restaurant, or user).  
+- Reports must be accessible only to authorized administrators.  
+- Generated reports should be stored for future reference.  
+
+#### Constraints
+- Report generation must not exceed *10 seconds*.
