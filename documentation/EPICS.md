@@ -90,16 +90,16 @@
 # ⚡ Conflicts Between EPICs / Sprints
 
 1. **Dependency Conflicts:**
-   - EPIC 2 (Search) depends on EPIC 1 (User Authentication) for personalized search and suggestions.
-   - EPIC 3 (Reservations) requires EPIC 1 (Authentication) and EPIC 2 (Restaurant Discovery) to be functional first.
-   - EPIC 5 (Review Summarizer & Suggestions) depends on EPIC 9 (Reviews) from earlier sprints.
+    - EPIC 2 (Search) depends on EPIC 1 (User Authentication) for personalized search and suggestions.
+    - EPIC 3 (Reservations) requires EPIC 1 (Authentication) and EPIC 2 (Restaurant Discovery) to be functional first.
+    - EPIC 5 (Review Summarizer & Suggestions) depends on EPIC 9 (Reviews) from earlier sprints.
 
 2. **Sprint Overlaps:**
-   - Notifications (EPIC 7, Sprint 4) may overlap with Payment/Loyalty (EPIC 4, Sprint 4–5) due to confirmation triggers.
-   - Advanced Search (EPIC 2, Sprint 2–3) and Auto-Suggestion (Sprint 2–3) must coordinate real-time API endpoints.
+    - Notifications (EPIC 7, Sprint 4) may overlap with Payment/Loyalty (EPIC 4, Sprint 4–5) due to confirmation triggers.
+    - Advanced Search (EPIC 2, Sprint 2–3) and Auto-Suggestion (Sprint 2–3) must coordinate real-time API endpoints.
 
 3. **Resource Conflicts:**
-   - Sprint 1–2 may need more backend developers to implement Authentication + Admin management simultaneously.
+    - Sprint 1–2 may need more backend developers to implement Authentication + Admin management simultaneously.
 
 ---
 

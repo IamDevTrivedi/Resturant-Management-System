@@ -18,10 +18,10 @@ This system provides functionalities for two main types of users: Customers and 
 
 - _User Authentication:_ Create a restaurant owner account, log in, and log out.
 - _Restaurant Profile Management:_ Add, view, update, and delete restaurant details, including:
-  - Name, location, and cuisine type.
-  - Contact information.
-  - Menus and images.
-  - Opening hours and table configurations.
+    - Name, location, and cuisine type.
+    - Contact information.
+    - Menus and images.
+    - Opening hours and table configurations.
 - _Reservation Management:_ View a list of all reservations and update their status (e.g., confirmed, canceled, completed).
 - _Table Management:_ Manage table availability based on incoming reservations.
 

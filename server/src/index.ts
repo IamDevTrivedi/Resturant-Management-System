@@ -1,1 +1,1 @@
-console.log("Hello, pnpm + Nodemon + TypeScript!");
+console.log('Hello, pnpm + Nodemon + TypeScript!');

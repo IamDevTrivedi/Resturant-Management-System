@@ -32,10 +32,10 @@ The following non-functional requirements ensure that the system is reliable, se
 - The system should implement _Role-Based Access Control (RBAC)_ to separate customer and restaurant owner permissions.
 - Sensitive data (payment details, tokens) should _never be logged_.
 - Implement protections against:
-  - _SQL Injection_
-  - _XSS (Cross-Site Scripting)_
-  - _CSRF (Cross-Site Request Forgery)_
-  - _Brute-force login attacks_
+    - _SQL Injection_
+    - _XSS (Cross-Site Scripting)_
+    - _CSRF (Cross-Site Request Forgery)_
+    - _Brute-force login attacks_
 - Payment gateway integration must comply with _PCI DSS standards_.
 
 ---
