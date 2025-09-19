@@ -59,3 +59,46 @@ The following non-functional requirements ensure that the system is reliable, se
 - The booking process should not require more than _5 clicks_.
 
 ---
+
+## 6. Maintainability & Code Quality
+- The system shall have a test coverage of at least 80% for backend services and 60% for critical frontend components to facilitate safe refactoring and continuous integration.
+- The codebase shall adhere to consistent style guides and linting rules, and be well-documented to allow new developers to become productive quickly.
+- - The codebase should follow *modular design patterns* (e.g., MVC or layered architecture).
+- The system must provide *well-documented APIs* using OpenAPI/Swagger.
+- Logging and monitoring should be integrated (e.g., using ELK stack or Prometheus + Grafana).
+- Developers should follow *naming conventions and code style guidelines*.
+- Continuous Integration/Continuous Deployment (*CI/CD*) pipelines must be established.
+
+---
+
+## 7. Portability Requirements
+- The application should run on *major browsers* (Chrome, Firefox, Safari, Edge).
+- Mobile app version (if developed) should be *cross-platform* (Android & iOS).
+- Deployment should support *cloud providers (AWS, Azure, GCP)* and *on-premise hosting*.
+- Docker containers should be used to enable *environment portability*.
+
+---
+
+## 8. Compliance Requirements
+- Must comply with *GDPR* for handling user data.
+- Payment integration must comply with *PCI DSS*.
+- Logging and monitoring should comply with *local IT regulations*.
+- Data retention policies must follow *legal standards*.
+
+---
+
+## 9. Backup & Recovery Requirements
+- Automated *daily database backups* must be maintained.
+- Backups should be stored in *at least two separate regions*.
+- The system should allow *point-in-time recovery* for databases.
+- Backup restoration time should not exceed *1 hour*.
+
+---
+
+## 10. Monitoring & Auditing Requirements
+- All system events (login, reservation, payment, cancellation) must be *logged*.
+- Logs must be *tamper-proof* and stored securely.
+- Monitoring tools must detect *abnormal spikes in traffic or failures*.
+- Audit trails must be available for *security and compliance reviews*.
+
+---
