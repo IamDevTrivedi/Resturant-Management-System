@@ -1,4 +1,5 @@
 import config from "@/config/env";
+import logger from "@/utils/logger";
 
-console.log('Hello');
-console.log(config);
+logger.info('Hello');
+logger.debug(JSON.stringify(config, null, 2));
