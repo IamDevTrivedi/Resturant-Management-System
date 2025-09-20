@@ -1,5 +1,5 @@
-import config from "@/config/env";
-import logger from "@/utils/logger";
+import logger from '@/utils/logger';
+import checkEnv from '@/config/checkEnv';
 
 logger.info('Hello');
-logger.debug(JSON.stringify(config, null, 2));
+checkEnv();
