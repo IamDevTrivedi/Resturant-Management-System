@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "nodemon",
+        "dev": "cross-env NODE_ENV=development nodemon",
         "build": "tsc && tsc-alias",
-        "start": "pnpm run build && node dist/index.js"
+        "start": "pnpm run build && cross-env NODE_ENV=production node -r tsconfig-paths/register dist/index.js"
     },
     "keywords": [],
     "author": "",
@@ -14,11 +14,15 @@
     "packageManager": "pnpm@10.14.0",
     "devDependencies": {
         "@types/node": "^24.5.2",
+        "cross-env": "^10.0.0",
         "nodemon": "^3.1.10",
         "ts-node": "^10.9.2",
         "tsc-alias": "^1.8.16",
         "tsconfig-paths": "^4.2.0",
         "typescript": "^5.9.2",
         "undici-types": "^7.16.0"
+    },
+    "dependencies": {
+        "dotenv": "^16.6.1"
     }
 }
