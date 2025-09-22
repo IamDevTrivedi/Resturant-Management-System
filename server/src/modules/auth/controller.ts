@@ -5,7 +5,9 @@ import { redisClient } from '@/db/connectRedis';
 import config from '@/config/env';
 import { transporter } from '@/config/nodemailer';
 import logger from '@/utils/logger';
-import { OTP_REGEX } from '@/constants/regex';
+import { OTP_REGEX, PASSWORD_REGEX } from '@/constants/regex';
+import User from '@/models/user';
+import bcrypt from 'bcrypt';
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -141,6 +143,69 @@ const controller = {
                 success: false,
                 message: 'Internal server error',
             });
+        }
+    },
+
+    createAccount: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                email: z.email(),
+                firstName: z.string().min(1, 'First name is required'),
+                lastName: z.string().min(1, 'Last name is required'),
+                password: z.string().regex(PASSWORD_REGEX, 'Invalid password format'),
+                role: z.enum(['owner', 'customer']),
+            });
+
+            const result = schema.safeParse(req.body);
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Invalid input',
+                    details: z.treeifyError(result.error),
+                });
+            }
+
+            const { email, firstName, lastName, password, role } = result.data;
+
+            const key = await redisClient.get(`upcomingEmail:${email}`);
+            if (!key) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Email not found or expired. Please verify again.',
+                });
+            }
+
+            const { isVerified } = JSON.parse(key);
+            if (!isVerified) {
+                return res.status(400).json({ success: false, error: 'Email is not verified' });
+            }
+
+            const existingUser = await User.findOne({ email });
+            if (existingUser) {
+                return res
+                    .status(409)
+                    .json({ success: false, error: 'User already exists with this email' });
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 12);
+
+            const user = await User.create({
+                firstName,
+                lastName,
+                hashedPassword,
+                role,
+                email,
+            });
+
+            await redisClient.del(`upcomingEmail:${email}`);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Account created successfully',
+            });
+        } catch (error) {
+            console.error('Error creating account:', error);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
         }
     },
 };
