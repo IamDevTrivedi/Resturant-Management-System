@@ -13,6 +13,11 @@ const envSchema = z.object({
     REDIS_HOST: z.string(),
     REDIS_PORT: z.number(),
     LOCAL_REDIS: z.number(),
+
+    EMAIL_HOST: z.string(),
+    EMAIL_PORT: z.number(),
+    SMTP_USER: z.string(),
+    SMTP_PASSWORD: z.string(),
 });
 
 type ConfigSchema = z.infer<typeof envSchema>;

@@ -4,6 +4,7 @@ import { connectRedis } from '@/db/connectRedis';
 import connectMongo from '@/db/connectMongo';
 import express from 'express';
 import config from '@/config/env';
+import { verifyEmailTransporter } from '@/config/nodemailer';
 
 async function startServer() {
     try {
@@ -13,6 +14,7 @@ async function startServer() {
         // CONNECT TO DATABASES
         await connectMongo();
         await connectRedis();
+        await verifyEmailTransporter();
 
         // INIT EXPRESS
         const app = express();

@@ -26,6 +26,11 @@ const config = {
     REDIS_HOST: process.env.REDIS_HOST,
     REDIS_PORT: Number(process.env.REDIS_PORT),
     LOCAL_REDIS: Number(process.env.LOCAL_REDIS),
+
+    EMAIL_HOST: process.env.EMAIL_HOST,
+    EMAIL_PORT: Number(process.env.EMAIL_PORT),
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
 } as const;
 
 export default config;
