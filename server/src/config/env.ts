@@ -16,6 +16,13 @@ if (result.error) {
 const config = {
     NODE_ENV,
     isProduction: NODE_ENV === 'production',
+    MONGODB_URI: process.env.MONGODB_URI,
+
+    REDIS_USERNAME: process.env.REDIS_USERNAME,
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: Number(process.env.REDIS_PORT),
+    LOCAL_REDIS: Number(process.env.LOCAL_REDIS),
 } as const;
 
 export default config;
