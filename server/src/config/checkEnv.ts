@@ -18,6 +18,7 @@ const envSchema = z.object({
     EMAIL_PORT: z.number(),
     SMTP_USER: z.string(),
     SMTP_PASSWORD: z.string(),
+    SENDER_EMAIL: z.email(),
 });
 
 type ConfigSchema = z.infer<typeof envSchema>;
