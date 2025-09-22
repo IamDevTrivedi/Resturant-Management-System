@@ -5,6 +5,7 @@ import { redisClient } from '@/db/connectRedis';
 import config from '@/config/env';
 import { transporter } from '@/config/nodemailer';
 import logger from '@/utils/logger';
+import { OTP_REGEX } from '@/constants/regex';
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -65,6 +66,80 @@ const controller = {
             return res.status(500).json({
                 success: false,
                 message: 'Failed to send OTP',
+            });
+        }
+    },
+
+    verifyOTPForVerification: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                email: z.email(),
+                OTP: z.string().regex(OTP_REGEX),
+            });
+
+            const result = schema.safeParse(req.body);
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const { email, OTP } = result.data;
+
+            const key = await redisClient.get(`upcomingEmail:${email}`);
+            if (!key) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'OTP not found or already used',
+                });
+            }
+
+            const { OTP: genOTP, expiry, isVerified } = JSON.parse(key);
+
+            if (isVerified) {
+                return res.status(200).json({
+                    success: true,
+                    message: 'Email already verified',
+                });
+            }
+
+            if (OTP !== genOTP) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid OTP',
+                });
+            }
+
+            if (Date.now() > expiry) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'OTP has expired',
+                });
+            }
+
+            await redisClient.set(
+                `upcomingEmail:${email}`,
+                JSON.stringify({
+                    OTP: 'NOT_VALID',
+                    expiry: 0,
+                    isVerified: true,
+                }),
+                {
+                    EX: 60 * 60,
+                },
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'Email successfully verified',
+            });
+        } catch (err) {
+            logger.error('verifyOTPForVerification error:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal server error',
             });
         }
     },
