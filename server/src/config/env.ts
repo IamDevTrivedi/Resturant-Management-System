@@ -16,6 +16,9 @@ if (result.error) {
 const config = {
     NODE_ENV,
     isProduction: NODE_ENV === 'production',
+
+    PORT: Number(process.env.PORT),
+
     MONGODB_URI: process.env.MONGODB_URI,
 
     REDIS_USERNAME: process.env.REDIS_USERNAME,
