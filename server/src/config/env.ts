@@ -31,6 +31,7 @@ const config = {
     EMAIL_PORT: Number(process.env.EMAIL_PORT),
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    SENDER_EMAIL: process.env.SENDER_EMAIL,
 } as const;
 
 export default config;
