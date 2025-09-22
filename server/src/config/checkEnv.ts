@@ -5,6 +5,14 @@ import logger from '@/utils/logger';
 const envSchema = z.object({
     NODE_ENV: z.enum(['production', 'development']),
     isProduction: z.boolean(),
+
+    MONGODB_URI: z.url(),
+
+    REDIS_USERNAME: z.string(),
+    REDIS_PASSWORD: z.string(),
+    REDIS_HOST: z.string(),
+    REDIS_PORT: z.number(),
+    LOCAL_REDIS: z.number(),
 });
 
 type ConfigSchema = z.infer<typeof envSchema>;
