@@ -1,9 +1,9 @@
-# Team Members and Task Allocation
+# Team Members and Role Allocation
 
-| Roll No    | Name                             | Email                        | Tasks in Documentation                               | Future Tasks                 |
+| Student ID | Name                             | Email                        | Tasks in Documentation                               | Future Roles                 |
 |------------|----------------------------------|------------------------------|------------------------------------------------------|------------------------------|
-| 202301150  | TRIVEDI DEV JITENDRABHAI         | 202301150@dau.ac.in          | Functional Requirements                              | Backend, Testing             |
-| 202301151  | BHUVA HEET VIJAYBHAI             | 202301151@dau.ac.in          | Functional Requirements                              | Backend                      |
+| 202301150  | TRIVEDI DEV JITENDRABHAI         | 202301150@dau.ac.in          | Functional Requirements, Backend                     | Backend, Testing             |
+| 202301151  | BHUVA HEET VIJAYBHAI             | 202301151@dau.ac.in          | Functional Requirements, Backend                     | Backend                      |
 | 202301165  | SHREY SHAH                       | 202301165@dau.ac.in          | Non-Functional Requirements                          | Backend                      |
 | 202301172  | MACWAN JENISH DENISH             | 202301172@dau.ac.in          | User Stories ,Elicitation                            | Frontend, Testing            |
 | 202301189  | DHOLA KRISH HARESHBHAI           | 202301189@dau.ac.in          | Functional Requirements                              | Backend                      |
