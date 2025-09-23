@@ -20,6 +20,7 @@ const config = {
     PORT: Number(process.env.PORT),
 
     MONGODB_URI: process.env.MONGODB_URI,
+    JWT_KEY: process.env.JWT_KEY,
 
     REDIS_USERNAME: process.env.REDIS_USERNAME,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,

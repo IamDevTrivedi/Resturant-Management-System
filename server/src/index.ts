@@ -5,6 +5,7 @@ import connectMongo from '@/db/connectMongo';
 import express from 'express';
 import config from '@/config/env';
 import { verifyEmailTransporter } from '@/config/nodemailer';
+import cookieParser from 'cookie-parser';
 
 async function startServer() {
     try {
@@ -21,6 +22,7 @@ async function startServer() {
 
         // CORE MIDDLEWARES
         app.use(express.json());
+        app.use(cookieParser());
 
         const { default: rootRoutes } = await import('@/modules/root/route');
         const { default: healthRoutes } = await import('@/modules/health/route');
