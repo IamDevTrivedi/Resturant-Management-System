@@ -8,7 +8,7 @@ import logger from '@/utils/logger';
 import { OTP_REGEX, PASSWORD_REGEX } from '@/constants/regex';
 import User from '@/models/user';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -259,12 +259,17 @@ const controller = {
         }
     },
 
-    logout: async (req: Request, res: Response) => {
+    logout: async (req: Request, res: Response): Promise<Response> => {
         try {
-            const { token } = req.cookies;
-            const payload: any = jwt.decode(token);
+            const token = req.cookies?.token as string | undefined;
 
-            if (!payload) {
+            if (!token) {
+                return res.status(401).json({ success: false, error: 'No token provided' });
+            }
+
+            const payload = jwt.decode(token) as JwtPayload | null;
+
+            if (!payload || typeof payload.exp !== 'number') {
                 return res.status(401).json({ success: false, error: 'Invalid token' });
             }
 
@@ -280,7 +285,8 @@ const controller = {
             });
 
             return res.json({ success: true, message: 'Logged out successfully' });
-        } catch {
+        } catch (err) {
+            console.error('Logout error:', err);
             return res.status(500).json({ success: false, error: 'Server error' });
         }
     },
