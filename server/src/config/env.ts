@@ -18,6 +18,7 @@ const config = {
     isProduction: NODE_ENV === 'production',
 
     PORT: Number(process.env.PORT),
+    JWT_KEY: process.env.JWT_KEY,
 
     MONGODB_URI: process.env.MONGODB_URI,
 

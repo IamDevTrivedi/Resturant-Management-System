@@ -7,6 +7,7 @@ const envSchema = z.object({
     isProduction: z.boolean(),
 
     MONGODB_URI: z.url(),
+    JWT_KEY: z.string().min(32),
 
     REDIS_USERNAME: z.string(),
     REDIS_PASSWORD: z.string(),
