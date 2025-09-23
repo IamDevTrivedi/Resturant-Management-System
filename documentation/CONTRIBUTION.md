@@ -7,7 +7,7 @@
 | 202301165  | SHREY SHAH                       | 202301165@dau.ac.in          | Non-Functional Requirements                          | Backend                      |
 | 202301172  | MACWAN JENISH DENISH             | 202301172@dau.ac.in          | User Stories ,Elicitation                            | Frontend, Testing            |
 | 202301189  | DHOLA KRISH HARESHBHAI           | 202301189@dau.ac.in          | Functional Requirements                              | Backend                      |
-| 202301191  | ANUSHKA RAWAT                    | 202301191@dau.ac.in          | Stakeholders & Actors, Epics                         | Frontend                     |
+| 202301191  | ANUSHKA RAWAT                    | 202301191@dau.ac.in          | Stakeholders & Actors, Epics, Elicitation            | Frontend                     |
 | 202301200  | NADIYA NIHAR RAJESHBHAI          | 202301200@dau.ac.in          | User Stories , Elicitation                           | Backend                      |
 | 202301195  | JOGADIYA DHARA RAJESHBHAI        | 202301195@dau.ac.in          | User Stories                                         | Frontend                     |
 | 202301173  | RUDRA CHAUHAN                    | 202301173@dau.ac.in          | Non-Functional Requirements                          | Frontend                     |
