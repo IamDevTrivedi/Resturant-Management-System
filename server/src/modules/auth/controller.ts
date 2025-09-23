@@ -258,6 +258,32 @@ const controller = {
             return res.status(500).json({ success: false, error: 'Server error' });
         }
     },
+
+    logout: async (req: Request, res: Response) => {
+        try {
+            const { token } = req.cookies;
+            const payload: any = jwt.decode(token);
+
+            if (!payload) {
+                return res.status(401).json({ success: false, error: 'Invalid token' });
+            }
+
+            await redisClient.set(`token:${token}`, 'BLOCKED');
+            await redisClient.expireAt(`token:${token}`, payload.exp);
+
+            res.cookie('token', '', {
+                httpOnly: true,
+                secure: config.isProduction,
+                sameSite: 'strict',
+                expires: new Date(0),
+                path: '/',
+            });
+
+            return res.json({ success: true, message: 'Logged out successfully' });
+        } catch {
+            return res.status(500).json({ success: false, error: 'Server error' });
+        }
+    },
 };
 
 export default controller;
