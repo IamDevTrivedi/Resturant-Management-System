@@ -8,6 +8,7 @@ import logger from '@/utils/logger';
 import { OTP_REGEX, PASSWORD_REGEX } from '@/constants/regex';
 import User from '@/models/user';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -206,6 +207,55 @@ const controller = {
         } catch (error) {
             console.error('Error creating account:', error);
             return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+    },
+
+    login: async (req: Request, res: Response) => {
+        try {
+            const { email, password } = req.body;
+
+            const schema = z.object({
+                email: z.email(),
+                password: z.string().regex(PASSWORD_REGEX, 'Invalid password format'),
+            });
+
+            const result = schema.safeParse(req.body);
+            if (!result.success) {
+                return res.status(400).json({ success: false, error: 'Invalid input' });
+            }
+
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(401).json({ success: false, error: 'Invalid credentials' });
+            }
+
+            const match = await bcrypt.compare(password, user.hashedPassword);
+            if (!match) {
+                return res.status(401).json({ success: false, error: 'Invalid credentials' });
+            }
+
+            const token = jwt.sign({ userID: user._id }, process.env.JWT_KEY as string, {
+                expiresIn: '7d',
+            });
+
+            const cookieOptions: {
+                httpOnly: boolean;
+                secure: boolean;
+                sameSite: 'strict' | 'lax' | 'none';
+                maxAge: number;
+                path: string;
+            } = {
+                httpOnly: true,
+                secure: config.isProduction,
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                path: '/',
+            };
+
+            res.cookie('token', token, cookieOptions);
+            return res.json({ success: true, message: 'Login successful' });
+        } catch {
+            return res.status(500).json({ success: false, error: 'Server error' });
         }
     },
 };
