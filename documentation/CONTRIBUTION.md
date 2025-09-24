@@ -1,6 +1,6 @@
 # Team Members and Role Allocation
 
-| Student ID | Name                             | Email                        | Tasks in Documentation                               | Future Roles                 |
+| Student ID | Name                             | Email                        | Current Task Performed                               | Future Roles                 |
 |------------|----------------------------------|------------------------------|------------------------------------------------------|------------------------------|
 | 202301150  | TRIVEDI DEV JITENDRABHAI         | 202301150@dau.ac.in          | Functional Requirements, Backend                     | Backend, Testing             |
 | 202301151  | BHUVA HEET VIJAYBHAI             | 202301151@dau.ac.in          | Functional Requirements, Backend                     | Backend                      |
