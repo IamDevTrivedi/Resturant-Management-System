@@ -221,7 +221,9 @@ const controller = {
 
             const result = schema.safeParse(req.body);
             if (!result.success) {
-                return res.status(400).json({ success: false, error: 'Invalid input' });
+                return res
+                    .status(400)
+                    .json({ success: false, error: z.treeifyError(result.error) });
             }
 
             const user = await User.findOne({ email });

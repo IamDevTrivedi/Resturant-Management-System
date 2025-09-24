@@ -6,6 +6,8 @@ const envSchema = z.object({
     NODE_ENV: z.enum(['production', 'development']),
     isProduction: z.boolean(),
 
+    PORT: z.number().min(1).max(65535),
+
     MONGODB_URI: z.url(),
 
     REDIS_USERNAME: z.string(),
