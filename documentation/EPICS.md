@@ -121,7 +121,3 @@
 
 - Initialized Express/Node.js project.
 
-### 3. Frontend (Initial Front Page)
-
-- Designed the front page layout in Figma.
-- Implemented basic static front page using Next.js.
