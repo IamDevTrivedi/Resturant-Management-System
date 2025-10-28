@@ -29,11 +29,6 @@
 - Passwords must be stored securely (hashed & salted).
 - The system should support multiple device types (web and mobile).
 
-#### Constraints
-
-- Registration must complete within **120 seconds** under normal load.
-- The system must handle at least **1000 concurrent registration requests** without failure.
-- Email/SMS delivery should occur within **30 seconds** of registration submission.
 
 ---
 
@@ -67,12 +62,6 @@
 - Audit logs must record login attempts (both successful and failed) for security monitoring.
 - Two-factor authentication (2FA) can be optionally supported for enhanced security.
 
-#### Constraints
-
-- Login must work seamlessly on both **web and mobile platforms**.
-- Authentication response time should be less than **3 seconds** under normal load.
-- System must handle at least **5000 concurrent login requests** without performance degradation.
-
 ---
 
 ## Story 3 - Search Restaurants
@@ -104,11 +93,6 @@
 - The system should provide autocomplete suggestions while typing in the search bar.
 - Multi-language support should be considered for restaurant names and cuisines.
 
-#### Constraints
-
-- Search results must be returned within **3 seconds** under normal conditions.
-- The system must handle at least **10,000 concurrent search requests** without significant performance degradation.
-- Location-based search should integrate with reliable mapping APIs (e.g., Google Maps, OpenStreetMap).
 
 ---
 
@@ -140,11 +124,6 @@
 - Menus should support **multi-language display** if configured by the restaurant.
 - Users should be able to mark favorite dishes for quick access later.
 
-#### Constraints
-
-- Menu must load in under **5 seconds** under normal conditions.
-- System should handle at least **5000 concurrent menu views** without performance issues.
-- All updates made by managers must propagate to the user interface within **2 seconds**.
 
 ---
 
@@ -169,10 +148,6 @@
 #### Notes
 
 - Reservation ID must be searchable in the system.
-
-#### Constraints
-
-- Booking must not exceed restaurant seating capacity.
 
 ---
 
