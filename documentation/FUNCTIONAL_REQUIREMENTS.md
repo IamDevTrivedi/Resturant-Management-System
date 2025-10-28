@@ -122,8 +122,7 @@
         - Filter restaurants by cuisine, price range, average rating, and distance.
         - Combine multiple filters (e.g., “Italian cuisine within 5 km and rating ≥4”).
         - Provide a real-time search experience with instant suggestions.
-        15. _Review Summarizer_
-
+16. _Review Summarizer_
     - _Description:_ Customers must be able to see summarized reviews of a restaurant to quickly understand overall feedback.
     - _Actors:_ Customer, Restaurant Owner
     - _Details:_
@@ -132,7 +131,7 @@
         - Summaries update automatically when new reviews are added.
         - Restaurant owners get improvement suggestions (e.g., “improve service speed”).
 
-16. _Suggestion Maker (For Owners)_
+17. _Suggestion Maker (For Owners)_
     - _Description:_ Restaurant owners must receive AI-generated suggestions from customer reviews to enhance their services.
     - _Actors:_ Restaurant Owner
     - _Details:_
@@ -141,7 +140,7 @@
         - Suggestions refresh weekly.
         - Must handle at least 1,000 reviews per restaurant.
 
-17. _Auto-Suggestion (Search Bar)_
+18. _Auto-Suggestion (Search Bar)_
     - _Description:_ Customers must get real-time auto-suggestions while typing in the search bar to quickly find restaurants, cuisines, or dishes.
     - _Actors:_ Customer
     - _Details:_

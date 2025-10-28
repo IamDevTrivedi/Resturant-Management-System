@@ -10,13 +10,14 @@
         "lint:fix": "eslint . --fix",
         "lint": "eslint .",
         "install:all": "pnpm install && pnpm --filter ./client install && pnpm --filter ./server install",
-        "refresh:all": "rm -rf node_modules pnpm-lock.yaml && rm -rf client/node_modules client/pnpm-lock.yaml && rm -rf server/node_modules server/pnpm-lock.yaml && pnpm install && pnpm --filter ./client install && pnpm --filter ./server install",
+        "clean:all": "rm -rf node_modules pnpm-lock.yaml && rm -rf client/node_modules client/pnpm-lock.yaml && rm -rf server/node_modules server/pnpm-lock.yaml",
+        "refresh:all": "pnpm run clean:all && pnpm run install:all",
         "dev": "concurrently -n CLIENT,SERVER -c cyan,green \"pnpm --filter client dev\" \"pnpm --filter server dev\""
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "packageManager": "pnpm@10.14.0",
+    "packageManager": "pnpm@10.19.0",
     "devDependencies": {
         "@eslint/js": "^9.34.0",
         "concurrently": "^9.2.1",

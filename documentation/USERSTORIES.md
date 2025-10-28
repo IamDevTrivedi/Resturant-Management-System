@@ -1,6 +1,6 @@
 # User Stories
 
-## Story 1 User Registration
+## Story 1 - User Registration
 
 ### Front of Card
 
@@ -37,7 +37,7 @@
 
 ---
 
-## Story 2 User Login
+## Story 2 - User Login
 
 ### Front of Card
 
@@ -75,7 +75,7 @@
 
 ---
 
-## Story 3 Search Restaurants
+## Story 3 - Search Restaurants
 
 ### Front of Card
 
@@ -112,7 +112,7 @@
 
 ---
 
-## Story 4 View Menus
+## Story 4 - View Menus
 
 ### Front of Card
 
@@ -152,9 +152,9 @@
 
 ### Front of Card
 
-- _As a_ user
-- _I want to_ book a table by selecting date, time, and number of people
-- _So that_ I can secure my dining slot
+- **As a** user
+- **I want to** book a table by selecting date, time, and number of people
+- **So that** I can secure my dining slot
 
 ---
 
@@ -180,9 +180,9 @@
 
 ### Front of Card
 
-- _As a_ user
-- _I want to_ modify or cancel my reservation
-- _So that_ I can adjust plans if needed
+- **As a** user
+- **I want to** modify or cancel my reservation
+- **So that** I can adjust plans if needed
 
 ---
 
@@ -199,7 +199,7 @@
 
 #### Constraints
 
-- Modifications must be processed within _5 seconds_.
+- Modifications must be processed within **5 seconds**.
 
 ---
 
@@ -207,9 +207,9 @@
 
 ### Front of Card
 
-- _As a_ user
-- _I want to_ receive booking confirmations by giving tokens
-- _So that_ I have proof of my reservation
+- **As a** user
+- **I want to** receive booking confirmations by giving tokens
+- **So that** I have proof of my reservation
 
 ---
 
@@ -228,8 +228,8 @@
 
 #### Constraints
 
-- Notifications must be delivered via at least _two channels_ (email + SMS).
-- Token validation must complete within _3 seconds_ to confirm booking.
+- Notifications must be delivered via at least **two channels** (email + SMS).
+- Token validation must complete within **3 seconds** to confirm booking.
 
 ---
 
@@ -237,9 +237,9 @@
 
 ### Front of Card
 
-- _As a_ user
-- _I want to_ receive reminders before my booking
-- _So that_ I do not forget my reservation
+- **As a** user
+- **I want to** receive reminders before my booking
+- **So that** I do not forget my reservation
 
 ---
 
@@ -247,7 +247,7 @@
 
 #### Acceptance Criteria
 
-1. Reminder sent _X hours_ before scheduled time.
+1. Reminder sent **X hours** before scheduled time.
 2. Includes booking details and restaurant contact.
 
 #### Constraints
@@ -260,9 +260,9 @@
 
 ### Front of Card
 
-- _As a_ user
-- _I want to_ submit reviews and ratings
-- _So that_ I can share my dining experience
+- **As a** user
+- **I want to** submit reviews and ratings
+- **So that** I can share my dining experience
 
 ---
 
@@ -287,9 +287,9 @@
 
 ### Front of Card
 
-- _As a_ user
-- _I want to_ see other users’ reviews
-- _So that_ I can make informed decisions
+- **As a** user
+- **I want to** see other users’ reviews
+- **So that** I can make informed decisions
 
 ---
 
@@ -307,7 +307,7 @@
 
 #### Constraints
 
-- Reviews must load in under _2 seconds_.
+- Reviews must load in under **2 seconds**.
 
 ---
 
@@ -315,9 +315,9 @@
 
 ### Front of Card
 
-- _As a_ restaurant manager
-- _I want to_ update table availability
-- _So that_ customers see accurate booking slots
+- **As a** restaurant manager
+- **I want to** update table availability
+- **So that** customers see accurate booking slots
 
 ---
 
@@ -343,9 +343,9 @@
 
 ### Front of Card
 
-- _As a_ restaurant manager
-- _I want to_ update the menu
-- _So that_ customers can view the latest offerings
+- **As a** restaurant manager
+- **I want to** update the menu
+- **So that** customers can view the latest offerings
 
 ---
 
@@ -371,9 +371,9 @@
 
 ### Front of Card
 
-- _As a_ frequent user
-- _I want to_ earn loyalty points for reservations
-- _So that_ I can get rewards
+- **As a** frequent user
+- **I want to** earn loyalty points for reservations
+- **So that** I can get rewards
 
 ---
 
@@ -400,9 +400,9 @@
 
 ### Front of Card
 
-- _As a_ user
-- _I want to_ redeem my loyalty points
-- _So that_ I can save money on future bookings
+- **As a** user
+- **I want to** redeem my loyalty points
+- **So that** I can save money on future bookings
 
 ---
 
@@ -429,9 +429,9 @@
 
 ### Front of Card
 
-- _As a_ restaurant manager
-- _I want to_ receive instant notifications for bookings
-- _So that_ I can prepare accordingly
+- **As a** restaurant manager
+- **I want to** receive instant notifications for bookings
+- **So that** I can prepare accordingly
 
 ---
 
@@ -450,7 +450,7 @@
 
 #### Constraints
 
-- Notifications must be delivered within _10 seconds_ under normal conditions.
+- Notifications must be delivered within **10 seconds** under normal conditions.
 
 ---
 
@@ -458,9 +458,9 @@
 
 ### Front of Card
 
-- _As a_ restaurant manager
-- _I want to_ stop online reservations for particular dates and times
-- _So that_ I can handle walk-in customers easily
+- **As a** restaurant manager
+- **I want to** stop online reservations for particular dates and times
+- **So that** I can handle walk-in customers easily
 
 ---
 
@@ -479,7 +479,7 @@
 
 #### Constraints
 
-- Blocking must reflect on the customer side within _5 seconds_.
+- Blocking must reflect on the customer side within **5 seconds**.
 
 ---
 
@@ -487,9 +487,9 @@
 
 ### Front of Card
 
-- _As an_ administrator
-- _I want to_ monitor system activity
-- _So that_ I can ensure smooth operations
+- **As an** administrator
+- **I want to** monitor system activity
+- **So that** I can ensure smooth operations
 
 ---
 
@@ -516,9 +516,9 @@
 
 ### Front of Card
 
-- _As an_ admin
-- _I want to_ add a payment gateway
-- _So that_ the platform stays secure and manages payments
+- **As an** admin
+- **I want to** add a payment gateway
+- **So that** the platform stays secure and manages payments
 
 ---
 
@@ -545,9 +545,9 @@
 
 ### Front of Card
 
-- As an administrator
-- I want to generate reports on reservations, activity, and revenue
-- So that I can support decision-making
+- **As an** administrator
+- **I want** to generate reports on reservations, activity, and revenue
+- **So that I** can support decision-making
 
 ---
 
@@ -566,7 +566,7 @@
 
 #### Constraints
 
-- Report generation must not exceed _10 seconds_.
+- Report generation must not exceed **10 seconds**.
 
 ---
 
@@ -574,9 +574,9 @@
 
 ### Front of Card
 
-- As a customer
-- I want to see summarized reviews of a restaurant
-- So that I can quickly understand overall customer feedback
+- **As a** customer
+- **I want** to see summarized reviews of a restaurant
+- **So that I** can quickly understand overall customer feedback
 
 ---
 
@@ -604,9 +604,9 @@
 
 ### Front of Card
 
-- As a restaurant owner
-- I want AI-generated improvement suggestions from customer reviews
-- So that I can enhance my services and attract more customers
+- **As a** restaurant owner
+- **I want** AI-generated improvement suggestions from customer reviews
+- **So that I** can enhance my services and attract more customers
 
 ---
 
@@ -634,9 +634,9 @@
 
 ### Front of Card
 
-- As a customer
-- I want auto-suggestions while typing in the search bar
-- So that I can quickly find restaurants, cuisines, or dishes
+- **As a** customer
+- **I want** auto-suggestions while typing in the search bar
+- **So that I** can quickly find restaurants, cuisines, or dishes
 
 ---
 
