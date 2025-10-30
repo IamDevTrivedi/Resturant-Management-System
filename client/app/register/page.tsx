@@ -14,6 +14,7 @@ import { useAuth } from '@/hooks/auth';
 import { useRouter } from 'next/navigation';
 import { axiosClient } from '@/lib/axiosConfigure';
 import axios from 'axios';
+import { useAccount } from '@/hooks/createAccount';
 
 type User = {
     id: string;
@@ -26,10 +27,6 @@ type User = {
 
 const loginSchema = z.object({
     email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-    password: z
-        .string()
-        .min(1, 'Password is required')
-        .min(8, 'Password must be at least 8 characters'),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -40,6 +37,7 @@ export default function LoginForm() {
     const router = useRouter();
 
     const { isAuth, setAuth, setUser, user } = useAuth();
+    const { email, setEmail } = useAccount();
 
     const {
         register,
@@ -54,19 +52,14 @@ export default function LoginForm() {
         setError(null);
 
         try {
-            const response = await axiosClient.post<{ token: string; user: User }>('/auth/login', {
-                email: data.email,
-                password: data.password,
-            });
-
-            const { token, user } = response.data;
-
-            localStorage.setItem('authToken', token);
-
-            setAuth(true);
-            setUser(user);
-
-            router.push('/dashboard');
+            const response = await axiosClient.post<{ token: string; user: User }>(
+                '/auth/send-otp-for-verification',
+                {
+                    email: data.email,
+                },
+            );
+            setEmail(data.email);
+            router.push('/register/verify-email');
         } catch (err) {
             if (axios.isAxiosError(err) && err.response) {
                 setError(
@@ -87,9 +80,9 @@ export default function LoginForm() {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary">
                         <Utensils className="h-6 w-6 text-primary-foreground" />
                     </div>
-                    <CardTitle className="text-2xl font-semibold">Welcome back</CardTitle>
+                    <CardTitle className="text-2xl font-semibold">Welcome</CardTitle>
                     <CardDescription className="text-base">
-                        Sign in to your restaurant reservation account
+                        Enter your email to verify
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -118,36 +111,10 @@ export default function LoginForm() {
                             )}
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="password" className="text-sm font-medium">
-                                Password
-                            </Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="Enter your password"
-                                autoComplete="current-password"
-                                disabled={isLoading}
-                                {...register('password')}
-                                className={errors.password ? 'border-destructive' : ''}
-                            />
-                            {errors.password && (
-                                <p className="text-sm text-destructive">
-                                    {errors.password.message}
-                                </p>
-                            )}
-                        </div>
-
                         <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? 'Signing in...' : 'Sign in'}
+                            {isLoading ? 'Processing ..' : 'Submit'}
                         </Button>
                     </form>
-
-                    <div className="mt-4 text-center text-sm text-muted-foreground">
-                        <a href="#" className="hover:text-primary underline underline-offset-4">
-                            Forgot your password?
-                        </a>
-                    </div>
                 </CardContent>
             </Card>
         </div>

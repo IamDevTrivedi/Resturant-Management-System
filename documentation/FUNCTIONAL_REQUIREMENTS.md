@@ -122,9 +122,7 @@
         - Filter restaurants by cuisine, price range, average rating, and distance.
         - Combine multiple filters (e.g., “Italian cuisine within 5 km and rating ≥4”).
         - Provide a real-time search experience with instant suggestions.
-          
 16. _Review Summarizer_
-
     - _Description:_ Customers must be able to see summarized reviews of a restaurant to quickly understand overall feedback.
     - _Actors:_ Customer, Restaurant Owner
     - _Details:_

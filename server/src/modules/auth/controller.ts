@@ -153,12 +153,14 @@ const controller = {
                 email: z.email(),
                 firstName: z.string().min(1, 'First name is required'),
                 lastName: z.string().min(1, 'Last name is required'),
-                password: z.string().regex(PASSWORD_REGEX, 'Invalid password format'),
+                password: z.string(),
                 role: z.enum(['owner', 'customer']),
             });
 
             const result = schema.safeParse(req.body);
+
             if (!result.success) {
+                console.error('Zod Validation Failed:', z.treeifyError(result.error));
                 return res.status(400).json({
                     success: false,
                     error: 'Invalid input',
@@ -175,7 +177,6 @@ const controller = {
                     error: 'Email not found or expired. Please verify again.',
                 });
             }
-
             const { isVerified } = JSON.parse(key);
             if (!isVerified) {
                 return res.status(400).json({ success: false, error: 'Email is not verified' });
@@ -187,7 +188,6 @@ const controller = {
                     .status(409)
                     .json({ success: false, error: 'User already exists with this email' });
             }
-
             const hashedPassword = await bcrypt.hash(password, 12);
 
             const user = await User.create({
@@ -197,7 +197,6 @@ const controller = {
                 role,
                 email,
             });
-
             await redisClient.del(`upcomingEmail:${email}`);
 
             return res.status(201).json({

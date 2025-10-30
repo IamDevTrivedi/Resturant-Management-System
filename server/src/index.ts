@@ -6,6 +6,7 @@ import express from 'express';
 import config from '@/config/env';
 import { verifyEmailTransporter } from '@/config/nodemailer';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 async function startServer() {
     try {
@@ -19,6 +20,13 @@ async function startServer() {
 
         // INIT EXPRESS
         const app = express();
+
+        app.use(
+            cors({
+                origin: 'http://localhost:3001',
+                credentials: true,
+            }),
+        );
 
         // CORE MIDDLEWARES
         app.use(express.json());
