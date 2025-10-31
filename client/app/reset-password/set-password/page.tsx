@@ -142,7 +142,10 @@ export default function Page() {
                                 type="password"
                                 placeholder="Create a strong password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => {
+                                    setPassword(e.target.value)
+                                    setErrors({ ...errors, password: '' });
+                                }}
                             />
                             {errors.password && (
                                 <p className="text-sm text-destructive">{errors.password}</p>
@@ -158,7 +161,13 @@ export default function Page() {
                                 type="password"
                                 placeholder="Re-enter your password"
                                 value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                onChange={(e) => {
+                                    setConfirmPassword(e.target.value)
+                                    setErrors({
+                                        ...errors,
+                                        confirmPassword: "",
+                                    })
+                                }}
                             />
                             {errors.confirmPassword && (
                                 <p className="text-sm text-destructive">{errors.confirmPassword}</p>

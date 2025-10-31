@@ -130,7 +130,10 @@ export default function Page() {
                                 type="email"
                                 placeholder="you@example.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => {
+                                    setEmail(e.target.value)
+                                    setErrors({ ...errors, email: '' });
+                                }}
                             />
                             {errors.email && (
                                 <p className="text-sm text-destructive">{errors.email}</p>

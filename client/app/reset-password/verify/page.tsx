@@ -181,7 +181,10 @@ export default function Page() {
                                 placeholder="Enter 6-digit code"
                                 maxLength={6}
                                 value={OTP}
-                                onChange={(e) => setOTP(e.target.value)}
+                                onChange={(e) => {
+                                    setOTP(e.target.value)
+                                    setErrors({ ...errors, OTP: '' });
+                                }}
                             />
                             {errors.OTP && <p className="text-sm text-destructive">{errors.OTP}</p>}
                             <p className="text-xs text-muted-foreground">
@@ -213,8 +216,8 @@ export default function Page() {
                         {seconds > 0
                             ? `Resend OTP in ${seconds}s`
                             : resendLoading
-                              ? 'Resending...'
-                              : 'Resend OTP'}
+                                ? 'Resending...'
+                                : 'Resend OTP'}
                     </Link>
                 </CardFooter>
             </Card>
