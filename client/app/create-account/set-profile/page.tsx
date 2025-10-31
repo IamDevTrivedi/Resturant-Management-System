@@ -188,7 +188,10 @@ export default function Page() {
                                 type="text"
                                 placeholder="Enter your first name"
                                 value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
+                                onChange={(e) => {
+                                    setFirstName(e.target.value);
+                                    setErrors({ ...errors, firstName: '' });
+                                }}
                             />
                             {errors.firstName && (
                                 <p className="text-xs text-destructive mt-1">{errors.firstName}</p>
@@ -202,7 +205,10 @@ export default function Page() {
                                 type="text"
                                 placeholder="Enter your last name"
                                 value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
+                                onChange={(e) => {
+                                    setLastName(e.target.value);
+                                    setErrors({ ...errors, lastName: '' });
+                                }}
                             />
                             {errors.lastName && (
                                 <p className="text-xs text-destructive mt-1">{errors.lastName}</p>
@@ -216,7 +222,10 @@ export default function Page() {
                                 type="password"
                                 placeholder="Create a strong password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    setErrors({ ...errors, password: '' });
+                                }}
                             />
                             <p
                                 className={`text-xs ${errors.password ? 'text-destructive' : 'text-muted-foreground'}`}
@@ -233,7 +242,10 @@ export default function Page() {
                                 type="password"
                                 placeholder="Re-enter your password"
                                 value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                onChange={(e) => {
+                                    setConfirmPassword(e.target.value);
+                                    setErrors({ ...errors, confirmPassword: '' });
+                                }}
                             />
                             {errors.confirmPassword && (
                                 <p className="text-xs text-destructive mt-1">
@@ -255,7 +267,10 @@ export default function Page() {
                                         name="role"
                                         value="customer"
                                         checked={role === 'customer'}
-                                        onChange={() => setRole('customer')}
+                                        onChange={() => {
+                                            setRole('customer');
+                                            setErrors({ ...errors, role: '' });
+                                        }}
                                     />
                                     <span>Customer</span>
                                 </label>
@@ -267,7 +282,10 @@ export default function Page() {
                                         name="role"
                                         value="owner"
                                         checked={role === 'owner'}
-                                        onChange={() => setRole('owner')}
+                                        onChange={() => {
+                                            setRole('owner');
+                                            setErrors({ ...errors, role: '' });
+                                        }}
                                     />
                                     <span>Restaurant Owner</span>
                                 </label>

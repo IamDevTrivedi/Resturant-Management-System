@@ -131,7 +131,7 @@ export default function Page() {
                                 placeholder="you@example.com"
                                 value={email}
                                 onChange={(e) => {
-                                    setEmail(e.target.value)
+                                    setEmail(e.target.value);
                                     setErrors({ ...errors, email: '' });
                                 }}
                             />

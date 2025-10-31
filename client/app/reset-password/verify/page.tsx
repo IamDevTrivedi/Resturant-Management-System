@@ -182,7 +182,7 @@ export default function Page() {
                                 maxLength={6}
                                 value={OTP}
                                 onChange={(e) => {
-                                    setOTP(e.target.value)
+                                    setOTP(e.target.value);
                                     setErrors({ ...errors, OTP: '' });
                                 }}
                             />
@@ -216,8 +216,8 @@ export default function Page() {
                         {seconds > 0
                             ? `Resend OTP in ${seconds}s`
                             : resendLoading
-                                ? 'Resending...'
-                                : 'Resend OTP'}
+                              ? 'Resending...'
+                              : 'Resend OTP'}
                     </Link>
                 </CardFooter>
             </Card>
