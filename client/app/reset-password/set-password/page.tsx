@@ -13,8 +13,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PASSWORD_REGEX } from '@/constants/regex';
+import { AxiosError } from 'axios';
+import { Toast } from '@/components/Toast';
+import { backend } from '@/config/backend';
+import { useResetPasswordStore } from '@/store/reset-password';
+import { useRouter } from 'next/navigation';
 
 interface IFormError {
     password: string;
@@ -22,8 +27,9 @@ interface IFormError {
 }
 
 export default function Page() {
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const { OTP, email, password, confirmPassword, setConfirmPassword, setPassword } =
+        useResetPasswordStore();
+    const router = useRouter();
     const [errors, setErrors] = useState<IFormError>({
         password: '',
         confirmPassword: '',
@@ -63,11 +69,56 @@ export default function Page() {
         if (!valid) return;
 
         try {
-            // backend call
-        } catch (error) {
-            // handle error
+            const { data } = await backend.post('/api/v1/auth/reset-password/change-password', {
+                email: email,
+                newPassword: password,
+            });
+
+            if (!data?.success) {
+                Toast.error(data?.message || 'Failed to reset password', {
+                    description: 'Please try again or contact support if the issue persists.',
+                });
+                return;
+            }
+
+            Toast.success('Password reset successfully', {
+                description: 'You can now log in with your new password.',
+            });
+
+            router.replace('/reset-password/success');
+        } catch (error: unknown) {
+            console.error('Error resetting password:', error);
+            const err = error as AxiosError<{ message: string }>;
+
+            if (err.response?.data.message) {
+                Toast.error(err.response?.data.message, {
+                    description: 'Please try again or contact support if the issue persists.',
+                });
+                return;
+            }
+
+            if (err.message) {
+                Toast.error('Error resetting password', {
+                    description: err.message,
+                });
+                return;
+            }
+
+            Toast.error('An unexpected error occurred', {
+                description: 'Please try again later.',
+            });
         }
     };
+
+    useEffect(() => {
+        if (!email || !OTP) {
+            router.replace('/reset-password/');
+        }
+    });
+
+    if (!email || !OTP) {
+        return null;
+    }
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">

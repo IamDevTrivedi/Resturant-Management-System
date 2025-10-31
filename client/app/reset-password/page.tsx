@@ -13,19 +13,28 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import { useCreateAccountStore } from '@/store/create-account';
 import React, { useState } from 'react';
 import { EMAIL_REGEX } from '@/constants/regex';
+import { Toast } from '@/components/Toast';
+import { AxiosError } from 'axios';
+import { backend } from '@/config/backend';
+import { useRouter } from 'next/navigation';
+import { useResetPasswordStore } from '@/store/reset-password';
 
 interface IFormError {
     email: string;
 }
 
 export default function Page() {
-    const { email, setEmail } = useCreateAccountStore();
+    const { email, setEmail } = useResetPasswordStore();
     const [errors, setErrors] = useState<IFormError>({
         email: '',
     });
+
+    const [disabled, setDisabled] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
 
     const validate = (): boolean => {
         let valid = true;
@@ -45,11 +54,58 @@ export default function Page() {
         return valid;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const valid = validate();
         if (!valid) return;
-        console.log('Backend call here with:', { email });
+
+        try {
+            setDisabled(true);
+            setLoading(true);
+
+            const { data } = await backend.post('/api/v1/auth/reset-password/send-otp', {
+                email: email,
+            });
+
+            if (!data?.success) {
+                Toast.error(data?.message || 'Failed to send verification code.', {
+                    description: 'Please try again later.',
+                });
+                return;
+            }
+
+            Toast.success('Verification code sent!', {
+                description: 'Please check your email for the code to reset your password.',
+            });
+
+            router.replace('/reset-password/verify');
+        } catch (error: unknown) {
+            console.log('Error sending verification code:', error);
+
+            const err = error as AxiosError<{ message: string }>;
+
+            if (err.response?.data.message) {
+                Toast.error(err.response?.data.message, {
+                    description: 'Please try again later.',
+                });
+
+                return;
+            }
+
+            if (err.message) {
+                Toast.error(err.message, {
+                    description: 'Please try again later.',
+                });
+                return;
+            }
+
+            Toast.error('An unexpected error occurred.', {
+                description: 'Please try again later.',
+            });
+        } finally {
+            setDisabled(false);
+            setLoading(false);
+        }
     };
 
     return (
@@ -83,9 +139,13 @@ export default function Page() {
                                 Enter the email associated with your account.
                             </p>
                         </div>
-                        <Button type="submit" className="w-full">
-                            Send Verification Code
-                        </Button>
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            loading={loading}
+                            disabled={disabled}
+                            text={['Send Verification Code', 'Sending']}
+                        />
                     </form>
                 </CardContent>
 
