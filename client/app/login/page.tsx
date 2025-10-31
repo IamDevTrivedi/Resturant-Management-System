@@ -17,18 +17,24 @@ import React, { useState } from 'react';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
 
 interface IFormError {
-    email?: string;
-    password?: string;
+    email: string;
+    password: string;
 }
 
 export default function Page() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState<IFormError>({});
+    const [errors, setErrors] = useState<IFormError>({
+        email: '',
+        password: '',
+    });
 
     const validate = (): boolean => {
         let valid = true;
-        const newErrors: IFormError = {};
+        const newErrors: IFormError = {
+            email: '',
+            password: '',
+        };
 
         if (!email) {
             newErrors.email = 'Email address is required';

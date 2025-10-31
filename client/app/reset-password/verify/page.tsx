@@ -16,12 +16,14 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 interface IFormError {
-    OTP?: string;
+    OTP: string;
 }
 
 export default function Page() {
     const [OTP, setOTP] = useState('');
-    const [errors, setErrors] = useState<IFormError>({});
+    const [errors, setErrors] = useState<IFormError>({
+        OTP: '',
+    });
     const [seconds, setSeconds] = useState(60);
 
     useEffect(() => {
@@ -34,7 +36,9 @@ export default function Page() {
 
     const validate = (): boolean => {
         let valid = true;
-        const newErrors: IFormError = {};
+        const newErrors: IFormError = {
+            OTP: '',
+        };
 
         if (!OTP) {
             newErrors.OTP = 'Verification code is required';

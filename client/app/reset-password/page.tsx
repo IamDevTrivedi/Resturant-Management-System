@@ -18,16 +18,20 @@ import React, { useState } from 'react';
 import { EMAIL_REGEX } from '@/constants/regex';
 
 interface IFormError {
-    email?: string;
+    email: string;
 }
 
 export default function Page() {
     const { email, setEmail } = useCreateAccountStore();
-    const [errors, setErrors] = useState<IFormError>({});
+    const [errors, setErrors] = useState<IFormError>({
+        email: '',
+    });
 
     const validate = (): boolean => {
         let valid = true;
-        const newErrors: IFormError = {};
+        const newErrors: IFormError = {
+            email: '',
+        };
 
         if (!email) {
             newErrors.email = 'Email address is required';

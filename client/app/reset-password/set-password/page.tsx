@@ -17,18 +17,24 @@ import React, { useState } from 'react';
 import { PASSWORD_REGEX } from '@/constants/regex';
 
 interface IFormError {
-    password?: string;
-    confirmPassword?: string;
+    password: string;
+    confirmPassword: string;
 }
 
 export default function Page() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [errors, setErrors] = useState<IFormError>({});
+    const [errors, setErrors] = useState<IFormError>({
+        password: '',
+        confirmPassword: '',
+    });
 
     const validate = (): boolean => {
         let valid = true;
-        const newErrors: IFormError = {};
+        const newErrors: IFormError = {
+            password: '',
+            confirmPassword: '',
+        };
 
         if (!password) {
             newErrors.password = 'Password is required';
