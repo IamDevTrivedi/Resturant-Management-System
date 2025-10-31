@@ -5,10 +5,18 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { useCreateAccountStore } from '@/store/create-account';
 
 export default function SuccessPage() {
     const router = useRouter();
     const [countdown, setCountdown] = useState(5);
+    const { confirmPassword, email, OTP } = useCreateAccountStore();
+
+    useEffect(() => {
+        if (!email || !OTP || !confirmPassword) {
+            router.replace('/create-account');
+        }
+    }, [email, OTP, router]);
 
     useEffect(() => {
         if (countdown === 0) {
@@ -22,6 +30,10 @@ export default function SuccessPage() {
 
         return () => clearTimeout(timer);
     }, [countdown, router]);
+
+    if (!email || !OTP || !confirmPassword) {
+        return null;
+    }
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
