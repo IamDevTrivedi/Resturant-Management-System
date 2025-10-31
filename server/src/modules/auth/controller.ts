@@ -29,6 +29,18 @@ const controller = {
             }
 
             const { email } = result.data;
+
+            const existingUser = await User.findOne({
+                email,
+            });
+
+            if (existingUser) {
+                return res.status(409).json({
+                    success: false,
+                    message: 'User with this email already exists',
+                });
+            }
+
             const OTP = generateOTP();
 
             const save = {
@@ -310,7 +322,7 @@ const controller = {
                 email,
             });
 
-            if (!existingUser) {
+            if (existingUser) {
                 return res.status(404).json({
                     success: false,
                     message: 'User with this email does not exist',
