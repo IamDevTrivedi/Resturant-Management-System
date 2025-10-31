@@ -143,7 +143,7 @@ export default function Page() {
                                 placeholder="Create a strong password"
                                 value={password}
                                 onChange={(e) => {
-                                    setPassword(e.target.value)
+                                    setPassword(e.target.value);
                                     setErrors({ ...errors, password: '' });
                                 }}
                             />
@@ -162,11 +162,11 @@ export default function Page() {
                                 placeholder="Re-enter your password"
                                 value={confirmPassword}
                                 onChange={(e) => {
-                                    setConfirmPassword(e.target.value)
+                                    setConfirmPassword(e.target.value);
                                     setErrors({
                                         ...errors,
-                                        confirmPassword: "",
-                                    })
+                                        confirmPassword: '',
+                                    });
                                 }}
                             />
                             {errors.confirmPassword && (

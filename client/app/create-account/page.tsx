@@ -27,9 +27,7 @@ interface IFormError {
 
 export default function Page() {
     const { email, setEmail } = useCreateAccountStore();
-    const [errors, setErrors] = useState<IFormError>({
-        email: '',
-    });
+    const [errors, setErrors] = useState<IFormError>({ email: '' });
 
     const router = useRouter();
     const [disabled, setDisabled] = useState(false);
@@ -37,9 +35,7 @@ export default function Page() {
 
     const validate = (): boolean => {
         let valid = true;
-        const newErrors: IFormError = {
-            email: '',
-        };
+        const newErrors: IFormError = { email: '' };
 
         if (!email) {
             newErrors.email = 'Email address is required';
@@ -63,7 +59,7 @@ export default function Page() {
             setLoading(true);
 
             const { data } = await backend.post('/api/v1/auth/send-otp-for-verification', {
-                email: email,
+                email,
             });
 
             if (!data?.success) {
@@ -77,29 +73,10 @@ export default function Page() {
                 description: 'Please check your inbox.',
             });
 
-            console.log('OTP Response Data:', data);
-
             router.replace('/create-account/verify');
-            return;
         } catch (error: unknown) {
             const err = error as AxiosError<{ message: string }>;
-
-            if (err.response?.data?.message) {
-                Toast.error(err.response.data.message, {
-                    description: 'Please try again.',
-                });
-                return;
-            }
-
-            if (err.message) {
-                Toast.error(err.message, {
-                    description: 'Please try again.',
-                });
-
-                return;
-            }
-
-            Toast.error('An unexpected error occurred.', {
+            Toast.error(err.response?.data?.message || err.message || 'Unexpected error', {
                 description: 'Please try again.',
             });
         } finally {
@@ -130,7 +107,12 @@ export default function Page() {
                                 type="email"
                                 placeholder="you@example.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (errors.email) {
+                                        setErrors({ ...errors, email: '' });
+                                    }
+                                }}
                             />
                             {errors.email && (
                                 <p className="text-sm text-destructive">{errors.email}</p>

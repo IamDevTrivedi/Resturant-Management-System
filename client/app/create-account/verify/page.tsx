@@ -160,7 +160,12 @@ export default function Page() {
                                 placeholder="Enter 6-digit code"
                                 maxLength={6}
                                 value={OTP}
-                                onChange={(e) => setOTP(e.target.value)}
+                                onChange={(e) => {
+                                    setOTP(e.target.value);
+                                    if (errors.OTP) {
+                                        setErrors((prev) => ({ ...prev, OTP: '' }));
+                                    }
+                                }}
                             />
                             {errors.OTP && <p className="text-sm text-destructive">{errors.OTP}</p>}
                             <p className="text-xs text-muted-foreground">
