@@ -33,6 +33,16 @@ const config = {
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
     SENDER_EMAIL: process.env.SENDER_EMAIL,
+
+    BACKEND_URL_DEV: process.env.BACKEND_URL_DEV,
+    BACKEND_URL_PROD: process.env.BACKEND_URL_PROD,
+    FRONTEND_URL_DEV: process.env.FRONTEND_URL_DEV,
+    FRONTEND_URL_PROD: process.env.FRONTEND_URL_PROD,
+
+    BACKEND_URL:
+        NODE_ENV === 'production' ? process.env.BACKEND_URL_PROD : process.env.BACKEND_URL_DEV,
+    FRONTEND_URL:
+        NODE_ENV === 'production' ? process.env.FRONTEND_URL_PROD : process.env.FRONTEND_URL_DEV,
 } as const;
 
 export default config;
