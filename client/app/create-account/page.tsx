@@ -63,7 +63,7 @@ export default function Page() {
             setDisabled(true);
             setLoading(true);
 
-            const { data } = await backend.post("/api/v1/auth/reset-password/send-otp", {
+            const { data } = await backend.post("/api/v1/auth/send-otp-for-verification", {
                 email: email
             })
 
