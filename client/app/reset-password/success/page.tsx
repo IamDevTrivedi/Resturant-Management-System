@@ -32,7 +32,8 @@ export default function SuccessPage() {
                     </div>
                     <CardTitle className="text-2xl">Password Reset Successful!</CardTitle>
                     <CardDescription>
-                        Great! Your password has been successfully reset. You can now sign in with your new password.
+                        Great! Your password has been successfully reset. You can now sign in with
+                        your new password.
                         <br />
                         You will be redirected to the login page in{' '}
                         <span className="font-semibold">{countdown}</span> seconds.
