@@ -20,7 +20,6 @@ import { Toast } from '@/components/Toast';
 import { backend } from '@/config/backend';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
-import { LoadingPage } from '@/components/Loading';
 
 interface IFormError {
     firstName: string;

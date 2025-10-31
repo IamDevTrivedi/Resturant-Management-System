@@ -11,10 +11,11 @@ export default function SuccessPage() {
     const router = useRouter();
     const [countdown, setCountdown] = useState(5);
 
-    const { email, OTP, confirmPassword } = useResetPasswordStore();
+    const { email, OTP, confirmPassword, reset } = useResetPasswordStore();
 
     useEffect(() => {
         if (countdown === 0) {
+            reset();
             router.push('/login');
             return;
         }

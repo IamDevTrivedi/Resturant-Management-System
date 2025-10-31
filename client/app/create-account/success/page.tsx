@@ -10,13 +10,14 @@ import { useCreateAccountStore } from '@/store/create-account';
 export default function SuccessPage() {
     const router = useRouter();
     const [countdown, setCountdown] = useState(5);
-    const { confirmPassword, email, OTP } = useCreateAccountStore();
+    const { confirmPassword, email, OTP, reset } = useCreateAccountStore();
 
     useEffect(() => {
         if (!email || !OTP || !confirmPassword) {
+            reset();
             router.replace('/create-account');
         }
-    }, [email, OTP, router]);
+    }, [email, OTP, router, confirmPassword]);
 
     useEffect(() => {
         if (countdown === 0) {

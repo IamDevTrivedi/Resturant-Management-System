@@ -20,7 +20,6 @@ import { backend } from '@/config/backend';
 import { Toast } from '@/components/Toast';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
-import { LoadingPage } from '@/components/Loading';
 
 interface IFormError {
     OTP: string;
@@ -186,15 +185,14 @@ export default function Page() {
                     <Link
                         href="#"
                         onClick={handleResend}
-                        className={`ml-1 text-primary hover:underline text-white ${
-                            seconds > 0 || resending ? 'cursor-not-allowed opacity-50' : ''
-                        }`}
+                        className={`ml-1 text-primary hover:underline ${seconds > 0 || resending ? 'cursor-not-allowed opacity-50' : ''
+                            }`}
                     >
                         {resending
                             ? 'Sending OTP...'
                             : seconds > 0
-                              ? `Resend OTP in ${seconds}s`
-                              : 'Resend OTP'}
+                                ? `Resend OTP in ${seconds}s`
+                                : 'Resend OTP'}
                     </Link>
                 </CardFooter>
             </Card>
