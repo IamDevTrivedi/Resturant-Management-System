@@ -19,7 +19,7 @@ export interface ICreateAccountStore {
     confirmPassword: string;
     setConfirmPassword: (confirmPassword: string) => void;
 
-    role: 'owner' | 'customer' | null;
+    role: 'owner' | 'customer';
     setRole: (role: 'owner' | 'customer') => void;
 
     reset: () => void;
@@ -44,7 +44,7 @@ export const useCreateAccountStore = create<ICreateAccountStore>((set) => ({
     confirmPassword: '',
     setConfirmPassword: (confirmPassword) => set({ confirmPassword }),
 
-    role: null,
+    role: 'customer',
     setRole: (role) => set({ role }),
 
     reset: () => {
@@ -55,7 +55,7 @@ export const useCreateAccountStore = create<ICreateAccountStore>((set) => ({
             lastName: '',
             password: '',
             confirmPassword: '',
-            role: null,
+            role: 'customer',
         });
     },
 }));

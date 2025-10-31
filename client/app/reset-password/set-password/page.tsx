@@ -3,6 +3,7 @@
 import {
     Card,
     CardContent,
+    CardFooter,
     CardHeader,
     CardTitle,
     CardDescription,
@@ -11,38 +12,115 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import { PASSWORD_REGEX } from '@/constants/regex';
+
+interface IFormError {
+    password?: string;
+    confirmPassword?: string;
+}
 
 export default function Page() {
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [errors, setErrors] = useState<IFormError>({});
+
+    const validate = (): boolean => {
+        let valid = true;
+        const newErrors: IFormError = {};
+
+        if (!password) {
+            newErrors.password = 'Password is required';
+            valid = false;
+        } else if (!PASSWORD_REGEX.test(password)) {
+            newErrors.password =
+                'Password must be at least 8 characters, include upper and lowercase letters, a number, and a special character';
+            valid = false;
+        }
+
+        if (!confirmPassword) {
+            newErrors.confirmPassword = 'Please confirm your password';
+            valid = false;
+        } else if (password !== confirmPassword) {
+            newErrors.confirmPassword = 'Passwords do not match';
+            valid = false;
+        }
+
+        setErrors(newErrors);
+        return valid;
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const valid = validate();
+        if (!valid) return;
+
+        try {
+            // backend call
+        } catch (error) {
+            // handle error
+        }
+    };
+
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
                     <CardTitle>Create New Password</CardTitle>
                     <CardDescription>
-                        Choose a strong password for your account. Make sure it&apos;s something you&apos;ll remember.
+                        Choose a strong password for your account. Make sure it&apos;s something
+                        you&apos;ll remember.
                     </CardDescription>
                 </CardHeader>
 
                 <Separator />
 
                 <CardContent>
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         <div className="space-y-2">
                             <Label htmlFor="password">New Password</Label>
-                            <Input id="password" type="password" placeholder="Create a strong password" />
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="Create a strong password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            {errors.password && (
+                                <p className="text-sm text-destructive">{errors.password}</p>
+                            )}
                             <p className="text-xs text-muted-foreground">
                                 Must be at least 8 characters with letters and numbers.
                             </p>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                            <Input id="confirmPassword" type="password" placeholder="Re-enter your password" />
+                            <Input
+                                id="confirmPassword"
+                                type="password"
+                                placeholder="Re-enter your password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                            {errors.confirmPassword && (
+                                <p className="text-sm text-destructive">{errors.confirmPassword}</p>
+                            )}
                         </div>
                         <Button type="submit" className="w-full">
                             Reset Password
                         </Button>
                     </form>
                 </CardContent>
+
+                <Separator />
+
+                <CardFooter className="flex justify-center text-sm text-muted-foreground">
+                    Remembered your password?{' '}
+                    <Link href="/login" className="ml-1 text-primary hover:underline">
+                        Sign in
+                    </Link>
+                </CardFooter>
             </Card>
         </div>
     );

@@ -14,6 +14,12 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useCreateAccountStore } from '@/store/create-account';
+import { OTP_REGEX } from '@/constants/regex';
+
+interface IFormErrors {
+    OTP: string;
+}
 
 export default function Page() {
     const [seconds, setSeconds] = useState(60);
@@ -26,26 +32,63 @@ export default function Page() {
         return () => clearInterval(interval);
     });
 
+    const { OTP, setOTP } = useCreateAccountStore();
+    const [formErrors, setFormErrors] = useState<IFormErrors>({ OTP: '' });
+
+    const validate = (): boolean => {
+        const newError: IFormErrors = { OTP: '' };
+
+        let valid = true;
+
+        if (OTP_REGEX.test(OTP) === false) {
+            newError.OTP = 'Please enter a valid 6-digit code.';
+            valid = false;
+        }
+
+        setFormErrors(newError);
+        return valid;
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const valid = validate();
+        if (!valid) return;
+        console.log('Backend call here with:', { OTP });
+    };
+
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
                     <CardTitle>Verify Your Email</CardTitle>
                     <CardDescription>
-                        We&apos;ve sent a 6-digit verification code to your email address. 
-                        Please enter it below to verify your account.
+                        We&apos;ve sent a 6-digit verification code to your email address. Please
+                        enter it below to verify your account.
                     </CardDescription>
                 </CardHeader>
 
                 <Separator />
 
                 <CardContent>
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         <div className="space-y-2">
                             <Label htmlFor="otp">Verification Code</Label>
-                            <Input id="otp" type="text" placeholder="Enter 6-digit code" maxLength={6} />
+                            <Input
+                                id="otp"
+                                type="text"
+                                placeholder="Enter 6-digit code"
+                                maxLength={6}
+                                value={OTP}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    setOTP(e.target.value)
+                                }
+                            />
+                            {formErrors.OTP && (
+                                <p className="text-sm text-destructive">{formErrors.OTP}</p>
+                            )}
                             <p className="text-xs text-muted-foreground">
-                                The code expires in 10 minutes. Check your spam folder if you don&apos;t see it.
+                                The code expires in 5 minutes. Check your spam folder if you
+                                don&apos;t see it.
                             </p>
                         </div>
                         <Button type="submit" className="w-full">
@@ -59,7 +102,7 @@ export default function Page() {
                 <CardFooter className="flex justify-center text-sm text-muted-foreground">
                     Didn&apos;t receive the OTP?
                     <Link
-                        onClick={() => console.log("RESEND")}
+                        onClick={() => console.log('RESEND')}
                         href="#"
                         className={`${seconds > 0 ? 'cursor-not-allowed opacity-50' : ''} ml-1 text-primary hover:underline`}
                     >
