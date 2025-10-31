@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface IResetPasswordStore {
+interface ILoginStore {
     email: string;
     setEmail: (email: string) => void;
 
@@ -10,7 +10,7 @@ interface IResetPasswordStore {
     reset: () => void;
 }
 
-export const useResetPasswordStore = create<IResetPasswordStore>((set) => ({
+export const useLoginStore = create<ILoginStore>((set) => ({
     email: '',
     setEmail: (email) => set({ email }),
 
