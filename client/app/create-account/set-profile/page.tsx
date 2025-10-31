@@ -13,9 +13,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import { useCreateAccountStore } from '@/store/create-account';
-import { useState } from 'react';
 import { NAME_REGEX, PASSWORD_REGEX, ROLE_REGEX } from '@/constants/regex';
+import { Toast } from '@/components/Toast';
+import { backend } from '@/config/backend';
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
+import { LoadingPage } from '@/components/Loading';
 
 interface IFormError {
     firstName: string;
@@ -37,9 +42,11 @@ export default function Page() {
         setConfirmPassword,
         role,
         setRole,
+        email,
+        OTP,
     } = useCreateAccountStore();
 
-    const [formErrors, setFormErrors] = useState<IFormError>({
+    const [errors, setErrors] = useState<IFormError>({
         firstName: '',
         lastName: '',
         password: '',
@@ -47,12 +54,21 @@ export default function Page() {
         role: '',
     });
 
+    const [disabled, setDisabled] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!email || !OTP) {
+            router.replace('/create-account');
+        }
+    }, [email, router, OTP]);
+
     const validate = (): boolean => {
         let valid = true;
 
-        console.log(role);
-
-        const newError: IFormError = {
+        const newErrors: IFormError = {
             firstName: '',
             lastName: '',
             password: '',
@@ -60,47 +76,96 @@ export default function Page() {
             role: '',
         };
 
-        if (NAME_REGEX.test(firstName) === false) {
-            newError.firstName =
+        if (!NAME_REGEX.test(firstName)) {
+            newErrors.firstName =
                 'First name must be at least 2 characters and contain only letters.';
             valid = false;
         }
 
-        if (NAME_REGEX.test(lastName) === false) {
-            newError.lastName = 'Last name must be at least 2 characters and contain only letters.';
+        if (!NAME_REGEX.test(lastName)) {
+            newErrors.lastName =
+                'Last name must be at least 2 characters and contain only letters.';
             valid = false;
         }
 
-        if (PASSWORD_REGEX.test(password) === false) {
-            newError.password =
-                'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.';
+        if (!PASSWORD_REGEX.test(password)) {
+            newErrors.password =
+                'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.';
             valid = false;
         }
 
         if (password !== confirmPassword) {
-            newError.confirmPassword = 'Passwords do not match.';
+            newErrors.confirmPassword = 'Passwords do not match.';
             valid = false;
         }
 
-        if (ROLE_REGEX.test(role ?? '') === false) {
-            newError.role = 'Please select a valid role.';
+        if (!ROLE_REGEX.test(role ?? '')) {
+            newErrors.role = 'Please select a valid role.';
             valid = false;
         }
 
-        setFormErrors(newError);
+        setErrors(newErrors);
         return valid;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         const valid = validate();
+        if (!valid) return;
 
-        if (!valid) {
+        try {
+            setDisabled(true);
+            setLoading(true);
+
+            const { data } = await backend.post('/api/v1/auth/create-account', {
+                email,
+                firstName,
+                lastName,
+                password,
+                role,
+            });
+
+            if (!data?.success) {
+                Toast.error(data?.message || 'Failed to save profile', {
+                    description: 'Please try again.',
+                });
+                return;
+            }
+
+            Toast.success('Profile created successfully!', {
+                description: 'Redirecting to dashboard...',
+            });
+
+            router.replace('/create-account/success');
             return;
-        }
+        } catch (error: unknown) {
+            const err = error as AxiosError<{ message: string }>;
 
-        console.log('Backend call here with:', { firstName, lastName, password, role });
+            if (err.response?.data?.message) {
+                Toast.error(err.response.data.message, {
+                    description: 'Please try again.',
+                });
+                return;
+            }
+
+            if (err.message) {
+                Toast.error(err.message, {
+                    description: 'Please try again.',
+                });
+                return;
+            }
+
+            Toast.error('An unexpected error occurred.', {
+                description: 'Please try again.',
+            });
+        } finally {
+            setDisabled(false);
+            setLoading(false);
+        }
     };
+
+    if (!email || !OTP) return null;
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
@@ -124,14 +189,10 @@ export default function Page() {
                                 type="text"
                                 placeholder="Enter your first name"
                                 value={firstName}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    setFirstName(e.target.value)
-                                }
+                                onChange={(e) => setFirstName(e.target.value)}
                             />
-                            {formErrors.firstName && (
-                                <p className="text-xs text-destructive mt-1">
-                                    {formErrors.firstName}
-                                </p>
+                            {errors.firstName && (
+                                <p className="text-xs text-destructive mt-1">{errors.firstName}</p>
                             )}
                         </div>
 
@@ -142,14 +203,10 @@ export default function Page() {
                                 type="text"
                                 placeholder="Enter your last name"
                                 value={lastName}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    setLastName(e.target.value)
-                                }
+                                onChange={(e) => setLastName(e.target.value)}
                             />
-                            {formErrors.lastName && (
-                                <p className="text-xs text-destructive mt-1">
-                                    {formErrors.lastName}
-                                </p>
+                            {errors.lastName && (
+                                <p className="text-xs text-destructive mt-1">{errors.lastName}</p>
                             )}
                         </div>
 
@@ -160,16 +217,13 @@ export default function Page() {
                                 type="password"
                                 placeholder="Create a strong password"
                                 value={password}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    setPassword(e.target.value)
-                                }
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                             <p
-                                className={`text-xs ${formErrors.password.length > 0 ? 'text-destructive' : ' text-muted-foreground'}`}
+                                className={`text-xs ${errors.password ? 'text-destructive' : 'text-muted-foreground'}`}
                             >
-                                Password must be at least 8 characters long and include at least one
-                                uppercase letter, one lowercase letter, one number, and one special
-                                character.
+                                Password must be at least 8 characters long and include uppercase,
+                                lowercase, number, and special character.
                             </p>
                         </div>
 
@@ -180,13 +234,11 @@ export default function Page() {
                                 type="password"
                                 placeholder="Re-enter your password"
                                 value={confirmPassword}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    setConfirmPassword(e.target.value)
-                                }
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                             />
-                            {formErrors.confirmPassword && (
+                            {errors.confirmPassword && (
                                 <p className="text-xs text-destructive mt-1">
-                                    {formErrors.confirmPassword}
+                                    {errors.confirmPassword}
                                 </p>
                             )}
                         </div>
@@ -203,7 +255,7 @@ export default function Page() {
                                         id="customer"
                                         name="role"
                                         value="customer"
-                                        defaultChecked={true}
+                                        checked={role === 'customer'}
                                         onChange={() => setRole('customer')}
                                     />
                                     <span>Customer</span>
@@ -212,22 +264,27 @@ export default function Page() {
                                 <label className="flex items-center gap-2">
                                     <input
                                         type="radio"
-                                        id="restaurant"
+                                        id="owner"
                                         name="role"
-                                        value="restaurant"
+                                        value="owner"
+                                        checked={role === 'owner'}
                                         onChange={() => setRole('owner')}
                                     />
                                     <span>Restaurant Owner</span>
                                 </label>
                             </div>
-                            {formErrors.role && (
-                                <p className="text-xs text-destructive mt-1">{formErrors.role}</p>
+                            {errors.role && (
+                                <p className="text-xs text-destructive mt-1">{errors.role}</p>
                             )}
                         </div>
 
-                        <Button type="submit" className="w-full">
-                            Save Profile
-                        </Button>
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            loading={loading}
+                            disabled={disabled}
+                            text={['Save Profile', 'Saving...']}
+                        />
                     </form>
                 </CardContent>
 

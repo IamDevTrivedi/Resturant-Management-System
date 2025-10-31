@@ -59,52 +59,50 @@ export default function Page() {
         if (!valid) return;
 
         try {
-
             setDisabled(true);
             setLoading(true);
 
-            const { data } = await backend.post("/api/v1/auth/send-otp-for-verification", {
-                email: email
-            })
+            const { data } = await backend.post('/api/v1/auth/send-otp-for-verification', {
+                email: email,
+            });
 
             if (!data?.success) {
-                Toast.error(data?.message || "Failed to send OTP", {
-                    description: 'Please try again.'
+                Toast.error(data?.message || 'Failed to send OTP', {
+                    description: 'Please try again.',
                 });
                 return;
             }
 
             Toast.success('OTP sent successfully to your email!', {
-                description: 'Please check your inbox.'
+                description: 'Please check your inbox.',
             });
 
-            console.log("OTP Response Data:", data);
+            console.log('OTP Response Data:', data);
 
-            router.replace("/create-account/verify");
+            router.replace('/create-account/verify');
             return;
         } catch (error: unknown) {
             const err = error as AxiosError<{ message: string }>;
 
             if (err.response?.data?.message) {
                 Toast.error(err.response.data.message, {
-                    description: 'Please try again.'
+                    description: 'Please try again.',
                 });
                 return;
             }
 
             if (err.message) {
                 Toast.error(err.message, {
-                    description: 'Please try again.'
+                    description: 'Please try again.',
                 });
 
                 return;
             }
 
             Toast.error('An unexpected error occurred.', {
-                description: 'Please try again.'
+                description: 'Please try again.',
             });
-        }
-        finally {
+        } finally {
             setDisabled(false);
             setLoading(false);
         }
@@ -146,7 +144,7 @@ export default function Page() {
                             className="w-full"
                             loading={loading}
                             disabled={disabled}
-                            text={["Send Verification Code", "Sending..."]}
+                            text={['Send Verification Code', 'Sending...']}
                         />
                     </form>
                 </CardContent>
