@@ -322,7 +322,7 @@ const controller = {
                 email,
             });
 
-            if (existingUser) {
+            if (!existingUser) {
                 return res.status(404).json({
                     success: false,
                     message: 'User with this email does not exist',
