@@ -3,6 +3,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import config from '@/config/env';
 import { TableDevLinks } from '@/components/TableDevLinks';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
     title: 'Create Next App',
@@ -27,6 +28,7 @@ export default function RootLayout({
                     >
                         {children}
                         {config.PUBLIC_NODE_ENV === 'development' && <TableDevLinks />}
+                        <Toaster />
                     </ThemeProvider>
                 </body>
             </html>

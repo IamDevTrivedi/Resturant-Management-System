@@ -16,6 +16,10 @@ import Link from 'next/link';
 import { useCreateAccountStore } from '@/store/create-account';
 import React, { useState } from 'react';
 import { EMAIL_REGEX } from '@/constants/regex';
+import { AxiosError } from 'axios';
+import { Toast } from '@/components/Toast';
+import { backend } from '@/config/backend';
+import { useRouter } from 'next/navigation';
 
 interface IFormError {
     email: string;
@@ -26,6 +30,10 @@ export default function Page() {
     const [errors, setErrors] = useState<IFormError>({
         email: '',
     });
+
+    const router = useRouter();
+    const [disabled, setDisabled] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const validate = (): boolean => {
         let valid = true;
@@ -45,11 +53,61 @@ export default function Page() {
         return valid;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const valid = validate();
         if (!valid) return;
-        console.log('Backend call here with:', { email });
+
+        try {
+
+            setDisabled(true);
+            setLoading(true);
+
+            const { data } = await backend.post("/api/v1/auth/reset-password/send-otp", {
+                email: email
+            })
+
+            if (!data?.success) {
+                Toast.error(data?.message || "Failed to send OTP", {
+                    description: 'Please try again.'
+                });
+                return;
+            }
+
+            Toast.success('OTP sent successfully to your email!', {
+                description: 'Please check your inbox.'
+            });
+
+            console.log("OTP Response Data:", data);
+
+            router.replace("/create-account/verify");
+            return;
+        } catch (error: unknown) {
+            const err = error as AxiosError<{ message: string }>;
+
+            if (err.response?.data?.message) {
+                Toast.error(err.response.data.message, {
+                    description: 'Please try again.'
+                });
+                return;
+            }
+
+            if (err.message) {
+                Toast.error(err.message, {
+                    description: 'Please try again.'
+                });
+
+                return;
+            }
+
+            Toast.error('An unexpected error occurred.', {
+                description: 'Please try again.'
+            });
+        }
+        finally {
+            setDisabled(false);
+            setLoading(false);
+        }
     };
 
     return (
@@ -83,9 +141,13 @@ export default function Page() {
                                 We&apos;ll send a verification code to this email address.
                             </p>
                         </div>
-                        <Button type="submit" className="w-full">
-                            Continue
-                        </Button>
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            loading={loading}
+                            disabled={disabled}
+                            text={["Send Verification Code", "Sending..."]}
+                        />
                     </form>
                 </CardContent>
 
