@@ -19,9 +19,9 @@ export default function Page() {
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
-                    <CardTitle>Set Up Your Profile</CardTitle>
+                    <CardTitle>Complete Your Profile</CardTitle>
                     <CardDescription>
-                        Please fill in the details to complete your profile.
+                        Just a few more details to get you started. This helps us personalize your experience.
                     </CardDescription>
                 </CardHeader>
 
@@ -44,8 +44,11 @@ export default function Page() {
                             <Input
                                 id="password"
                                 type="password"
-                                placeholder="Enter your password"
+                                placeholder="Create a strong password"
                             />
+                            <p className="text-xs text-muted-foreground">
+                                Must be at least 8 characters with letters and numbers.
+                            </p>
                         </div>
 
                         <div className="space-y-2">
@@ -53,13 +56,15 @@ export default function Page() {
                             <Input
                                 id="confirmPassword"
                                 type="password"
-                                placeholder="Confirm your password"
+                                placeholder="Re-enter your password"
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="role">Role</Label>
-
+                            <Label htmlFor="role">Choose Your Role</Label>
+                            <p className="text-xs text-muted-foreground mb-2">
+                                Select how you&apos;ll be using this platform
+                            </p>
                             <div className="flex items-center gap-4">
                                 <label className="flex items-center gap-2">
                                     <input
@@ -78,7 +83,7 @@ export default function Page() {
                                         name="role"
                                         value="restaurant"
                                     />
-                                    <span>Restaurant</span>
+                                    <span>Restaurant Owner</span>
                                 </label>
                             </div>
                         </div>

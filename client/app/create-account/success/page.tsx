@@ -32,7 +32,7 @@ export default function SuccessPage() {
                     </div>
                     <CardTitle className="text-2xl">Account Created Successfully!</CardTitle>
                     <CardDescription>
-                        Your account has been created.
+                        Welcome aboard! Your account has been successfully created and verified.
                         <br />
                         You will be redirected to the login page in{' '}
                         <span className="font-semibold">{countdown}</span> seconds.

@@ -17,9 +17,9 @@ export default function Page() {
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
-                    <CardTitle>Set New Password</CardTitle>
+                    <CardTitle>Create New Password</CardTitle>
                     <CardDescription>
-                        Please enter your new password.
+                        Choose a strong password for your account. Make sure it&apos;s something you&apos;ll remember.
                     </CardDescription>
                 </CardHeader>
 
@@ -29,14 +29,17 @@ export default function Page() {
                     <form className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="password">New Password</Label>
-                            <Input id="password" type="password" placeholder="Enter your new password" />
+                            <Input id="password" type="password" placeholder="Create a strong password" />
+                            <p className="text-xs text-muted-foreground">
+                                Must be at least 8 characters with letters and numbers.
+                            </p>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                            <Input id="confirmPassword" type="password" placeholder="Confirm your new password" />
+                            <Input id="confirmPassword" type="password" placeholder="Re-enter your password" />
                         </div>
                         <Button type="submit" className="w-full">
-                            Set Password
+                            Reset Password
                         </Button>
                     </form>
                 </CardContent>

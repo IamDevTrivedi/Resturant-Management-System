@@ -19,9 +19,9 @@ export default function Page() {
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
-                    <CardTitle>Login</CardTitle>
+                    <CardTitle>Welcome Back</CardTitle>
                     <CardDescription>
-                        Please enter your credentials to login.
+                        Sign in to your account to continue managing your restaurant or browse dining options.
                     </CardDescription>
                 </CardHeader>
 
@@ -30,15 +30,20 @@ export default function Page() {
                 <CardContent>
                     <form className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" placeholder="Enter your email" />
+                            <Label htmlFor="email">Email Address</Label>
+                            <Input id="email" type="email" placeholder="you@example.com" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Password</Label>
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="password">Password</Label>
+                                <Link href="/reset-password" className="text-xs text-primary hover:underline">
+                                    Forgot password?
+                                </Link>
+                            </div>
                             <Input id="password" type="password" placeholder="Enter your password" />
                         </div>
                         <Button type="submit" className="w-full">
-                            Login
+                            Sign In
                         </Button>
                     </form>
                 </CardContent>

@@ -21,7 +21,7 @@ export default function Page() {
                 <CardHeader className="text-center text-2xl">
                     <CardTitle>Create Account</CardTitle>
                     <CardDescription>
-                        Please fill in the details to create your account.
+                        Join us today and start your journey. Enter your email address to get started.
                     </CardDescription>
                 </CardHeader>
 
@@ -30,11 +30,14 @@ export default function Page() {
                 <CardContent>
                     <form className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" placeholder="Enter your email" />
+                            <Label htmlFor="email">Email Address</Label>
+                            <Input id="email" type="email" placeholder="you@example.com" />
+                            <p className="text-xs text-muted-foreground">
+                                We&apos;ll send a verification code to this email address.
+                            </p>
                         </div>
                         <Button type="submit" className="w-full">
-                            Create Account
+                            Continue
                         </Button>
                     </form>
                 </CardContent>

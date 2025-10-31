@@ -30,9 +30,10 @@ export default function Page() {
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
-                    <CardTitle>Verify Account</CardTitle>
+                    <CardTitle>Verify Your Email</CardTitle>
                     <CardDescription>
-                        Enter the OTP sent to your email to verify your account.
+                        We&apos;ve sent a 6-digit verification code to your email address. 
+                        Please enter it below to verify your account.
                     </CardDescription>
                 </CardHeader>
 
@@ -41,11 +42,14 @@ export default function Page() {
                 <CardContent>
                     <form className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="otp">OTP</Label>
-                            <Input id="otp" type="text" placeholder="Enter the OTP" />
+                            <Label htmlFor="otp">Verification Code</Label>
+                            <Input id="otp" type="text" placeholder="Enter 6-digit code" maxLength={6} />
+                            <p className="text-xs text-muted-foreground">
+                                The code expires in 10 minutes. Check your spam folder if you don&apos;t see it.
+                            </p>
                         </div>
                         <Button type="submit" className="w-full">
-                            Verify OTP
+                            Verify Email
                         </Button>
                     </form>
                 </CardContent>

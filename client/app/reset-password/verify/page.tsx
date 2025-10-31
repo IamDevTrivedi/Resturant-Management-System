@@ -32,9 +32,10 @@ export default function Page() {
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
-                    <CardTitle>Verify OTP</CardTitle>
+                    <CardTitle>Verify Your Identity</CardTitle>
                     <CardDescription>
-                        Enter the OTP sent to your email to reset your password.
+                        We&apos;ve sent a 6-digit verification code to your email. 
+                        Enter it below to proceed with resetting your password.
                     </CardDescription>
                 </CardHeader>
 
@@ -43,11 +44,14 @@ export default function Page() {
                 <CardContent>
                     <form className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="otp">OTP</Label>
-                            <Input id="otp" type="text" placeholder="Enter the OTP" />
+                            <Label htmlFor="otp">Verification Code</Label>
+                            <Input id="otp" type="text" placeholder="Enter 6-digit code" maxLength={6} />
+                            <p className="text-xs text-muted-foreground">
+                                The code expires in 10 minutes. Check your spam folder if needed.
+                            </p>
                         </div>
                         <Button type="submit" className="w-full">
-                            Verify OTP
+                            Verify Code
                         </Button>
                     </form>
                 </CardContent>
@@ -55,7 +59,7 @@ export default function Page() {
                 <Separator />
 
                 <CardFooter className="flex justify-center text-sm text-muted-foreground">
-                    Didn't receive the OTP?
+                    Didn&apos;t receive the OTP?
                     <Link
                         onClick={() => { if (seconds === 0) { setSeconds(60); } }}
                         href="#"

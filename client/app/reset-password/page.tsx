@@ -19,9 +19,9 @@ export default function Page() {
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
-                    <CardTitle>Reset Password</CardTitle>
+                    <CardTitle>Forgot Your Password?</CardTitle>
                     <CardDescription>
-                        Enter your email to reset your password.
+                        No worries! Enter your email address and we&apos;ll send you a verification code to reset your password.
                     </CardDescription>
                 </CardHeader>
 
@@ -30,11 +30,14 @@ export default function Page() {
                 <CardContent>
                     <form className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" placeholder="Enter your email" />
+                            <Label htmlFor="email">Email Address</Label>
+                            <Input id="email" type="email" placeholder="you@example.com" />
+                            <p className="text-xs text-muted-foreground">
+                                Enter the email associated with your account.
+                            </p>
                         </div>
                         <Button type="submit" className="w-full">
-                            Send Reset Link
+                            Send Verification Code
                         </Button>
                     </form>
                 </CardContent>
