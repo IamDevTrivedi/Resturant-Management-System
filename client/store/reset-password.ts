@@ -1,17 +1,11 @@
 import { create } from 'zustand';
 
-export interface ICreateAccountStore {
+interface IResetPasswordStore {
     email: string;
     setEmail: (email: string) => void;
 
     OTP: string;
     setOTP: (OTP: string) => void;
-
-    firstName: string;
-    setFirstName: (firstName: string) => void;
-
-    lastName: string;
-    setLastName: (lastName: string) => void;
 
     password: string;
     setPassword: (password: string) => void;
@@ -19,24 +13,15 @@ export interface ICreateAccountStore {
     confirmPassword: string;
     setConfirmPassword: (confirmPassword: string) => void;
 
-    role: 'owner' | 'customer' | null;
-    setRole: (role: 'owner' | 'customer') => void;
-
     reset: () => void;
 }
 
-export const useCreateAccountStore = create<ICreateAccountStore>((set) => ({
+export const useResetPasswordStore = create<IResetPasswordStore>((set) => ({
     email: '',
     setEmail: (email) => set({ email }),
 
     OTP: '',
     setOTP: (OTP) => set({ OTP }),
-
-    firstName: '',
-    setFirstName: (firstName) => set({ firstName }),
-
-    lastName: '',
-    setLastName: (lastName) => set({ lastName }),
 
     password: '',
     setPassword: (password) => set({ password }),
@@ -44,18 +29,12 @@ export const useCreateAccountStore = create<ICreateAccountStore>((set) => ({
     confirmPassword: '',
     setConfirmPassword: (confirmPassword) => set({ confirmPassword }),
 
-    role: null,
-    setRole: (role) => set({ role }),
-
     reset: () => {
         set({
             email: '',
             OTP: '',
-            firstName: '',
-            lastName: '',
             password: '',
             confirmPassword: '',
-            role: null,
         });
     },
 }));
