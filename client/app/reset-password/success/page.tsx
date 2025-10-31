@@ -5,10 +5,13 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { useResetPasswordStore } from '@/store/reset-password';
 
 export default function SuccessPage() {
     const router = useRouter();
     const [countdown, setCountdown] = useState(5);
+
+    const { email, OTP, confirmPassword } = useResetPasswordStore();
 
     useEffect(() => {
         if (countdown === 0) {
@@ -22,6 +25,16 @@ export default function SuccessPage() {
 
         return () => clearTimeout(timer);
     }, [countdown, router]);
+
+    useEffect(() => {
+        if (!email || !OTP || !confirmPassword) {
+            router.push('/reset-password');
+        }
+    });
+
+    if (!email || !OTP || !confirmPassword) {
+        return null;
+    }
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">

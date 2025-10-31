@@ -14,17 +14,27 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { AxiosError } from 'axios';
+import { Toast } from '@/components/Toast';
+import { backend } from '@/config/backend';
+import { useResetPasswordStore } from '@/store/reset-password';
+import { useRouter } from 'next/navigation';
 
 interface IFormError {
     OTP: string;
 }
 
 export default function Page() {
-    const [OTP, setOTP] = useState('');
+    const { OTP, setOTP, email } = useResetPasswordStore();
     const [errors, setErrors] = useState<IFormError>({
         OTP: '',
     });
     const [seconds, setSeconds] = useState(60);
+
+    const router = useRouter();
+    const [disable, setDisable] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [resendLoading, setResendLoading] = useState(false);
 
     useEffect(() => {
         if (seconds <= 0) return;
@@ -58,18 +68,95 @@ export default function Page() {
         if (!valid) return;
 
         try {
-            // backend call to verify OTP
+            setDisable(true);
+            setLoading(true);
+
+            const { data } = await backend.post('/api/v1/auth/reset-password/verify-otp', {
+                email,
+                OTP,
+            });
+
+            if (!data?.success) {
+                Toast.error(data?.message || 'OTP verification failed.', {
+                    description: 'Please try again or request a new code.',
+                });
+                return;
+            }
+
+            Toast.success('OTP verified successfully. You can now reset your password.', {
+                description: 'Proceed to the next step.',
+            });
+
+            router.replace('/reset-password/set-password');
         } catch (error) {
-            // handle error
+            console.error('OTP verification failed:', error);
+            const err = error as AxiosError<{ message: string }>;
+
+            if (err.response?.data.message) {
+                Toast.error(err.response?.data.message, {
+                    description: 'Please try again or request a new code.',
+                });
+
+                return;
+            }
+
+            if (err.message) {
+                Toast.error(err.message, {
+                    description: 'Please try again or request a new code.',
+                });
+                return;
+            }
+
+            Toast.error('An unexpected error occurred. Please try again later.', {
+                description: 'Please try again or request a new code.',
+            });
+        } finally {
+            setDisable(false);
+            setLoading(false);
         }
     };
 
-    const handleResend = () => {
+    const handleResend = async () => {
         if (seconds === 0) {
-            setSeconds(60);
-            // backend call to resend OTP
+            try {
+                setResendLoading(true);
+
+                const { data } = await backend.post('/api/v1/auth/reset-password/send-otp', {
+                    email: email,
+                });
+
+                if (!data?.success) {
+                    Toast.error(data?.message || 'Resend OTP failed.', {
+                        description: 'Please try again or request a new code.',
+                    });
+                    return;
+                }
+
+                Toast.success('A new OTP has been sent to your email.', {
+                    description: 'Please check your inbox.',
+                });
+            } catch (error: unknown) {
+                console.error('Resend OTP failed:', error);
+                Toast.error('Failed to resend OTP. Please try again later.', {
+                    description: 'Please try again or request a new code.',
+                });
+                return;
+            } finally {
+                setSeconds(60);
+                setResendLoading(false);
+            }
         }
     };
+
+    useEffect(() => {
+        if (!email) {
+            router.replace('/reset-password');
+        }
+    });
+
+    if (!email) {
+        return null;
+    }
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
@@ -98,12 +185,16 @@ export default function Page() {
                             />
                             {errors.OTP && <p className="text-sm text-destructive">{errors.OTP}</p>}
                             <p className="text-xs text-muted-foreground">
-                                The code expires in 10 minutes. Check your spam folder if needed.
+                                The code expires in 5 minutes. Check your spam folder if needed.
                             </p>
                         </div>
-                        <Button type="submit" className="w-full">
-                            Verify Code
-                        </Button>
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={disable}
+                            loading={loading}
+                            text={['Verify Code', 'Verifying...']}
+                        />
                     </form>
                 </CardContent>
 
@@ -119,7 +210,11 @@ export default function Page() {
                         }}
                         className={`${seconds > 0 ? 'cursor-not-allowed opacity-50' : ''} ml-1 text-primary hover:underline`}
                     >
-                        {seconds > 0 ? `Resend OTP in ${seconds}s` : 'Resend OTP'}
+                        {seconds > 0
+                            ? `Resend OTP in ${seconds}s`
+                            : resendLoading
+                              ? 'Resending...'
+                              : 'Resend OTP'}
                     </Link>
                 </CardFooter>
             </Card>
