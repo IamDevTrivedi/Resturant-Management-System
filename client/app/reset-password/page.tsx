@@ -19,9 +19,9 @@ export default function Page() {
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
-                    <CardTitle>Create Account</CardTitle>
+                    <CardTitle>Reset Password</CardTitle>
                     <CardDescription>
-                        Please fill in the details to create your account.
+                        Enter your email to reset your password.
                     </CardDescription>
                 </CardHeader>
 
@@ -34,7 +34,7 @@ export default function Page() {
                             <Input id="email" type="email" placeholder="Enter your email" />
                         </div>
                         <Button type="submit" className="w-full">
-                            Create Account
+                            Send Reset Link
                         </Button>
                     </form>
                 </CardContent>
@@ -42,9 +42,9 @@ export default function Page() {
                 <Separator />
 
                 <CardFooter className="flex justify-center text-sm text-muted-foreground">
-                    Already have an account?{' '}
+                    Remember your password?{' '}
                     <Link href="/login" className="ml-1 text-primary hover:underline">
-                        Sign in
+                        Login
                     </Link>
                 </CardFooter>
             </Card>

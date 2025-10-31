@@ -24,39 +24,39 @@ When you are ready to push your updates to GitHub, follow these steps carefully:
 
 1. **Create and switch to a new branch** (never push directly to `main`):
 
-   ```bash
-   git checkout -b <branch-name>
-   ```
+    ```bash
+    git checkout -b <branch-name>
+    ```
 
-   Example:
+    Example:
 
-   ```bash
-   git checkout -b feature/add-login-page
-   ```
+    ```bash
+    git checkout -b feature/add-login-page
+    ```
 
 2. **Stage your changes**:
 
-   ```bash
-   git add .
-   ```
+    ```bash
+    git add .
+    ```
 
 3. **Commit your changes** with a meaningful message:
 
-   ```bash
-   git commit -m "Describe your changes clearly"
-   ```
+    ```bash
+    git commit -m "Describe your changes clearly"
+    ```
 
-   Example:
+    Example:
 
-   ```bash
-   git commit -m "Added login form and basic authentication logic"
-   ```
+    ```bash
+    git commit -m "Added login form and basic authentication logic"
+    ```
 
 4. **Push your branch to the remote repository**:
 
-   ```bash
-   git push origin <branch-name>
-   ```
+    ```bash
+    git push origin <branch-name>
+    ```
 
 ---
 
@@ -74,9 +74,9 @@ Once your branch has been pushed:
 
 ## Review and Merge Process
 
-* The project maintainer will review your pull request.
-* If everything looks good, your PR will be merged into the `main` branch.
-* After the merge, you can safely delete your branch both locally and on GitHub.
+- The project maintainer will review your pull request.
+- If everything looks good, your PR will be merged into the `main` branch.
+- After the merge, you can safely delete your branch both locally and on GitHub.
 
 ---
 
@@ -86,23 +86,23 @@ Once your pull request (PR) has been **reviewed and merged into `main`**, you sh
 
 1. **Switch back to the main branch**:
 
-   ```bash
-   git checkout main
-   ```
+    ```bash
+    git checkout main
+    ```
 
 2. **Pull the latest changes** (to make sure your local `main` matches the remote one):
 
-   ```bash
-   git pull
-   ```
+    ```bash
+    git pull
+    ```
 
 3. **Delete the feature branch locally**:
 
-   ```bash
-   git branch -D <branch-name>
-   ```
+    ```bash
+    git branch -D <branch-name>
+    ```
 
-   > Use `-d` (safe delete) — it will refuse to delete if the branch hasn’t been merged.
-   > Use `-D` (force delete) only if you’re sure it’s safe to remove.
+    > Use `-d` (safe delete) — it will refuse to delete if the branch hasn’t been merged.
+    > Use `-D` (force delete) only if you’re sure it’s safe to remove.
 
 ---

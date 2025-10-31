@@ -13,15 +13,28 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
+    const [seconds, setSeconds] = useState(60);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [seconds]);
+
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center text-2xl">
-                    <CardTitle>Create Account</CardTitle>
+                    <CardTitle>Verify OTP</CardTitle>
                     <CardDescription>
-                        Please fill in the details to create your account.
+                        Enter the OTP sent to your email to reset your password.
                     </CardDescription>
                 </CardHeader>
 
@@ -30,11 +43,11 @@ export default function Page() {
                 <CardContent>
                     <form className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" placeholder="Enter your email" />
+                            <Label htmlFor="otp">OTP</Label>
+                            <Input id="otp" type="text" placeholder="Enter the OTP" />
                         </div>
                         <Button type="submit" className="w-full">
-                            Create Account
+                            Verify OTP
                         </Button>
                     </form>
                 </CardContent>
@@ -42,9 +55,13 @@ export default function Page() {
                 <Separator />
 
                 <CardFooter className="flex justify-center text-sm text-muted-foreground">
-                    Already have an account?{' '}
-                    <Link href="/login" className="ml-1 text-primary hover:underline">
-                        Sign in
+                    Didn't receive the OTP?
+                    <Link
+                        onClick={() => { if (seconds === 0) { setSeconds(60); } }}
+                        href="#"
+                        className={`${seconds > 0 ? 'cursor-not-allowed opacity-50' : ''} ml-1 text-primary hover:underline`}
+                    >
+                        {seconds > 0 ? `Resend OTP in ${seconds}s` : 'Resend OTP'}
                     </Link>
                 </CardFooter>
             </Card>
