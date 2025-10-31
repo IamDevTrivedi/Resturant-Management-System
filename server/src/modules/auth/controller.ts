@@ -9,6 +9,7 @@ import { OTP_REGEX, PASSWORD_REGEX } from '@/constants/regex';
 import User from '@/models/user';
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { resetPasswordVerifyTemplate, verifyEmailTemplate } from '@/utils/emailTemplates';
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -47,15 +48,7 @@ const controller = {
                 to: email,
                 from: config.SENDER_EMAIL,
                 subject: 'Your OTP Verification Code',
-                html: `
-                    <div style="font-family: Arial, sans-serif; padding: 20px;">
-                        <h2>Email Verification</h2>
-                        <p>Your OTP code is:</p>
-                        <h1 style="letter-spacing: 5px;">${OTP}</h1>
-                        <p>This code will expire in 5 minutes.</p>
-                        <p>If you did not request this, please ignore this email.</p>
-                    </div>
-                    `,
+                html: verifyEmailTemplate(OTP),
             };
 
             await transporter.sendMail(payload);
@@ -198,6 +191,8 @@ const controller = {
                 email,
             });
 
+            await user.save();
+
             await redisClient.del(`upcomingEmail:${email}`);
 
             return res.status(201).json({
@@ -290,6 +285,204 @@ const controller = {
         } catch (err) {
             console.error('Logout error:', err);
             return res.status(500).json({ success: false, error: 'Server error' });
+        }
+    },
+
+    sendOTP_resetPassword: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                email: z.email(),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const { email } = result.data;
+
+            const existingUser = await User.findOne({
+                email,
+            });
+
+            if (!existingUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User with this email does not exist',
+                });
+            }
+
+            const OTP = generateOTP();
+            const save = {
+                OTP,
+                expiry: Date.now() + 5 * 60 * 1000,
+                email: email,
+                isVerified: false,
+            };
+
+            await redisClient.set(`resetPasswordOTP:${email}`, JSON.stringify(save), {
+                expiration: {
+                    type: 'EX',
+                    value: 60 * 60,
+                },
+            });
+
+            const payload = {
+                to: email,
+                from: config.SENDER_EMAIL,
+                subject: 'Your OTP for Password Reset',
+                html: resetPasswordVerifyTemplate(OTP),
+            };
+
+            await transporter.sendMail(payload);
+
+            return res.status(200).json({
+                success: true,
+                message: 'OTP for password reset sent successfully',
+            });
+        } catch (error) {
+            logger.error('Error in sendOTP_resetPassword', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
+        }
+    },
+
+    verifyOTP_resetPassword: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                email: z.email(),
+                OTP: z.string().regex(OTP_REGEX),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const { email, OTP } = result.data;
+
+            const key = await redisClient.get(`resetPasswordOTP:${email}`);
+
+            if (!key) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'OTP not found or already used',
+                });
+            }
+
+            const parsedData = JSON.parse(key);
+
+            if (OTP !== parsedData.OTP) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid OTP',
+                });
+            }
+
+            if (Date.now() > parsedData.expiry) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'OTP has expired',
+                });
+            }
+
+            parsedData.isVerified = true;
+            parsedData.OTP = 'NOT_VALID';
+            parsedData.expiry = 0;
+
+            await redisClient.set(`resetPasswordOTP:${email}`, JSON.stringify(parsedData), {
+                EX: 60 * 15,
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: 'OTP verified successfully',
+            });
+        } catch (error) {
+            logger.error('Error in verifyOTP_resetPassword', error);
+
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
+        }
+    },
+
+    changePassword_resetPassword: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                email: z.email(),
+                newPassword: z.string().regex(PASSWORD_REGEX, 'Invalid password format'),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const { email, newPassword } = result.data;
+
+            const key = await redisClient.get(`resetPasswordOTP:${email}`);
+
+            if (!key) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'OTP not found or expired. Please request a new OTP.',
+                });
+            }
+
+            const parsedData = JSON.parse(key);
+
+            if (!parsedData.isVerified) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Email not verified for password reset.',
+                });
+            }
+
+            const existingUser = await User.findOne({ email });
+
+            if (!existingUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found.',
+                });
+            }
+
+            const hashedPassword = await bcrypt.hash(newPassword, 12);
+            existingUser.hashedPassword = hashedPassword;
+
+            await existingUser.save();
+
+            await redisClient.del(`resetPasswordOTP:${email}`);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Password has been reset successfully.',
+            });
+        } catch (error) {
+            logger.error('Error in changePassword_resetPassword', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
         }
     },
 };
