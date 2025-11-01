@@ -15,6 +15,12 @@ import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
+import { AxiosError } from 'axios';
+import { Toast } from '@/components/Toast';
+import { useLoginStore } from '@/store/login';
+import { backend } from '@/config/backend';
+import { IUser, useUserData } from '@/store/user';
+import { useRouter } from 'next/navigation';
 
 interface IFormError {
     email: string;
@@ -22,12 +28,14 @@ interface IFormError {
 }
 
 export default function Page() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { email, setEmail, password, setPassword } = useLoginStore();
+    const { makeLogin } = useUserData();
     const [errors, setErrors] = useState<IFormError>({
         email: '',
         password: '',
     });
+
+    const router = useRouter();
 
     const validate = (): boolean => {
         let valid = true;
@@ -63,8 +71,51 @@ export default function Page() {
         if (!valid) return;
 
         try {
-            //backend call
-        } catch (error) {}
+            const { data } = await backend.post('/api/v1/auth/login', {
+                email,
+                password,
+            });
+
+            if (!data?.success) {
+                Toast.error(data?.message || 'Login failed', {
+                    description: 'Please check your credentials and try again.',
+                });
+                return;
+            }
+
+            const user: IUser = data.data;
+            const token: string = data.token;
+
+            makeLogin(user, token);
+
+            Toast.success('Login successful', {
+                description: `Welcome back, ${user.firstName}!`,
+            });
+
+            router.replace('/');
+        } catch (error: unknown) {
+            const err = error as AxiosError<{ message: string }>;
+
+            if (err.response?.data.message) {
+                Toast.error(err.response?.data.message, {
+                    description: 'Please try again',
+                });
+
+                return;
+            }
+
+            if (err.message) {
+                Toast.error(err.message, {
+                    description: 'Please try again',
+                });
+
+                return;
+            }
+
+            Toast.error('An unexpected error occurred. Please try again.', {
+                description: 'If the problem persists, contact support.',
+            });
+        }
     };
 
     return (
