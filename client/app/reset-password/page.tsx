@@ -117,8 +117,7 @@ export default function Page() {
                 description: 'Redirecting to home page.',
             });
         }
-
-    }, [isAuthenticated, router])
+    }, [isAuthenticated, router]);
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
