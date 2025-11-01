@@ -167,7 +167,7 @@ const controller = {
             if (!result.success) {
                 return res.status(400).json({
                     success: false,
-                    error: 'Invalid input',
+                    message: 'Invalid input',
                     details: z.treeifyError(result.error),
                 });
             }
@@ -178,20 +178,24 @@ const controller = {
             if (!key) {
                 return res.status(400).json({
                     success: false,
-                    error: 'Email not found or expired. Please verify again.',
+                    message: 'Email not found or expired. Please verify again.',
                 });
             }
 
             const { isVerified } = JSON.parse(key);
             if (!isVerified) {
-                return res.status(400).json({ success: false, error: 'Email is not verified' });
+                return res.status(400).json({
+                    success: false,
+                    message: 'Email is not verified',
+                });
             }
 
             const existingUser = await User.findOne({ email });
             if (existingUser) {
-                return res
-                    .status(409)
-                    .json({ success: false, error: 'User already exists with this email' });
+                return res.status(409).json({
+                    success: false,
+                    message: 'User already exists with this email',
+                });
             }
 
             const hashedPassword = await bcrypt.hash(password, 12);
@@ -214,7 +218,10 @@ const controller = {
             });
         } catch (error) {
             console.error('Error creating account:', error);
-            return res.status(500).json({ success: false, error: 'Internal server error' });
+            return res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+            });
         }
     },
 
@@ -238,12 +245,18 @@ const controller = {
 
             const existingUser = await User.findOne({ email });
             if (!existingUser) {
-                return res.status(401).json({ success: false, error: 'Invalid credentials' });
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid credentials',
+                });
             }
 
             const match = await bcrypt.compare(password, existingUser.hashedPassword);
             if (!match) {
-                return res.status(401).json({ success: false, error: 'Invalid credentials' });
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid credentials',
+                });
             }
 
             const token = jwt.sign({ userID: existingUser._id }, config.JWT_KEY, {
@@ -265,14 +278,17 @@ const controller = {
             };
 
             res.cookie('token', token, cookieOptions);
-            return res.json({
+            return res.status(200).json({
                 success: true,
                 message: 'Login successful',
                 token: token,
                 data: packUserData(existingUser),
             });
         } catch {
-            return res.status(500).json({ success: false, error: 'Server error' });
+            return res.status(500).json({
+                success: false,
+                message: 'Server error',
+            });
         }
     },
 
@@ -281,13 +297,19 @@ const controller = {
             const token = req.cookies?.token as string | undefined;
 
             if (!token) {
-                return res.status(401).json({ success: false, error: 'No token provided' });
+                return res.status(401).json({
+                    success: false,
+                    message: 'No token provided',
+                });
             }
 
             const payload = jwt.decode(token) as JwtPayload | null;
 
             if (!payload || typeof payload.exp !== 'number') {
-                return res.status(401).json({ success: false, error: 'Invalid token' });
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid token',
+                });
             }
 
             await redisClient.set(`token:${token}`, 'BLOCKED');
@@ -301,10 +323,16 @@ const controller = {
                 path: '/',
             });
 
-            return res.json({ success: true, message: 'Logged out successfully' });
+            return res.status(200).json({
+                success: true,
+                message: 'Logged out successfully',
+            });
         } catch (err) {
             console.error('Logout error:', err);
-            return res.status(500).json({ success: false, error: 'Server error' });
+            return res.status(500).json({
+                success: false,
+                message: 'Server error',
+            });
         }
     },
 
@@ -367,7 +395,7 @@ const controller = {
             });
         } catch (error) {
             logger.error('Error in sendOTP_resetPassword', error);
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: 'Internal Server Error',
             });
