@@ -28,7 +28,7 @@ interface IFormError {
 }
 
 export default function Page() {
-    const { email, setEmail, password, setPassword } = useLoginStore();
+    const { email, setEmail, password, setPassword, reset } = useLoginStore();
     const { makeLogin } = useUserData();
     const [errors, setErrors] = useState<IFormError>({
         email: '',
@@ -92,6 +92,7 @@ export default function Page() {
                 description: `Welcome back, ${user.firstName}!`,
             });
 
+            reset();
             router.replace('/');
         } catch (error: unknown) {
             const err = error as AxiosError<{ message: string }>;

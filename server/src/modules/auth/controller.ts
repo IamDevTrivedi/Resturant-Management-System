@@ -297,9 +297,9 @@ const controller = {
             const token = req.cookies?.token as string | undefined;
 
             if (!token) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'No token provided',
+                return res.status(200).json({
+                    success: true,
+                    message: 'You have been logged out successfully.',
                 });
             }
 
@@ -308,30 +308,29 @@ const controller = {
             if (!payload || typeof payload.exp !== 'number') {
                 return res.status(401).json({
                     success: false,
-                    message: 'Invalid token',
+                    message: 'Invalid or expired authentication token.',
                 });
             }
 
             await redisClient.set(`token:${token}`, 'BLOCKED');
             await redisClient.expireAt(`token:${token}`, payload.exp);
 
-            res.cookie('token', '', {
+            res.clearCookie('token', {
                 httpOnly: true,
                 secure: config.isProduction,
                 sameSite: 'strict',
-                expires: new Date(0),
                 path: '/',
             });
 
             return res.status(200).json({
                 success: true,
-                message: 'Logged out successfully',
+                message: 'You have been logged out successfully.',
             });
         } catch (err) {
             console.error('Logout error:', err);
             return res.status(500).json({
                 success: false,
-                message: 'Server error',
+                message: 'An unexpected server error occurred. Please try again later.',
             });
         }
     },
