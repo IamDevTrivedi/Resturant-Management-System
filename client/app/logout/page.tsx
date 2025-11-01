@@ -26,9 +26,7 @@ export default function Page() {
                     return;
                 }
 
-                Toast.success("You have been logged out successfully.", {
-                    description: "Redirecting you to the homepage...",
-                });
+                Toast.success("You have been logged out successfully.");
 
             } catch (error: unknown) {
                 console.error("Error in Logout: ", error);

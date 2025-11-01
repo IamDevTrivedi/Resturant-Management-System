@@ -35,6 +35,9 @@ export default function Page() {
         password: '',
     });
 
+    const [disabled, setDisabled] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const router = useRouter();
 
     const validate = (): boolean => {
@@ -71,6 +74,10 @@ export default function Page() {
         if (!valid) return;
 
         try {
+
+            setDisabled(true);
+            setLoading(true);
+
             const { data } = await backend.post('/api/v1/auth/login', {
                 email,
                 password,
@@ -116,6 +123,10 @@ export default function Page() {
             Toast.error('An unexpected error occurred. Please try again.', {
                 description: 'If the problem persists, contact support.',
             });
+        }
+        finally {
+            setDisabled(false);
+            setLoading(false);
         }
     };
 
@@ -178,9 +189,13 @@ export default function Page() {
                                 <p className="text-sm text-destructive">{errors.password}</p>
                             )}
                         </div>
-                        <Button type="submit" className="w-full">
-                            Sign In
-                        </Button>
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            loading={loading}
+                            disabled={disabled}
+                            text={["Sign In", "Signing In..."]}
+                        />
                     </form>
                 </CardContent>
 

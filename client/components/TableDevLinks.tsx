@@ -10,6 +10,7 @@ export function TableDevLinks() {
 
         // Authentication
         '/login',
+        "/logout",
 
         // Create Account Flow
         '/create-account',
