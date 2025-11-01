@@ -14,12 +14,13 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { useCreateAccountStore } from '@/store/create-account';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EMAIL_REGEX } from '@/constants/regex';
 import { AxiosError } from 'axios';
 import { Toast } from '@/components/Toast';
 import { backend } from '@/config/backend';
 import { useRouter } from 'next/navigation';
+import { useUserData } from '@/store/user';
 
 interface IFormError {
     email: string;
@@ -27,6 +28,7 @@ interface IFormError {
 
 export default function Page() {
     const { email, setEmail } = useCreateAccountStore();
+    const { isAuthenticated } = useUserData();
     const [errors, setErrors] = useState<IFormError>({ email: '' });
 
     const router = useRouter();
@@ -84,6 +86,16 @@ export default function Page() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (isAuthenticated()) {
+            router.replace('/');
+            Toast.info('You are already logged in.', {
+                description: 'Redirecting to home page.',
+            });
+        }
+
+    }, [isAuthenticated, router])
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">

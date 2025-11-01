@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
 import { AxiosError } from 'axios';
 import { Toast } from '@/components/Toast';
@@ -29,7 +29,7 @@ interface IFormError {
 
 export default function Page() {
     const { email, setEmail, password, setPassword, reset } = useLoginStore();
-    const { makeLogin } = useUserData();
+    const { makeLogin, isAuthenticated } = useUserData();
     const [errors, setErrors] = useState<IFormError>({
         email: '',
         password: '',
@@ -118,6 +118,16 @@ export default function Page() {
             });
         }
     };
+
+    useEffect(() => {
+        if (isAuthenticated()) {
+            router.replace('/');
+            Toast.info('You are already logged in.', {
+                description: 'Redirecting to home page.',
+            });
+        }
+
+    }, [isAuthenticated, router])
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
