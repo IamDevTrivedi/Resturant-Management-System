@@ -11,37 +11,37 @@ export function DraggableCard() {
     const items = [
         {
             title: 'Butter Chicken',
-            image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?q=80&w=2070&auto=format&fit=crop',
+            image: '/ButterChicken.avif',
             className: 'absolute top-10 left-[20%] rotate-[-5deg]',
         },
         {
             title: 'Biryani',
-            image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=2070&auto=format&fit=crop',
+            image: '/Biryani.avif',
             className: 'absolute top-40 left-[25%] rotate-[-7deg]',
         },
         {
             title: 'Masala Dosa',
-            image: 'https://images.unsplash.com/photo-1630383249896-424e482df921?q=80&w=2070&auto=format&fit=crop',
+            image: '/MasalaDosa.avif',
             className: 'absolute top-5 left-[40%] rotate-[8deg]',
         },
         {
             title: 'Paneer Tikka',
-            image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?q=80&w=2070&auto=format&fit=crop',
+            image: '/PaneerTikka.avif',
             className: 'absolute top-32 left-[55%] rotate-[10deg]',
         },
         {
             title: 'Samosa',
-            image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=2070&auto=format&fit=crop',
+            image: '/Samosa.avif',
             className: 'absolute top-20 right-[35%] rotate-[2deg]',
         },
         {
             title: 'Tandoori Chicken',
-            image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?q=80&w=2070&auto=format&fit=crop',
+            image: '/TandooriChicken.avif',
             className: 'absolute top-24 left-[45%] rotate-[-7deg]',
         },
         {
             title: 'Chole Bhature',
-            image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?q=80&w=2070&auto=format&fit=crop',
+            image: '/CholeBhature.avif',
             className: 'absolute top-8 left-[30%] rotate-[4deg]',
         },
     ];
