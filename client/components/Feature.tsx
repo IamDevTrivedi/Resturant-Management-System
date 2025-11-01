@@ -10,7 +10,7 @@ const content = [
         content: (
             <div className="relative h-full w-full flex items-center justify-center overflow-hidden rounded-2xl">
                 <Image
-                    src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop"
+                    src="/SmartTableReservation.jpeg"
                     alt="Customer making a restaurant reservation"
                     fill
                     className="object-cover"
@@ -26,7 +26,7 @@ const content = [
         content: (
             <div className="relative h-full w-full flex items-center justify-center overflow-hidden rounded-2xl">
                 <Image
-                    src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop"
+                    src="/RealTimeAvailability.avif"
                     alt="Restaurant table availability dashboard"
                     fill
                     className="object-cover"
@@ -41,7 +41,7 @@ const content = [
         content: (
             <div className="relative h-full w-full flex items-center justify-center overflow-hidden rounded-2xl">
                 <Image
-                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2074&auto=format&fit=crop"
+                    src="/RestaurantDashboard.avif"
                     alt="Restaurant staff using dashboard"
                     fill
                     className="object-cover"
@@ -56,7 +56,7 @@ const content = [
         content: (
             <div className="relative h-full w-full flex items-center justify-center overflow-hidden rounded-2xl">
                 <Image
-                    src="https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=2074&auto=format&fit=crop"
+                    src="/CustomerExperienceInsights.avif"
                     alt="Restaurant analytics dashboard with insights"
                     fill
                     className="object-cover"

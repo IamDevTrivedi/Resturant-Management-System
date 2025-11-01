@@ -61,23 +61,16 @@ function Button({
             disabled={loading || props.disabled}
             {...props}
         >
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {text ? (loading ? text[1] : text[0]) : children}
+            {asChild ? (
+                children
+            ) : (
+                <>
+                    {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {text ? (loading ? text[1] : text[0]) : children}
+                </>
+            )}
         </Comp>
     );
 }
 
 export { Button, buttonVariants };
-
-/*
-
-    <Button
-    variant="default"
-    size="sm"
-    loading={true}
-    text={['Save', 'Saving...']}
-    />
-
-    <Button variant="outline">Regular Button</Button>
-
-*/
