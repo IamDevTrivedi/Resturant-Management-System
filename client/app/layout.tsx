@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import config from '@/config/env';
-import { TableDevLinks } from '@/components/TableDevLinks';
 import { Toaster } from '@/components/ui/sonner';
+import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
 
 export const metadata: Metadata = {
     title: 'Create Next App',
@@ -26,8 +26,9 @@ export default function RootLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
+                        <Navbar />
                         {children}
-                        {config.PUBLIC_NODE_ENV === 'development' && <TableDevLinks />}
+                        <Footer />
                         <Toaster />
                     </ThemeProvider>
                 </body>
