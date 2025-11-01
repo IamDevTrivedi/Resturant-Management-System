@@ -14,7 +14,8 @@ const envSchema = z.object({
     REDIS_PASSWORD: z.string(),
     REDIS_HOST: z.string(),
     REDIS_PORT: z.number(),
-    LOCAL_REDIS: z.number(),
+    LOCAL_REDIS: z.union([z.literal(0), z.literal(1)]),
+
     JWT_KEY: z.string().min(32),
 
     EMAIL_HOST: z.string(),
@@ -22,6 +23,14 @@ const envSchema = z.object({
     SMTP_USER: z.string(),
     SMTP_PASSWORD: z.string(),
     SENDER_EMAIL: z.email(),
+
+    BACKEND_URL_DEV: z.url(),
+    BACKEND_URL_PROD: z.url(),
+    FRONTEND_URL_DEV: z.url(),
+    FRONTEND_URL_PROD: z.url(),
+
+    BACKEND_URL: z.url(),
+    FRONTEND_URL: z.url(),
 });
 
 type ConfigSchema = z.infer<typeof envSchema>;

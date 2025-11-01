@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { InferSchemaType } from 'mongoose';
 const { Schema } = mongoose;
 
 const userSchema = new Schema(
@@ -11,6 +11,7 @@ const userSchema = new Schema(
         lastName: {
             type: String,
             minLength: 2,
+            required: true,
         },
         email: {
             type: String,
@@ -26,6 +27,7 @@ const userSchema = new Schema(
         },
         role: {
             type: String,
+            required: true,
             enum: ['owner', 'customer'],
         },
     },
@@ -35,4 +37,6 @@ const userSchema = new Schema(
 );
 
 const User = mongoose.model('user', userSchema);
+export type IUser = mongoose.Document & InferSchemaType<typeof userSchema>;
+
 export default User;

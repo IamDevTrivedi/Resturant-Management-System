@@ -9,6 +9,8 @@ import { OTP_REGEX, PASSWORD_REGEX } from '@/constants/regex';
 import User from '@/models/user';
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { resetPasswordVerifyTemplate, verifyEmailTemplate } from '@/utils/emailTemplates';
+import { packUserData } from '@/utils/packUserData';
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -28,6 +30,18 @@ const controller = {
             }
 
             const { email } = result.data;
+
+            const existingUser = await User.findOne({
+                email,
+            });
+
+            if (existingUser) {
+                return res.status(409).json({
+                    success: false,
+                    message: 'User with this email already exists',
+                });
+            }
+
             const OTP = generateOTP();
 
             const save = {
@@ -47,15 +61,7 @@ const controller = {
                 to: email,
                 from: config.SENDER_EMAIL,
                 subject: 'Your OTP Verification Code',
-                html: `
-                    <div style="font-family: Arial, sans-serif; padding: 20px;">
-                        <h2>Email Verification</h2>
-                        <p>Your OTP code is:</p>
-                        <h1 style="letter-spacing: 5px;">${OTP}</h1>
-                        <p>This code will expire in 5 minutes.</p>
-                        <p>If you did not request this, please ignore this email.</p>
-                    </div>
-                    `,
+                html: verifyEmailTemplate(OTP),
             };
 
             await transporter.sendMail(payload);
@@ -161,7 +167,7 @@ const controller = {
             if (!result.success) {
                 return res.status(400).json({
                     success: false,
-                    error: 'Invalid input',
+                    message: 'Invalid input',
                     details: z.treeifyError(result.error),
                 });
             }
@@ -172,20 +178,24 @@ const controller = {
             if (!key) {
                 return res.status(400).json({
                     success: false,
-                    error: 'Email not found or expired. Please verify again.',
+                    message: 'Email not found or expired. Please verify again.',
                 });
             }
 
             const { isVerified } = JSON.parse(key);
             if (!isVerified) {
-                return res.status(400).json({ success: false, error: 'Email is not verified' });
+                return res.status(400).json({
+                    success: false,
+                    message: 'Email is not verified',
+                });
             }
 
             const existingUser = await User.findOne({ email });
             if (existingUser) {
-                return res
-                    .status(409)
-                    .json({ success: false, error: 'User already exists with this email' });
+                return res.status(409).json({
+                    success: false,
+                    message: 'User already exists with this email',
+                });
             }
 
             const hashedPassword = await bcrypt.hash(password, 12);
@@ -198,6 +208,8 @@ const controller = {
                 email,
             });
 
+            await user.save();
+
             await redisClient.del(`upcomingEmail:${email}`);
 
             return res.status(201).json({
@@ -206,14 +218,15 @@ const controller = {
             });
         } catch (error) {
             console.error('Error creating account:', error);
-            return res.status(500).json({ success: false, error: 'Internal server error' });
+            return res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+            });
         }
     },
 
     login: async (req: Request, res: Response) => {
         try {
-            const { email, password } = req.body;
-
             const schema = z.object({
                 email: z.email(),
                 password: z.string().regex(PASSWORD_REGEX, 'Invalid password format'),
@@ -221,22 +234,32 @@ const controller = {
 
             const result = schema.safeParse(req.body);
             if (!result.success) {
-                return res
-                    .status(400)
-                    .json({ success: false, error: z.treeifyError(result.error) });
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid input',
+                    error: z.treeifyError(result.error),
+                });
             }
 
-            const user = await User.findOne({ email });
-            if (!user) {
-                return res.status(401).json({ success: false, error: 'Invalid credentials' });
+            const { email, password } = result.data;
+
+            const existingUser = await User.findOne({ email });
+            if (!existingUser) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid credentials',
+                });
             }
 
-            const match = await bcrypt.compare(password, user.hashedPassword);
+            const match = await bcrypt.compare(password, existingUser.hashedPassword);
             if (!match) {
-                return res.status(401).json({ success: false, error: 'Invalid credentials' });
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid credentials',
+                });
             }
 
-            const token = jwt.sign({ userID: user._id }, process.env.JWT_KEY as string, {
+            const token = jwt.sign({ userID: existingUser._id }, config.JWT_KEY, {
                 expiresIn: '7d',
             });
 
@@ -255,9 +278,17 @@ const controller = {
             };
 
             res.cookie('token', token, cookieOptions);
-            return res.json({ success: true, message: 'Login successful' });
+            return res.status(200).json({
+                success: true,
+                message: 'Login successful',
+                token: token,
+                data: packUserData(existingUser),
+            });
         } catch {
-            return res.status(500).json({ success: false, error: 'Server error' });
+            return res.status(500).json({
+                success: false,
+                message: 'Server error',
+            });
         }
     },
 
@@ -266,30 +297,271 @@ const controller = {
             const token = req.cookies?.token as string | undefined;
 
             if (!token) {
-                return res.status(401).json({ success: false, error: 'No token provided' });
+                return res.status(200).json({
+                    success: true,
+                    message: 'You have been logged out successfully.',
+                });
             }
 
             const payload = jwt.decode(token) as JwtPayload | null;
 
             if (!payload || typeof payload.exp !== 'number') {
-                return res.status(401).json({ success: false, error: 'Invalid token' });
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid or expired authentication token.',
+                });
             }
 
             await redisClient.set(`token:${token}`, 'BLOCKED');
             await redisClient.expireAt(`token:${token}`, payload.exp);
 
-            res.cookie('token', '', {
+            res.clearCookie('token', {
                 httpOnly: true,
                 secure: config.isProduction,
                 sameSite: 'strict',
-                expires: new Date(0),
                 path: '/',
             });
 
-            return res.json({ success: true, message: 'Logged out successfully' });
+            return res.status(200).json({
+                success: true,
+                message: 'You have been logged out successfully.',
+            });
         } catch (err) {
             console.error('Logout error:', err);
-            return res.status(500).json({ success: false, error: 'Server error' });
+            return res.status(500).json({
+                success: false,
+                message: 'An unexpected server error occurred. Please try again later.',
+            });
+        }
+    },
+
+    sendOTP_resetPassword: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                email: z.email(),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const { email } = result.data;
+
+            const existingUser = await User.findOne({
+                email,
+            });
+
+            if (!existingUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User with this email does not exist',
+                });
+            }
+
+            const OTP = generateOTP();
+            const save = {
+                OTP,
+                expiry: Date.now() + 5 * 60 * 1000,
+                email: email,
+                isVerified: false,
+            };
+
+            await redisClient.set(`resetPasswordOTP:${email}`, JSON.stringify(save), {
+                expiration: {
+                    type: 'EX',
+                    value: 60 * 60,
+                },
+            });
+
+            const payload = {
+                to: email,
+                from: config.SENDER_EMAIL,
+                subject: 'Your OTP for Password Reset',
+                html: resetPasswordVerifyTemplate(OTP),
+            };
+
+            await transporter.sendMail(payload);
+
+            return res.status(200).json({
+                success: true,
+                message: 'OTP for password reset sent successfully',
+            });
+        } catch (error) {
+            logger.error('Error in sendOTP_resetPassword', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
+        }
+    },
+
+    verifyOTP_resetPassword: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                email: z.email(),
+                OTP: z.string().regex(OTP_REGEX),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const { email, OTP } = result.data;
+
+            const key = await redisClient.get(`resetPasswordOTP:${email}`);
+
+            if (!key) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'OTP not found or already used',
+                });
+            }
+
+            const parsedData = JSON.parse(key);
+
+            if (OTP !== parsedData.OTP) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid OTP',
+                });
+            }
+
+            if (Date.now() > parsedData.expiry) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'OTP has expired',
+                });
+            }
+
+            parsedData.isVerified = true;
+            parsedData.OTP = 'NOT_VALID';
+            parsedData.expiry = 0;
+
+            await redisClient.set(`resetPasswordOTP:${email}`, JSON.stringify(parsedData), {
+                EX: 60 * 15,
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: 'OTP verified successfully',
+            });
+        } catch (error) {
+            logger.error('Error in verifyOTP_resetPassword', error);
+
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
+        }
+    },
+
+    changePassword_resetPassword: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                email: z.email(),
+                newPassword: z.string().regex(PASSWORD_REGEX, 'Invalid password format'),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const { email, newPassword } = result.data;
+
+            const key = await redisClient.get(`resetPasswordOTP:${email}`);
+
+            if (!key) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'OTP not found or expired. Please request a new OTP.',
+                });
+            }
+
+            const parsedData = JSON.parse(key);
+
+            if (!parsedData.isVerified) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Email not verified for password reset.',
+                });
+            }
+
+            const existingUser = await User.findOne({ email });
+
+            if (!existingUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found.',
+                });
+            }
+
+            const hashedPassword = await bcrypt.hash(newPassword, 12);
+            existingUser.hashedPassword = hashedPassword;
+
+            await existingUser.save();
+
+            await redisClient.del(`resetPasswordOTP:${email}`);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Password has been reset successfully.',
+            });
+        } catch (error) {
+            logger.error('Error in changePassword_resetPassword', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
+        }
+    },
+
+    isAuthenticated: async (req: Request, res: Response) => {
+        try {
+            const userID = res.locals.userID! as string;
+            const existingUser = await User.findById(userID);
+
+            if (!existingUser) {
+                // NOTE: never the case
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found',
+                });
+            }
+
+            const token = req.cookies.token! as string;
+
+            return res.status(200).json({
+                success: true,
+                message: 'User is authenticated',
+                token: token,
+                data: {
+                    user: packUserData(existingUser),
+                },
+            });
+        } catch (error) {
+            logger.error('Error in isAuthenticated', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
         }
     },
 };
