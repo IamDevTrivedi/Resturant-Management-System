@@ -14,7 +14,8 @@ const envSchema = z.object({
     REDIS_PASSWORD: z.string(),
     REDIS_HOST: z.string(),
     REDIS_PORT: z.number(),
-    LOCAL_REDIS: z.number(),
+    LOCAL_REDIS: z.union([z.literal(0), z.literal(1)]),
+
     JWT_KEY: z.string().min(32),
 
     EMAIL_HOST: z.string(),

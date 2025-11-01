@@ -190,14 +190,15 @@ export default function Page() {
                     <Link
                         href="#"
                         onClick={handleResend}
-                        className={`ml-1 text-primary hover:underline ${seconds > 0 || resending ? 'cursor-not-allowed opacity-50' : ''
-                            }`}
+                        className={`ml-1 text-primary hover:underline ${
+                            seconds > 0 || resending ? 'cursor-not-allowed opacity-50' : ''
+                        }`}
                     >
                         {resending
                             ? 'Sending OTP...'
                             : seconds > 0
-                                ? `Resend OTP in ${seconds}s`
-                                : 'Resend OTP'}
+                              ? `Resend OTP in ${seconds}s`
+                              : 'Resend OTP'}
                     </Link>
                 </CardFooter>
             </Card>

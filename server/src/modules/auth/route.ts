@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import controller from '@/modules/auth/controller';
+import { protectRoute } from '@/middlewares/protectRoute';
 
 const router = Router();
 
@@ -13,5 +14,7 @@ router.post('/logout', controller.logout);
 router.post('/reset-password/send-otp', controller.sendOTP_resetPassword);
 router.post('/reset-password/verify-otp', controller.verifyOTP_resetPassword);
 router.post('/reset-password/change-password', controller.changePassword_resetPassword);
+
+router.post('/is-authenticated', protectRoute, controller.isAuthenticated);
 
 export default router;

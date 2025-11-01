@@ -7,6 +7,7 @@ export interface IUser {
     lastName: string;
     email: string;
     createdAt: string;
+    role: 'customer' | 'owner';
 }
 
 export interface IUserData {

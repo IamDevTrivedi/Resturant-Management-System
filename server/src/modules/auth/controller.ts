@@ -10,6 +10,7 @@ import User from '@/models/user';
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { resetPasswordVerifyTemplate, verifyEmailTemplate } from '@/utils/emailTemplates';
+import { packUserData } from '@/utils/packUserData';
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -219,8 +220,6 @@ const controller = {
 
     login: async (req: Request, res: Response) => {
         try {
-            const { email, password } = req.body;
-
             const schema = z.object({
                 email: z.email(),
                 password: z.string().regex(PASSWORD_REGEX, 'Invalid password format'),
@@ -228,22 +227,26 @@ const controller = {
 
             const result = schema.safeParse(req.body);
             if (!result.success) {
-                return res
-                    .status(400)
-                    .json({ success: false, error: z.treeifyError(result.error) });
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid input',
+                    error: z.treeifyError(result.error),
+                });
             }
 
-            const user = await User.findOne({ email });
-            if (!user) {
+            const { email, password } = result.data;
+
+            const existingUser = await User.findOne({ email });
+            if (!existingUser) {
                 return res.status(401).json({ success: false, error: 'Invalid credentials' });
             }
 
-            const match = await bcrypt.compare(password, user.hashedPassword);
+            const match = await bcrypt.compare(password, existingUser.hashedPassword);
             if (!match) {
                 return res.status(401).json({ success: false, error: 'Invalid credentials' });
             }
 
-            const token = jwt.sign({ userID: user._id }, process.env.JWT_KEY as string, {
+            const token = jwt.sign({ userID: existingUser._id }, config.JWT_KEY, {
                 expiresIn: '7d',
             });
 
@@ -262,7 +265,12 @@ const controller = {
             };
 
             res.cookie('token', token, cookieOptions);
-            return res.json({ success: true, message: 'Login successful' });
+            return res.json({
+                success: true,
+                message: 'Login successful',
+                token: token,
+                data: packUserData(existingUser),
+            });
         } catch {
             return res.status(500).json({ success: false, error: 'Server error' });
         }
@@ -491,6 +499,38 @@ const controller = {
             });
         } catch (error) {
             logger.error('Error in changePassword_resetPassword', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
+        }
+    },
+
+    isAuthenticated: async (req: Request, res: Response) => {
+        try {
+            const userID = res.locals.userID! as string;
+            const existingUser = await User.findById(userID);
+
+            if (!existingUser) {
+                // NOTE: never the case
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found',
+                });
+            }
+
+            const token = req.cookies.token! as string;
+
+            return res.status(200).json({
+                success: true,
+                message: 'User is authenticated',
+                token: token,
+                data: {
+                    user: packUserData(existingUser),
+                },
+            });
+        } catch (error) {
+            logger.error('Error in isAuthenticated', error);
             return res.status(500).json({
                 success: false,
                 message: 'Internal Server Error',
