@@ -104,43 +104,50 @@ export const DraggableCardBody = ({
             }}
             onDragEnd={(event, info) => {
                 document.body.style.cursor = 'default';
-
+            
                 controls.start({
                     rotateX: 0,
                     rotateY: 0,
                     transition: {
                         type: 'spring',
-                        ...springConfig,
+                        stiffness: 120,
+                        damping: 15,
                     },
                 });
+            
                 const currentVelocityX = velocityX.get();
                 const currentVelocityY = velocityY.get();
-
+            
+                // 🚀 make drag feel faster
+                const speedMultiplier = 1.2; // big boost from 0.3 → 1.2
                 const velocityMagnitude = Math.sqrt(
-                    currentVelocityX * currentVelocityX + currentVelocityY * currentVelocityY,
+                    currentVelocityX * currentVelocityX + currentVelocityY * currentVelocityY
                 );
-                const bounce = Math.min(0.8, velocityMagnitude / 1000);
-
-                animate(info.point.x, info.point.x + currentVelocityX * 0.3, {
-                    duration: 0.8,
-                    ease: [0.2, 0, 0, 1],
+            
+                const bounce = Math.min(1, velocityMagnitude / 800);
+            
+                // ✨ faster inertia-like animation
+                animate(info.point.x, info.point.x + currentVelocityX * speedMultiplier, {
+                    duration: 0.4, // very snappy
+                    ease: [0.16, 1, 0.3, 1], // easeOutQuint-like
                     bounce,
                     type: 'spring',
-                    stiffness: 50,
-                    damping: 15,
-                    mass: 0.8,
+                    stiffness: 100,
+                    damping: 10,
+                    mass: 0.5,
                 });
-
-                animate(info.point.y, info.point.y + currentVelocityY * 0.3, {
-                    duration: 0.8,
-                    ease: [0.2, 0, 0, 1],
+            
+                animate(info.point.y, info.point.y + currentVelocityY * speedMultiplier, {
+                    duration: 0.4,
+                    ease: [0.16, 1, 0.3, 1],
                     bounce,
                     type: 'spring',
-                    stiffness: 50,
-                    damping: 15,
-                    mass: 0.8,
+                    stiffness: 100,
+                    damping: 10,
+                    mass: 0.5,
                 });
             }}
+            
             style={{
                 rotateX,
                 rotateY,
@@ -152,9 +159,11 @@ export const DraggableCardBody = ({
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             className={cn(
-                'relative min-h-96 w-80 overflow-hidden rounded-md bg-background p-6 shadow-2xl transform-3d',
+                'relative w-44 sm:w-56 md:w-64 lg:w-72 xl:w-80 min-h-[14rem] sm:min-h-[18rem] md:min-h-[20rem] lg:min-h-[22rem] xl:min-h-[24rem] overflow-hidden rounded-xl bg-background p-3 sm:p-4 md:p-6 shadow-2xl transform-3d transition-all duration-300',
                 className,
-            )}
+              )}
+              
+              
         >
             {children}
             <motion.div
