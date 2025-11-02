@@ -12,7 +12,7 @@ export function DraggableCard() {
     {
       title: 'Butter Chicken',
       image: '/ButterChicken.avif',
-      className: 'absolute top-[40%] left-[40%] -translate-x-[90%] -translate-y-[60%] rotate-[-5deg]',
+      className: 'absolute top-[40%] left-[40%] -translate-x-[90%] -translate-y-[60%] rotate-[-50deg]',
     },
     {
       title: 'Biryani',
@@ -47,7 +47,7 @@ export function DraggableCard() {
   ];
 
   return (
-    <DraggableCardContainer className="relative flex flex-col items-center justify-center h-[95vh] py-16 overflow-hidden bg-background">
+    <DraggableCardContainer className="bg-background relative flex flex-col items-center justify-center h-[95vh] py-16 overflow-hidden ">
       <div className="relative w-full h-full flex items-center justify-center">
         {/* Center text BEHIND the images */}
         <div className="absolute text-center space-y-3 px-4 z-0 opacity-90">
@@ -71,7 +71,7 @@ export function DraggableCard() {
 
         {/* Draggable images ABOVE text */}
         {items.map((item) => (
-          <DraggableCardBody className={`${item.className} z-20`} key={item.title}>
+          <DraggableCardBody className={`${item.className + " border border-primary/20"} z-20`} key={item.title}>
             <Image
               src={item.image}
               alt={item.title}
