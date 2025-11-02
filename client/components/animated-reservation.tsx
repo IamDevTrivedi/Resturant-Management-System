@@ -54,7 +54,7 @@ export const AnimatedReservation = () => {
                 priority={imageIndex === index}
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <div className="absolute inset-0" />
             </div>
           </div>
         ))}
@@ -88,8 +88,8 @@ export const AnimatedReservation = () => {
         `}</style>
       </div>
 
-      <div className="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-gradient-to-br from-orange-300/20 to-red-300/20 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-20 h-72 w-72 rounded-full bg-gradient-to-tr from-amber-300/15 to-yellow-300/15 blur-2xl pointer-events-none" />
+      <div className="absolute -top-20 -right-20 h-80 w-80 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-20 h-72 w-72 rounded-full blur-2xl pointer-events-none" />
     </div>
   )
 }
