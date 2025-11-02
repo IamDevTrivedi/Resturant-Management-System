@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 
 export default function Page() {
     return (
-        <div className='space-y-10'>
+        <div className=''>
             <HeroSection />
             <Separator />
 

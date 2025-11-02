@@ -26,7 +26,8 @@ const questions = [
 
 export function FAQs() {
     return (
-        <div className="w-full max-w-3xl mx-auto px-4 py-12">
+        <div className="w-full max-w-3xl mx-auto px-4 py-12 sm:py-16">
+
             <div className="mb-8 text-center">
                 <h2 className="text-3xl font-bold tracking-tight mb-2">
                     Frequently Asked Questions
