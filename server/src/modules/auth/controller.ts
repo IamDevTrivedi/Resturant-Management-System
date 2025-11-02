@@ -259,9 +259,16 @@ const controller = {
                 });
             }
 
-            const token = jwt.sign({ userID: existingUser._id }, config.JWT_KEY, {
-                expiresIn: '7d',
-            });
+            const token = jwt.sign(
+                {
+                    userID: existingUser._id,
+                    role: existingUser.role,
+                },
+                config.JWT_KEY,
+                {
+                    expiresIn: '7d',
+                },
+            );
 
             const cookieOptions: {
                 httpOnly: boolean;

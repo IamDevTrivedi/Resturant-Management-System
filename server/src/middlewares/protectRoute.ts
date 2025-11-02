@@ -17,9 +17,10 @@ export const protectRoute = async (req: Request, res: Response, next: NextFuncti
 
         const decoded = jwt.verify(token, config.JWT_KEY) as JwtPayload & {
             userID: string;
+            role: 'owner' | 'customer';
         };
 
-        const { userID } = decoded;
+        const { userID, role } = decoded;
         if (!userID) {
             return res.status(401).json({
                 success: false,
@@ -36,6 +37,16 @@ export const protectRoute = async (req: Request, res: Response, next: NextFuncti
         }
 
         res.locals.userID = userID;
+
+        if (res.locals.role !== undefined) {
+            if (res.locals.role !== role) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Forbidden',
+                });
+            }
+        }
+
         next();
     } catch (err: unknown) {
         logger.error('Error in protectRoute Middleware:', err);
