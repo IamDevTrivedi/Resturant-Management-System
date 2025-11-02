@@ -61,7 +61,7 @@ const resturantSchema = new Schema(
             required: true,
             trim: true,
         },
-        
+
         resturantEmail: {
             type: String,
             required: true,
@@ -79,7 +79,7 @@ const resturantSchema = new Schema(
             type: String,
             trim: true,
         },
-        
+
         socialMedia: {
             facebook: {
                 type: String,
@@ -94,7 +94,7 @@ const resturantSchema = new Schema(
                 trim: true,
             },
         },
-        
+
         openingHours: {
             weekend: {
                 start: {
@@ -117,41 +117,42 @@ const resturantSchema = new Schema(
                 },
             },
         },
-        
+
         ratingsSum: {
             type: Number,
             default: 0,
         },
-        
+
         ratingsCount: {
             type: Number,
             default: 0,
         },
-        
+
         logoURL: {
             type: String,
             trim: true,
         },
-        
+
         bannerURL: {
             type: String,
             trim: true,
+            required: true,
         },
-        
+
         about: {
             type: String,
             trim: true,
         },
-        
+
         since: {
-            type: Date,
+            type: Number,
         },
-        
+
         slogan: {
             type: String,
             trim: true,
         },
-        
+
         status: {
             isActive: {
                 type: Boolean,
