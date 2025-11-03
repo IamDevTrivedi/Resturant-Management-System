@@ -8,6 +8,7 @@ import { z } from 'zod';
 const controller = {
     addRestaurant: async (req: Request, res: Response) => {
         try {
+            console.log(req.body)
             const schema = z.object({
                 restaurantName: z.string().min(2),
 
@@ -26,15 +27,14 @@ const controller = {
                 phoneNumber: z.string().trim(),
                 restaurantEmail: z.email().trim(),
 
-                websiteURL: z.url().trim().optional(),
+                websiteURL: z.url().optional().or(z.literal('')),
 
-                socialMedia: z
-                    .object({
-                        facebook: z.url().trim().optional(),
-                        twitter: z.url().trim().optional(),
-                        instagram: z.url().trim().optional(),
-                    })
-                    .optional(),
+                socialMedia: z.object({
+                    facebook: z.url().optional().or(z.literal('')),
+                    twitter: z.url().optional().or(z.literal('')),
+                    instagram: z.url().optional().or(z.literal('')),
+                  }),
+                  
 
                 openingHours: z.object({
                     weekend: z.object({
