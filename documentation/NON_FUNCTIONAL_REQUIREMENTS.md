@@ -16,8 +16,6 @@ The following non-functional requirements ensure that the system is reliable, se
 
 ## 2. Scalability Requirements
 
-- The system should support horizontal scaling to accommodate growing user demand.
-- Database design must support partitioning and sharding for large datasets.
 - The architecture should allow adding more servers (backend/frontend) without major redesign.
 - Caching (via Redis) should be used to handle frequently accessed data (e.g., restaurant list, table availability).
 - System components should follow microservices principles for independent scaling.
@@ -63,10 +61,7 @@ The following non-functional requirements ensure that the system is reliable, se
 ## 6. Maintainability Requirements
 
 - The codebase should follow modular design patterns (e.g., MVC or layered architecture).
-- The system must provide well-documented APIs using OpenAPI/Swagger.
-- Logging and monitoring should be integrated (e.g., using ELK stack or Prometheus + Grafana).
 - Developers should follow naming conventions and code style guidelines.
-- Continuous Integration/Continuous Deployment (CI/CD) pipelines must be established.
 
 ---
 
@@ -75,7 +70,6 @@ The following non-functional requirements ensure that the system is reliable, se
 - The application should run on major browsers (Chrome, Firefox, Safari, Edge).
 - Mobile app version (if developed) should be cross-platform (Android & iOS).
 - Deployment should support cloud providers (AWS, Azure, GCP) and on-premise hosting.
-- Docker containers should be used to enable environment portability.
 
 ---
 
@@ -88,16 +82,9 @@ The following non-functional requirements ensure that the system is reliable, se
 
 ---
 
-## 9. Backup & Recovery Requirements
-
-- Automated daily database backups must be maintained.
-- Backups should be stored in at least two separate regions.
-- The system should allow point-in-time recovery for databases.
-- Backup restoration time should not exceed 1 hour.
-
 ---
 
-## 10. Monitoring & Auditing Requirements
+## 9. Monitoring & Auditing Requirements
 
 - All system events (login, reservation, payment, cancellation) must be logged.
 - Logs must be tamper-proof and stored securely.
