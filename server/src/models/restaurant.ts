@@ -1,9 +1,9 @@
 import mongoose, { InferSchemaType } from 'mongoose';
 const { Schema } = mongoose;
 
-const resturantSchema = new Schema(
+const restaurantSchema = new Schema(
     {
-        resturantName: {
+        restaurantName: {
             type: String,
             required: true,
             minLength: 2,
@@ -62,7 +62,7 @@ const resturantSchema = new Schema(
             trim: true,
         },
 
-        resturantEmail: {
+        restaurantEmail: {
             type: String,
             required: true,
             trim: true,
@@ -173,6 +173,6 @@ const resturantSchema = new Schema(
     },
 );
 
-const Resturant = mongoose.model('resturant', resturantSchema);
-export type IResturant = mongoose.Document & InferSchemaType<typeof resturantSchema>;
-export default Resturant;
+const Restaurant = mongoose.model('restaurant', restaurantSchema);
+export type IRestaurant = mongoose.Document & InferSchemaType<typeof restaurantSchema>;
+export default Restaurant;

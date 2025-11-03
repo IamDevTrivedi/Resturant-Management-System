@@ -34,7 +34,7 @@ async function startServer() {
         const { default: rootRoutes } = await import('@/modules/root/route');
         const { default: healthRoutes } = await import('@/modules/health/route');
         const { default: authRoutes } = await import('@/modules/auth/route');
-        const { default: restaurantRoutes } = await import('@/modules/resturant/route');
+        const { default: restaurantRoutes } = await import('@/modules/restaurant/route');
 
         app.use('/', rootRoutes);
         app.use('/api/v1/health', healthRoutes);

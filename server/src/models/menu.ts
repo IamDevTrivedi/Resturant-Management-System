@@ -1,11 +1,11 @@
 import mongoose, { InferSchemaType } from 'mongoose';
 const { Schema } = mongoose;
 
-const menuSchema = new Schema(
+const itemSchema = new Schema(
     {
-        resturantID: {
+        restaurantID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'resturant',
+            ref: 'restaurant',
             required: true,
         },
 
@@ -97,7 +97,7 @@ const menuSchema = new Schema(
     },
 );
 
-const Menu = mongoose.model('menu', menuSchema);
-export type IMenu = mongoose.Document & InferSchemaType<typeof menuSchema>;
+const Item = mongoose.model('item', itemSchema);
+export type IItem = mongoose.Document & InferSchemaType<typeof itemSchema>;
 
-export default Menu;
+export default Item;
