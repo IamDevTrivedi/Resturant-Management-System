@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Toast } from '@/components/Toast';
 import { backend } from '@/config/backend';
 import { useUserData } from '@/store/user';
+import { useRestaurantData } from '@/store/restaurant';
 import { useRouter } from 'next/navigation';
 
 interface Address {
@@ -66,7 +68,7 @@ interface RestaurantResponse {
 
 export default function RestaurantStatusCard() {
     const [status, setStatus] = useState<'loading' | 'found' | 'not-found'>('loading');
-    const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+    const { restaurant, setRestaurant } = useRestaurantData();
     const { user } = useUserData();
     const router = useRouter();
 
@@ -75,12 +77,11 @@ export default function RestaurantStatusCard() {
     };
 
     useEffect(() => {
-        const fetchRestaurant = async (): Promise<void> => {
+        const fetchRestaurant = async () => {
             try {
-                const response = await backend.post<RestaurantResponse>(
+                const { data } = await backend.post<RestaurantResponse>(
                     '/api/v1/restaurants/get-restaurant-by-owner',
                 );
-                const data = response.data;
 
                 if (data.success && data.found && data.restaurant !== null) {
                     setRestaurant(data.restaurant);
@@ -88,35 +89,30 @@ export default function RestaurantStatusCard() {
                 } else {
                     setStatus('not-found');
                 }
-            } catch (error) {
-                let message = 'Failed to load restaurant data.';
+            } catch (error: unknown) {
+                console.error('Error fetching restaurant:', error);
 
-                if (
-                    typeof error === 'object' &&
-                    error !== null &&
-                    'response' in error &&
-                    typeof (error as Record<string, unknown>).response === 'object'
-                ) {
-                    const responseObj = (error as { response: { data: { message: string } } })
-                        .response;
-                    if (
-                        responseObj &&
-                        typeof responseObj.data === 'object' &&
-                        typeof responseObj.data.message === 'string'
-                    ) {
-                        message = responseObj.data.message;
-                    }
+                if (axios.isAxiosError(error)) {
+                    const message =
+                        error.response?.data?.message ||
+                        'Unable to fetch restaurant details. Please try again.';
+                    Toast.error('Restaurant not found', { description: message });
                 } else if (error instanceof Error) {
-                    message = error.message;
+                    Toast.error('Error Occurred', { description: error.message });
+                } else {
+                    Toast.error('Unexpected Error', {
+                        description: 'Something went wrong. Please try again later.',
+                    });
                 }
 
-                Toast.error('Restaurant not found', { description: message });
                 setStatus('not-found');
             }
         };
 
-        fetchRestaurant();
-    }, [user]);
+        if (user) {
+            fetchRestaurant();
+        }
+    }, [user, setRestaurant]);
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">

@@ -6,6 +6,7 @@ import { backend } from '@/config/backend';
 import { useCreateAccountStore } from '@/store/create-account';
 import { useLoginStore } from '@/store/login';
 import { useResetPasswordStore } from '@/store/reset-password';
+import { useRestaurantData } from '@/store/restaurant';
 import { useUserData } from '@/store/user';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
@@ -54,6 +55,7 @@ export default function Page() {
                 useResetPasswordStore.getState().reset();
                 useLoginStore.getState().reset();
                 useUserData.getState().reset();
+                useRestaurantData.getState().reset();
                 router.replace('/');
             }
         };
