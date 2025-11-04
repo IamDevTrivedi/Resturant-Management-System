@@ -10,7 +10,7 @@ interface PremiumImageUploadProps {
     onImageUpload: (url: string) => void;
     value: string | undefined;
     required: boolean;
-    preset: 'logo' | 'banner';
+    preset: 'logo' | 'banner' | 'item_logo';
 }
 
 export function PremiumImageUpload({
@@ -64,7 +64,7 @@ export function PremiumImageUpload({
             const presetKey =
                 preset === 'logo'
                     ? config.PUBLIC_CLOUDINARY_LOGO_PRESET
-                    : config.PUBLIC_CLOUDINARY_BANNER_PRESET;
+                    : preset=='item_logo'?config.PUBLIC_CLOUDINARY_BANNER_PRESET:config.PUBLIC_CLOUDINARY_ITEM_LOGO_PRESET;
 
             if (!presetKey) {
                 throw new Error('Cloudinary preset is not configured');
