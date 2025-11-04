@@ -11,6 +11,7 @@ router.post(
     protectRoute,
     controller.getRestaurantByOwner,
 );
+router.post('/update-restaurant', protectOwner, protectRoute, controller.updateRestaurant);
 
 router.post('/add-item', protectOwner, protectRoute, controller.addItem);
 router.post('/delete-item', protectOwner, protectRoute, controller.deleteItem);

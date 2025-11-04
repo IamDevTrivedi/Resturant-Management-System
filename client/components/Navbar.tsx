@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { LogInIcon, LogOutIcon, Menu, User, UserPlus2Icon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { JSX, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useUserData } from '@/store/user';
@@ -20,7 +20,7 @@ export const Navbar = () => {
     const [menuState, setMenuState] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
-    const { isAuthenticated } = useUserData();
+    const { isAuthenticated, user } = useUserData();
     const router = useRouter();
     const closeMobileMenu = () => setMenuState(false);
 
@@ -38,7 +38,7 @@ export const Navbar = () => {
                     className={cn(
                         'mx-auto mt-2 max-w-6xl px-6 transition-all duration-300',
                         isScrolled &&
-                            'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5',
+                        'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5',
                     )}
                 >
                     <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
@@ -135,11 +135,18 @@ export const Navbar = () => {
                                             size="sm"
                                             onClick={() => {
                                                 closeMobileMenu();
-                                                router.push('/account');
+                                                if (user?.role === "customer") {
+                                                    router.push('/customer/browser');
+                                                }
+                                                else {
+                                                    router.push('/restaurant/dashboard');
+                                                }
                                             }}
                                         >
                                             <User />
-                                            My Account
+                                            {
+                                                user?.role === "owner" ? "Dashboard" : "Browser"
+                                            }
                                         </Button>
                                     </>
                                 )}

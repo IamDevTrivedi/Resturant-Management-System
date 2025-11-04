@@ -1,5 +1,5 @@
 import Item from '@/models/menu';
-import Restaurant from '@/models/restaurant';
+import Restaurant, { IRestaurant } from '@/models/restaurant';
 import User from '@/models/user';
 import logger from '@/utils/logger';
 import { Request, Response } from 'express';
@@ -27,12 +27,12 @@ const controller = {
                 phoneNumber: z.string().trim(),
                 restaurantEmail: z.email().trim(),
 
-                websiteURL: z.url().optional().or(z.literal('')),
+                websiteURL: z.url().optional(),
 
                 socialMedia: z.object({
-                    facebook: z.url().optional().or(z.literal('')),
-                    twitter: z.url().optional().or(z.literal('')),
-                    instagram: z.url().optional().or(z.literal('')),
+                    facebook: z.url().optional(),
+                    twitter: z.url().optional(),
+                    instagram: z.url().optional(),
                 }),
 
                 openingHours: z.object({
@@ -107,6 +107,155 @@ const controller = {
             return res.status(500).json({
                 success: false,
                 message: 'Internal server error',
+            });
+        }
+    },
+
+    updateRestaurant: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                restaurantName: z.string().min(2).optional(),
+
+                address: z
+                    .object({
+                        line1: z.string().min(3).trim().optional(),
+                        line2: z.string().min(3).trim().optional(),
+                        line3: z.string().min(3).trim().optional(),
+                        zip: z.string().trim().optional(),
+                        city: z.string().min(2).optional(),
+                        state: z.string().min(2).optional(),
+                        country: z.string().min(2).optional(),
+                    })
+                    .optional(),
+
+                ownerName: z.string().min(2).trim().optional(),
+                phoneNumber: z.string().trim().optional(),
+                restaurantEmail: z.string().email().trim().optional(),
+
+                websiteURL: z.string().url().optional(),
+
+                socialMedia: z
+                    .object({
+                        facebook: z.string().url().optional(),
+                        twitter: z.string().url().optional(),
+                        instagram: z.string().url().optional(),
+                    })
+                    .optional(),
+
+                openingHours: z
+                    .object({
+                        weekend: z
+                            .object({
+                                start: z.string().optional(),
+                                end: z.string().optional(),
+                            })
+                            .optional(),
+                        weekday: z
+                            .object({
+                                start: z.string().optional(),
+                                end: z.string().optional(),
+                            })
+                            .optional(),
+                    })
+                    .optional(),
+
+                logoURL: z.string().trim().optional(),
+                bannerURL: z.string().trim().optional(),
+                about: z.string().min(10).trim().optional(),
+                since: z.number().optional(),
+                slogan: z.string().min(5).trim().optional(),
+            });
+
+            const result = schema.safeParse(req.body);
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid data',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const data = result.data;
+            const owner = res.locals.userID as string;
+
+            const existingRestaurant = (await Restaurant.findOne({ owner })) as IRestaurant | null;
+
+            if (!existingRestaurant) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Restaurant not found',
+                });
+            }
+
+            if (data.restaurantName) existingRestaurant.restaurantName = data.restaurantName;
+            if (data.ownerName) existingRestaurant.ownerName = data.ownerName;
+            if (data.phoneNumber) existingRestaurant.phoneNumber = data.phoneNumber;
+            if (data.restaurantEmail) existingRestaurant.restaurantEmail = data.restaurantEmail;
+            if (data.websiteURL) existingRestaurant.websiteURL = data.websiteURL;
+            if (data.logoURL) existingRestaurant.logoURL = data.logoURL;
+            if (data.bannerURL) existingRestaurant.bannerURL = data.bannerURL;
+            if (data.about) existingRestaurant.about = data.about;
+            if (data.since) existingRestaurant.since = data.since;
+            if (data.slogan) existingRestaurant.slogan = data.slogan;
+
+            if (data.address) {
+                if (data.address.line1) existingRestaurant.address.line1 = data.address.line1;
+                if (data.address.line2) existingRestaurant.address.line2 = data.address.line2;
+                if (data.address.line3) existingRestaurant.address.line3 = data.address.line3;
+                if (data.address.zip) existingRestaurant.address.zip = data.address.zip;
+                if (data.address.city) existingRestaurant.address.city = data.address.city;
+                if (data.address.state) existingRestaurant.address.state = data.address.state;
+                if (data.address.country) existingRestaurant.address.country = data.address.country;
+            }
+
+            if (data.socialMedia) {
+                if (data.socialMedia.facebook)
+                    existingRestaurant.socialMedia.facebook = data.socialMedia.facebook;
+                if (data.socialMedia.twitter)
+                    existingRestaurant.socialMedia.twitter = data.socialMedia.twitter;
+                if (data.socialMedia.instagram)
+                    existingRestaurant.socialMedia.instagram = data.socialMedia.instagram;
+            }
+
+            if (data.openingHours) {
+                if (data.openingHours.weekend) {
+                    if (data.openingHours.weekend.start)
+                        existingRestaurant.openingHours.weekend.start = new Date(
+                            data.openingHours.weekend.start,
+                        );
+
+                    if (data.openingHours.weekend.end)
+                        existingRestaurant.openingHours.weekend.end = new Date(
+                            data.openingHours.weekend.end,
+                        );
+                }
+
+                if (data.openingHours.weekday) {
+                    if (data.openingHours.weekday.start)
+                        existingRestaurant.openingHours.weekday.start = new Date(
+                            data.openingHours.weekday.start,
+                        );
+
+                    if (data.openingHours.weekday.end)
+                        existingRestaurant.openingHours.weekday.end = new Date(
+                            data.openingHours.weekday.end,
+                        );
+                }
+            }
+
+            await existingRestaurant.save();
+
+            return res.status(200).json({
+                success: true,
+                message: 'Restaurant updated successfully',
+                restaurant: existingRestaurant,
+            });
+        } catch (error) {
+            console.error('Error updating restaurant: ', error);
+
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
             });
         }
     },
@@ -436,10 +585,3 @@ const controller = {
 };
 
 export default controller;
-
-/**
- * TODO:
- * updateRestaurant
- * addMenuItem
- * deleteMenuItem
- */
