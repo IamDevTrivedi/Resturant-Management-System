@@ -1,20 +1,20 @@
 'use client';
-import { MultiStepRestaurantFormEdit } from '@/components/multi-step-restaurant-update-form';
+import { MultiStepRestaurantFormEdit } from '@/components/set-restaurant-update-form';
 import { Card } from '@/components/ui/card';
 import { useRestaurantData } from '@/store/restaurant';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function EditRestaurantPage() {
-    const { restaurantID } = useRestaurantData();
+    const { restaurant } = useRestaurantData();
     const router = useRouter();
     useEffect(() => {
-        if (!restaurantID) {
+        if (!restaurant) {
             router.replace('/restaurant/dashboard');
         }
     });
 
-    if (!restaurantID) {
+    if (!restaurant) {
         return null;
     }
     return (
