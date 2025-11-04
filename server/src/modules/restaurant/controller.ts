@@ -490,6 +490,7 @@ const controller = {
                         'Soup',
                     ])
                     .optional(),
+                isAvailable: z.boolean().optional(),
             });
 
             const result = schema.safeParse(req.body);
