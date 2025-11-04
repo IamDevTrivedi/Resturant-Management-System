@@ -11,6 +11,11 @@ import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { resetPasswordVerifyTemplate, verifyEmailTemplate } from '@/utils/emailTemplates';
 import { packUserData } from '@/utils/packUserData';
+import NodeGeocoder from 'node-geocoder';
+
+const geocoder = NodeGeocoder({
+    provider: 'openstreetmap',
+});
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -161,6 +166,7 @@ const controller = {
                 lastName: z.string().min(1, 'Last name is required'),
                 password: z.string().regex(PASSWORD_REGEX, 'Invalid password format'),
                 role: z.enum(['owner', 'customer']),
+                cityName: z.string().min(2).trim(),
             });
 
             const result = schema.safeParse(req.body);
@@ -173,6 +179,10 @@ const controller = {
             }
 
             const { email, firstName, lastName, password, role } = result.data;
+            let cityName = result.data.cityName.trim();
+            cityName = cityName.charAt(0).toUpperCase() + cityName.slice(1).toLowerCase();
+            const geoInfo = await geocoder.geocode(cityName);
+            const coordinates = [geoInfo[0].longitude, geoInfo[0].latitude];
 
             const key = await redisClient.get(`upcomingEmail:${email}`);
             if (!key) {
@@ -206,6 +216,11 @@ const controller = {
                 hashedPassword,
                 role,
                 email,
+                cityName,
+                location: {
+                    type: 'Point',
+                    coordinates,
+                },
             });
 
             await user.save();

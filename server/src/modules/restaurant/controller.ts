@@ -8,7 +8,6 @@ import { z } from 'zod';
 const controller = {
     addRestaurant: async (req: Request, res: Response) => {
         try {
-            console.log(req.body);
             const schema = z.object({
                 restaurantName: z.string().min(2),
 
@@ -579,6 +578,89 @@ const controller = {
             logger.error('Error in getItemsByRestaurant', error);
             return res.status(500).json({
                 success: false,
+                message: 'Internal Server Error',
+            });
+        }
+    },
+
+    getNearByRestaurant: async (req: Request, res: Response) => {
+        try {
+            const userID = res.locals.userID! as string;
+
+            const schema = z.object({
+                maxDistance: z.number().optional(),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    found: false,
+                    message: 'Invalid input data',
+                    error: z.treeifyError(result.error),
+                });
+            }
+
+            const { maxDistance } = result.data;
+
+            const user = await User.findById(userID);
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    found: false,
+                    message: 'User not found',
+                });
+            }
+
+            const nearByUsers = await User.find({
+                location: {
+                    $near: {
+                        $geometry: user.location,
+                        $maxDistance: maxDistance ?? 50000,
+                    },
+                },
+                role: 'owner',
+            });
+
+            logger.debug(nearByUsers.length);
+
+            const nearByRestaurants = [];
+
+            for (const nearUser of nearByUsers) {
+                const isRestaurant = await Restaurant.findOne({ owner: nearUser._id });
+                if (isRestaurant) {
+                    nearByRestaurants.push(isRestaurant);
+                }
+            }
+
+            nearByRestaurants.sort((a: IRestaurant, b: IRestaurant) => {
+                const avgA = a.ratingsCount ? a.ratingsSum / a.ratingsCount : 0;
+                const avgB = b.ratingsCount ? b.ratingsSum / b.ratingsCount : 0;
+                return avgB - avgA;
+            });
+
+            if (nearByRestaurants.length === 0) {
+                return res.status(200).json({
+                    success: true,
+                    found: false,
+                    restaurants: [],
+                    message: 'No restaurants found nearby',
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                found: true,
+                restaurants: nearByRestaurants,
+                message: 'Nearby restaurants fetched successfully',
+            });
+        } catch (error) {
+            logger.error('Error in getNearByRestaurant', error);
+
+            return res.status(500).json({
+                success: false,
+                found: false,
                 message: 'Internal Server Error',
             });
         }
