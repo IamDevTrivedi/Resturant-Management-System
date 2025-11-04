@@ -104,7 +104,7 @@ export const DraggableCardBody = ({
             }}
             onDragEnd={(event, info) => {
                 document.body.style.cursor = 'default';
-            
+
                 controls.start({
                     rotateX: 0,
                     rotateY: 0,
@@ -114,18 +114,18 @@ export const DraggableCardBody = ({
                         damping: 15,
                     },
                 });
-            
+
                 const currentVelocityX = velocityX.get();
                 const currentVelocityY = velocityY.get();
-            
+
                 // 🚀 make drag feel faster
                 const speedMultiplier = 1.2; // big boost from 0.3 → 1.2
                 const velocityMagnitude = Math.sqrt(
-                    currentVelocityX * currentVelocityX + currentVelocityY * currentVelocityY
+                    currentVelocityX * currentVelocityX + currentVelocityY * currentVelocityY,
                 );
-            
+
                 const bounce = Math.min(1, velocityMagnitude / 800);
-            
+
                 // ✨ faster inertia-like animation
                 animate(info.point.x, info.point.x + currentVelocityX * speedMultiplier, {
                     duration: 0.4, // very snappy
@@ -136,7 +136,7 @@ export const DraggableCardBody = ({
                     damping: 10,
                     mass: 0.5,
                 });
-            
+
                 animate(info.point.y, info.point.y + currentVelocityY * speedMultiplier, {
                     duration: 0.4,
                     ease: [0.16, 1, 0.3, 1],
@@ -147,7 +147,6 @@ export const DraggableCardBody = ({
                     mass: 0.5,
                 });
             }}
-            
             style={{
                 rotateX,
                 rotateY,
@@ -161,9 +160,7 @@ export const DraggableCardBody = ({
             className={cn(
                 'relative w-44 sm:w-56 md:w-64 lg:w-72 xl:w-80 min-h-[14rem] sm:min-h-[18rem] md:min-h-[20rem] lg:min-h-[22rem] xl:min-h-[24rem] overflow-hidden rounded-xl bg-background p-3 sm:p-4 md:p-6 shadow-2xl transform-3d transition-all duration-300',
                 className,
-              )}
-              
-              
+            )}
         >
             {children}
             <motion.div

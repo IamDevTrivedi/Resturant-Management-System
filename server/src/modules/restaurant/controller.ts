@@ -8,7 +8,7 @@ import { z } from 'zod';
 const controller = {
     addRestaurant: async (req: Request, res: Response) => {
         try {
-            console.log(req.body)
+            console.log(req.body);
             const schema = z.object({
                 restaurantName: z.string().min(2),
 
@@ -33,8 +33,7 @@ const controller = {
                     facebook: z.url().optional().or(z.literal('')),
                     twitter: z.url().optional().or(z.literal('')),
                     instagram: z.url().optional().or(z.literal('')),
-                  }),
-                  
+                }),
 
                 openingHours: z.object({
                     weekend: z.object({
