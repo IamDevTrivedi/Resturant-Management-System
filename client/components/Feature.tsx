@@ -22,7 +22,7 @@ const content = [
     {
         title: 'Real-Time Availability',
         description:
-            'Our system updates table availability in real time, ensuring that double bookings are avoided. Customers and restaurant staff always see the latest status, keeping operations smooth and accurate.',
+            'Our system updates table availability in real time, ensuring no double bookings. Customers and Restaurant will be updated about the real-time status, keeping operations smooth and accurate.',
         content: (
             <div className="relative h-full w-full flex items-center justify-center overflow-hidden rounded-2xl">
                 <Image
@@ -72,7 +72,7 @@ export function Feature() {
             <div className="mb-2 text-center">
                 <h2 className="text-3xl font-bold tracking-tight mb-2">Features</h2>
                 <p className="text-muted-foreground">
-                    Explore the powerful features that make our product stand out.
+                   Features to make your life easier.
                 </p>
             </div>
             <StickyScroll content={content} />

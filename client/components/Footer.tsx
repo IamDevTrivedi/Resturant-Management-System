@@ -37,11 +37,10 @@ export const Footer = () => {
                     <div className="space-y-4">
                         <Link href="/" className="flex items-center space-x-2">
                             <Logo />
-                            <span className="text-xl font-bold">Company</span>
+                            <span className="text-xl font-bold">ReserveBeta</span>
                         </Link>
                         <p className="text-sm text-muted-foreground">
-                            Building innovative solutions for tomorrow&apos;s challenges. Join us on
-                            our journey to transform the digital landscape.
+                           “Making dining management effortless so restaurants can focus on what truly matters — great food and memorable experiences.”
                         </p>
                     </div>
 
