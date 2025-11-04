@@ -53,7 +53,7 @@ export function MultiStepRestaurantForm() {
     const [completedSteps, setCompletedSteps] = useState<number[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const { restaurantID, setRestaurant } = useRestaurantData();
+    const { restaurant, setRestaurant } = useRestaurantData();
 
     const form = useForm<RestaurantFormData>({
         resolver: zodResolver(restaurantSchema),
