@@ -14,7 +14,7 @@ const controller = {
                 address: z.object({
                     line1: z.string().min(3).trim(),
                     line2: z.string().min(3).trim(),
-                    line3: z.string().min(3).trim().optional(),
+                    line3: z.string().optional(),
                     zip: z.string().trim(),
                     city: z.string().min(2),
                     state: z.string().min(2),
@@ -92,6 +92,8 @@ const controller = {
                 owner: userID,
                 ...result.data,
             });
+
+            newRestaurant.address.line3 = newRestaurant.address.line3 || undefined;
 
             await newRestaurant.save();
 
