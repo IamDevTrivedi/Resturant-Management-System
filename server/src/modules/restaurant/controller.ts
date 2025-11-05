@@ -625,13 +625,27 @@ const controller = {
                 role: 'owner',
             });
 
-            type RestaurantTuple = [IRestaurant, string];
+            type RestaurantTuple = [IRestaurant, string, string[]];
             const nearByRestaurants: RestaurantTuple[] = [];
 
             for (const nearUser of nearByUsers) {
                 const isRestaurant = await Restaurant.findOne({ owner: nearUser._id });
                 if (isRestaurant) {
-                    nearByRestaurants.push([isRestaurant, nearUser.cityName]);
+                    const allItem = await Item.find({
+                        restaurantID: isRestaurant._id,
+                    });
+
+                    if (!allItem) {
+                        nearByRestaurants.push([isRestaurant, nearUser.cityName, []]);
+                        continue;
+                    }
+
+                    const st = new Set<string>();
+                    for (const item of allItem) {
+                        st.add(item.cuisine);
+                    }
+
+                    nearByRestaurants.push([isRestaurant, nearUser.cityName, [...st]]);
                 }
             }
 
