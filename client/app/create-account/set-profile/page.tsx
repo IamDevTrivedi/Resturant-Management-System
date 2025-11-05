@@ -27,6 +27,7 @@ interface IFormError {
     password: string;
     confirmPassword: string;
     role: string;
+    cityName: string
 }
 
 export default function Page() {
@@ -43,6 +44,8 @@ export default function Page() {
         setRole,
         email,
         OTP,
+        cityName,
+        setCityName
     } = useCreateAccountStore();
 
     const [errors, setErrors] = useState<IFormError>({
@@ -51,6 +54,7 @@ export default function Page() {
         password: '',
         confirmPassword: '',
         role: '',
+        cityName: "",
     });
 
     const [disabled, setDisabled] = useState(false);
@@ -58,11 +62,11 @@ export default function Page() {
 
     const router = useRouter();
 
-    useEffect(() => {
-        if (!email || !OTP) {
-            router.replace('/create-account');
-        }
-    }, [email, router, OTP]);
+    // useEffect(() => {
+    //     if (!email || !OTP) {
+    //         router.replace('/create-account');
+    //     }
+    // }, [email, router, OTP]);
 
     const validate = (): boolean => {
         let valid = true;
@@ -73,6 +77,7 @@ export default function Page() {
             password: '',
             confirmPassword: '',
             role: '',
+            cityName: "",
         };
 
         if (!NAME_REGEX.test(firstName)) {
@@ -103,6 +108,10 @@ export default function Page() {
             valid = false;
         }
 
+        if (cityName.length === 0) {
+            newErrors.cityName = "Please enter you city name"
+        }
+
         setErrors(newErrors);
         return valid;
     };
@@ -123,6 +132,7 @@ export default function Page() {
                 lastName,
                 password,
                 role,
+                cityName,
             });
 
             if (!data?.success) {
@@ -164,7 +174,7 @@ export default function Page() {
         }
     };
 
-    if (!email || !OTP) return null;
+    // if (!email || !OTP) return null;
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
@@ -250,6 +260,25 @@ export default function Page() {
                             {errors.confirmPassword && (
                                 <p className="text-xs text-destructive mt-1">
                                     {errors.confirmPassword}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="cityName">City Name</Label>
+                            <Input
+                                id="cityName"
+                                type="text"
+                                placeholder="Enter your city name"
+                                value={cityName}
+                                onChange={(e) => {
+                                    setCityName(e.target.value);
+                                    setErrors({ ...errors, cityName: '' });
+                                }}
+                            />
+                            {errors.cityName && (
+                                <p className="text-xs text-destructive mt-1">
+                                    {errors.cityName}
                                 </p>
                             )}
                         </div>

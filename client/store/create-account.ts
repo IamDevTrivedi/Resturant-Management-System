@@ -22,6 +22,9 @@ export interface ICreateAccountStore {
     role: 'owner' | 'customer';
     setRole: (role: 'owner' | 'customer') => void;
 
+    cityName: string;
+    setCityName: (cityName: string) => void;
+
     reset: () => void;
 }
 
@@ -47,6 +50,9 @@ export const useCreateAccountStore = create<ICreateAccountStore>((set) => ({
     role: 'customer',
     setRole: (role) => set({ role }),
 
+    cityName: '',
+    setCityName: (cityName) => set({ cityName }),
+
     reset: () => {
         set({
             email: '',
@@ -56,6 +62,7 @@ export const useCreateAccountStore = create<ICreateAccountStore>((set) => ({
             password: '',
             confirmPassword: '',
             role: 'customer',
+            cityName: '',
         });
     },
 }));
