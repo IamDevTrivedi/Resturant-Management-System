@@ -585,7 +585,7 @@ const controller = {
 
     getNearByRestaurant: async (req: Request, res: Response) => {
         try {
-            const userID = res.locals.userID! as string;
+            const userID = res.locals.userID as string;
 
             const schema = z.object({
                 maxDistance: z.number().optional(),
@@ -623,22 +623,36 @@ const controller = {
                 role: 'owner',
             });
 
-            logger.debug(nearByUsers.length);
-
-            const nearByRestaurants = [];
+            type RestaurantTuple = [IRestaurant, string];
+            const nearByRestaurants: RestaurantTuple[] = [];
 
             for (const nearUser of nearByUsers) {
                 const isRestaurant = await Restaurant.findOne({ owner: nearUser._id });
                 if (isRestaurant) {
-                    nearByRestaurants.push(isRestaurant);
+                    nearByRestaurants.push([isRestaurant, nearUser.cityName]);
                 }
             }
 
-            nearByRestaurants.sort((a: IRestaurant, b: IRestaurant) => {
-                const avgA = a.ratingsCount ? a.ratingsSum / a.ratingsCount : 0;
-                const avgB = b.ratingsCount ? b.ratingsSum / b.ratingsCount : 0;
-                return avgB - avgA;
-            });
+            nearByRestaurants.sort(
+                (
+                    [restaurantA, cityA]: RestaurantTuple,
+                    [restaurantB, cityB]: RestaurantTuple,
+                ): number => {
+                    if (cityA !== cityB) {
+                        return 0;
+                    }
+
+                    const avgA = restaurantA.ratingsCount
+                        ? restaurantA.ratingsSum / restaurantA.ratingsCount
+                        : 0;
+
+                    const avgB = restaurantB.ratingsCount
+                        ? restaurantB.ratingsSum / restaurantB.ratingsCount
+                        : 0;
+
+                    return avgB - avgA;
+                },
+            );
 
             if (nearByRestaurants.length === 0) {
                 return res.status(200).json({
