@@ -62,11 +62,11 @@ export default function Page() {
 
     const router = useRouter();
 
-    // useEffect(() => {
-    //     if (!email || !OTP) {
-    //         router.replace('/create-account');
-    //     }
-    // }, [email, router, OTP]);
+    useEffect(() => {
+        if (!email || !OTP) {
+            router.replace('/create-account');
+        }
+    }, [email, router, OTP]);
 
     const validate = (): boolean => {
         let valid = true;
@@ -174,7 +174,7 @@ export default function Page() {
         }
     };
 
-    // if (!email || !OTP) return null;
+    if (!email || !OTP) return null;
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-4">
