@@ -8,7 +8,7 @@ export default function AboutPage() {
       <section className="max-w-3xl text-center">
         <h1 className="text-4xl font-bold mb-15 text-#f4b968">About Our Restaurant Reservation System</h1>
         <p className="text-lg mb-6">
-          Welcome to <span className="font-semibold">TableEase</span> — your smart and simple way to book a table online.
+          Welcome to <span className="font-semibold">Reserve Beta</span> — your smart and simple way to book a table online.
           We designed this platform to make restaurant reservations faster, smoother, and completely hassle-free.
         </p>
 
