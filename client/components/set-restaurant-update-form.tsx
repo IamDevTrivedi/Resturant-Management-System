@@ -217,7 +217,7 @@ export function MultiStepRestaurantFormEdit() {
 
             console.log('Sending formatted data:', formattedData);
 
-            await backend.post('/api/v1/restaurants/update', formattedData);
+            await backend.post('/api/v1/restaurants/update-restaurant', formattedData);
 
             setShowSuccessModal(true);
         } catch (error: unknown) {
