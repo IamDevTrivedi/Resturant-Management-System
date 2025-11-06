@@ -8,4 +8,6 @@ const router = Router();
 router.post('/add-review', protectCustomer, protectRoute, controller.addReview);
 router.post('/get-reviews', controller.getReviews);
 
+router.post('/get-ai-summary', protectRoute, controller.getAISummary);
+
 export default router;

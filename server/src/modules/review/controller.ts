@@ -4,6 +4,11 @@ import User from '@/models/user';
 import logger from '@/utils/logger';
 import { Request, Response } from 'express';
 import { z } from 'zod';
+import config from '@/config/env';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { generateText } from 'ai';
+import { CUSTOMER_SYSTEM_PROMPT, RESTAURANT_SYSTEM_PROMPT } from '@/constants/systemPrompt';
+import removeMd from 'remove-markdown';
 
 const controller = {
     addReview: async (req: Request, res: Response) => {
@@ -138,6 +143,97 @@ const controller = {
         } catch (error) {
             logger.error('Error in getting reviews:', error);
 
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+            });
+        }
+    },
+
+    getAISummary: async (req: Request, res: Response) => {
+        try {
+            const userID = res.locals.userID! as string;
+
+            if (!userID) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Unauthorized',
+                });
+            }
+
+            const schema = z.object({
+                restaurantID: z.string(),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const { restaurantID } = result.data;
+
+            const google = createGoogleGenerativeAI({
+                apiKey: config.GOOGLE_GEMINI_API_KEY,
+            });
+
+            const model = google('gemini-2.5-flash');
+
+            const existingUser = await User.findById(userID);
+
+            if (!existingUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found',
+                });
+            }
+
+            const allReviews = await Review.find({ restaurantID });
+            const histogram = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+            allReviews.forEach((r: IReview) => {
+                const rate = r.rate as 1 | 2 | 3 | 4 | 5;
+                histogram[rate]++;
+            });
+
+            const contentReviews = allReviews
+                .filter((r: IReview) => r.content.length > 0)
+                .map((r) => r.content)
+                .join('\n');
+
+            const prompt = `
+You are given restaurant reviews. Write a concise summary (MAXIMUM 5-6 lines).
+
+Ratings distribution:
+1★: ${histogram['1']}
+2★: ${histogram['2']}
+3★: ${histogram['3']}
+4★: ${histogram['4']}
+5★: ${histogram['5']}
+
+Reviews:
+${contentReviews}
+`;
+
+            const { text } = await generateText({
+                model,
+                prompt,
+                system:
+                    existingUser.role === 'owner'
+                        ? RESTAURANT_SYSTEM_PROMPT
+                        : CUSTOMER_SYSTEM_PROMPT,
+            });
+
+            return res.status(200).json({
+                success: true,
+                summary: removeMd(text),
+            });
+        } catch (error) {
+            logger.error('Error in getAISummary', error);
             return res.status(500).json({
                 success: false,
                 message: 'Internal Server Error',
