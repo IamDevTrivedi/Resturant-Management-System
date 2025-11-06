@@ -31,6 +31,8 @@ const envSchema = z.object({
 
     BACKEND_URL: z.url(),
     FRONTEND_URL: z.url(),
+
+    GOOGLE_GEMINI_API_KEY: z.string(),
 });
 
 type ConfigSchema = z.infer<typeof envSchema>;

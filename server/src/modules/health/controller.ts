@@ -1,3 +1,4 @@
+import { readableDate, readableTime } from '@/utils/date';
 import { Request, Response } from 'express';
 
 const controller = {
@@ -5,6 +6,7 @@ const controller = {
         return res.status(200).json({
             success: true,
             message: 'API is healthy',
+            time: `${readableTime()} on ${readableDate()}`,
         });
     },
 };

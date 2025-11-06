@@ -35,11 +35,13 @@ async function startServer() {
         const { default: healthRoutes } = await import('@/modules/health/route');
         const { default: authRoutes } = await import('@/modules/auth/route');
         const { default: restaurantRoutes } = await import('@/modules/restaurant/route');
+        const { default: reviewRoutes } = await import('@/modules/review/route');
 
         app.use('/', rootRoutes);
         app.use('/api/v1/health', healthRoutes);
         app.use('/api/v1/auth', authRoutes);
         app.use('/api/v1/restaurants', restaurantRoutes);
+        app.use('/api/v1/review', reviewRoutes);
 
         // START SERVER
         app.listen(config.PORT, () => {

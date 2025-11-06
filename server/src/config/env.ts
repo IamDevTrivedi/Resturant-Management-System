@@ -43,6 +43,8 @@ const config = {
         NODE_ENV === 'production' ? process.env.BACKEND_URL_PROD : process.env.BACKEND_URL_DEV,
     FRONTEND_URL:
         NODE_ENV === 'production' ? process.env.FRONTEND_URL_PROD : process.env.FRONTEND_URL_DEV,
+
+    GOOGLE_GEMINI_API_KEY: process.env.GOOGLE_GEMINI_API_KEY as string,
 } as const;
 
 export default config;
