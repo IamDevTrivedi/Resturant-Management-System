@@ -1,157 +1,124 @@
-'use client';
+"use client"
 
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
-import { Toast } from '@/components/Toast';
-import { backend } from '@/config/backend';
-import { useUserData } from '@/store/user';
-import { useRestaurantData } from '@/store/restaurant';
-import { useRouter } from 'next/navigation';
-
-interface Address {
-    line1: string;
-    line2: string;
-    line3: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-}
-
-interface OpeningHoursDay {
-    start: string;
-    end: string;
-}
-
-interface OpeningHours {
-    weekday: OpeningHoursDay;
-    weekend: OpeningHoursDay;
-}
-
-interface Status {
-    isActive: boolean;
-    isVerified: boolean;
-    temporarilyClosed: boolean;
-}
-
-interface Restaurant {
-    _id: string;
-    owner: string;
-    ownerName: string;
-    restaurantName: string;
-    restaurantEmail: string;
-    phoneNumber: string;
-    about: string;
-    slogan: string;
-    since: number;
-    bannerURL: string;
-    logoURL: string;
-    address: Address;
-    openingHours: OpeningHours;
-    status: Status;
-    ratingsSum: number;
-    ratingsCount: number;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
+import type React from "react"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { Loader2, AlertCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { backend } from "@/config/backend"
+import { useRestaurantData } from "@/store/restaurant"
+import { useUserData } from "@/store/user"
+import { Toast } from "@/components/Toast"
+import { RestaurantHero } from "@/components/restaurant-hero"
+import { RestaurantInfo } from "@/components/restaurant-info"
+import { RestaurantAbout } from "@/components/restaurant-about"
+import { RestaurantAddress } from "@/components/restaurant-address"
+import { RestaurantActions } from "@/components/restaurant-actions"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import type { Restaurant } from "@/store/restaurant"
 
 interface RestaurantResponse {
-    success: boolean;
-    found: boolean;
-    restaurant: Restaurant | null;
-    message: string;
+  success: boolean
+  found: boolean
+  restaurant: Restaurant | null
+  message: string
 }
 
-export default function RestaurantStatusCard() {
-    const [status, setStatus] = useState<'loading' | 'found' | 'not-found'>('loading');
-    const { restaurant, setRestaurant } = useRestaurantData();
-    const { user } = useUserData();
-    const router = useRouter();
+export default function RestaurantDetailsPage(): React.ReactElement {
+  const [status, setStatus] = useState<"loading" | "found" | "not-found">("loading")
+  const { restaurant, setRestaurant } = useRestaurantData()
+  const { user } = useUserData()
+  const router = useRouter()
 
-    const handleAddRestaurant = () => {
-        router.replace('/restaurant/set-restaurant');
-    };
+  useEffect(() => {
+    const fetchRestaurant = async (): Promise<void> => {
+      try {
+        const { data } = await backend.post<RestaurantResponse>("/api/v1/restaurants/get-restaurant-by-owner")
 
-    useEffect(() => {
-        const fetchRestaurant = async () => {
-            try {
-                const { data } = await backend.post<RestaurantResponse>(
-                    '/api/v1/restaurants/get-restaurant-by-owner',
-                );
-
-                if (data.success && data.found && data.restaurant !== null) {
-                    setRestaurant(data.restaurant);
-                    setStatus('found');
-                } else {
-                    setStatus('not-found');
-                }
-            } catch (error: unknown) {
-                console.error('Error fetching restaurant:', error);
-
-                if (axios.isAxiosError(error)) {
-                    const message =
-                        error.response?.data?.message ||
-                        'Unable to fetch restaurant details. Please try again.';
-                    Toast.error('Restaurant not found', { description: message });
-                } else if (error instanceof Error) {
-                    Toast.error('Error Occurred', { description: error.message });
-                } else {
-                    Toast.error('Unexpected Error', {
-                        description: 'Something went wrong. Please try again later.',
-                    });
-                }
-
-                setStatus('not-found');
-            }
-        };
-
-        if (user) {
-            fetchRestaurant();
+        if (data.success && data.found && data.restaurant !== null) {
+          setRestaurant(data.restaurant)
+          setStatus("found")
+        } else {
+          setStatus("not-found")
         }
-    }, [user, setRestaurant]);
+      } catch (error: unknown) {
+        console.error("Error fetching restaurant:", error)
 
+        if (axios.isAxiosError(error)) {
+          const message: string =
+            error.response?.data?.message || "Unable to fetch restaurant details. Please try again."
+          Toast.error("Restaurant not found", { description: message })
+        } else if (error instanceof Error) {
+          Toast.error("Error Occurred", { description: error.message })
+        } else {
+          Toast.error("Unexpected Error", {
+            description: "Something went wrong. Please try again later.",
+          })
+        }
+
+        setStatus("not-found")
+      }
+    }
+
+    if (user) {
+      fetchRestaurant()
+    }
+  }, [user, setRestaurant])
+
+  if (status === "loading") {
     return (
-        <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
-            <Card className="w-full max-w-md p-8 text-center">
-                {status === 'loading' && (
-                    <div className="flex flex-col items-center gap-4">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                        <p className="text-sm text-muted-foreground">Loading restaurant info...</p>
-                    </div>
-                )}
-
-                {status === 'found' && restaurant !== null && (
-                    <>
-                        <CardHeader>
-                            <CheckCircle2 className="h-12 w-12 mx-auto text-green-600" />
-                            <CardTitle className="text-2xl mt-4">Restaurant Found</CardTitle>
-                            <CardDescription>{restaurant.restaurantName}</CardDescription>
-                        </CardHeader>
-                    </>
-                )}
-
-                {status === 'not-found' && (
-                    <CardContent className="flex flex-col items-center gap-6">
-                        <AlertCircle className="h-12 w-12 text-amber-600" />
-                        <div className="text-center">
-                            <h2 className="text-2xl font-bold text-foreground">
-                                Set Up Your Restaurant
-                            </h2>
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                You have not added your restaurant yet. Start by setting up your
-                                restaurant profile to begin taking reservations!
-                            </p>
-                        </div>
-                        <Button className="w-full" size="lg" onClick={handleAddRestaurant}>
-                            Add Restaurant
-                        </Button>
-                    </CardContent>
-                )}
-            </Card>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading restaurant details...</p>
         </div>
-    );
+      </div>
+    )
+  }
+
+  if (status === "not-found" || restaurant === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="w-full max-w-md">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>Restaurant not found. Please set up your restaurant profile first.</AlertDescription>
+          </Alert>
+
+          <div className="mt-6">
+            <Button onClick={() => router.push("/restaurant/set-restaurant")} className="w-full" size="lg">
+              Add Restaurant
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <main className="min-h-screen bg-background">
+      <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8 md:py-12">
+        {/* Hero Section */}
+        <div className="mb-8 md:mb-12">
+          <RestaurantHero restaurant={restaurant} />
+        </div>
+
+        {/* Main Content */}
+        <div className="space-y-6 md:space-y-8">
+          {/* Info Cards Grid */}
+          <RestaurantInfo restaurant={restaurant} />
+
+          {/* About Section */}
+          <RestaurantAbout about={restaurant.about} />
+
+          {/* Address Section */}
+          <RestaurantAddress address={restaurant.address} />
+
+          {/* Action Buttons */}
+          <RestaurantActions />
+        </div>
+      </div>
+    </main>
+  )
 }
