@@ -11,9 +11,7 @@ import { useUserData } from '@/store/user';
 const menuItems = [
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Privacy', href: '/privacy' },
-    { name: 'Terms', href: '/terms' },
+    { name: 'Terms and Privacy', href: '/privacy' },
 ];
 
 export const Navbar = () => {

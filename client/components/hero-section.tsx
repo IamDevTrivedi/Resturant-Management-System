@@ -6,7 +6,6 @@ import { InfiniteSlider } from '@/components/ui/infinite-slider';
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 import { AnimatedReservation } from '@/components/animated-reservation';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { Raleway } from 'next/font/google';
 const raleway = Raleway({ subsets: ['latin'], weight: ['600'] });
 
@@ -23,17 +22,13 @@ export function HeroSection() {
                   Reserve Your Perfect Dining Experience
                 </h1>
 
-                {/* Animated Line */}
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.2, ease: 'easeOut' }}
+                <div
                  className={`${raleway.className} text-2xl text-primary tracking-wide`}
 
 
                 >
                   Cause waiting is over-rated.
-                </motion.p>
+                </div>
 
                 <div className="mt-12 flex flex-col items-center justify-center gap-2 sm:flex-row lg:justify-start">
                   <Button asChild size="lg" className="px-5 text-base">
