@@ -13,6 +13,8 @@ router.post(
 );
 router.post('/update-restaurant', protectOwner, protectRoute, controller.updateRestaurant);
 
+router.post('/get-near-by-restaurants', protectRoute, controller.getNearByRestaurant);
+
 router.post('/add-item', protectOwner, protectRoute, controller.addItem);
 router.post('/delete-item', protectOwner, protectRoute, controller.deleteItem);
 router.post('/update-item', protectOwner, protectRoute, controller.updateItem);

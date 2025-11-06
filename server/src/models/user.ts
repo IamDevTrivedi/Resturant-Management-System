@@ -30,11 +30,32 @@ const userSchema = new Schema(
             required: true,
             enum: ['owner', 'customer'],
         },
+
+        cityName: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+
+        location: {
+            type: {
+                type: String,
+                enum: ['Point'],
+                default: 'Point',
+            },
+            coordinates: {
+                type: [Number],
+                required: true,
+                default: [0, 0],
+            },
+        },
     },
     {
         timestamps: true,
     },
 );
+
+userSchema.index({ location: '2dsphere' });
 
 const User = mongoose.model('user', userSchema);
 export type IUser = mongoose.Document & InferSchemaType<typeof userSchema>;
