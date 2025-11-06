@@ -10,8 +10,8 @@ import { useUserData } from '@/store/user';
 
 const menuItems = [
     { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
-    { name: 'Terms and Privacy', href: '/privacy' },
+    { name: 'About', href: '/About' },
+    { name: 'Terms and Privacy', href: '/terms-and-privacy' },
 ];
 
 export const Navbar = () => {
