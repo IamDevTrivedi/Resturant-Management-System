@@ -1,11 +1,14 @@
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion';
+'use client';
 
-const questions = [
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { HelpCircle, ChevronDown } from 'lucide-react';
+
+const faqs = [
   {
     q: 'How do I reserve a table?',
     a: 'You can easily reserve a table through our online reservation system. Just select your preferred restaurant, date, time, and number of guests — and your booking will be confirmed instantly!',
@@ -18,7 +21,6 @@ const questions = [
     q: 'Are there any special discounts or offers?',
     a: 'Absolutely! We regularly feature exclusive offers, combo deals, and seasonal discounts. Check the “Offers” section or your restaurant’s page for current promotions.',
   },
-
   {
     q: 'Do you support group reservations or events?',
     a: 'Yes! For large groups or events, please mention your requirements while reserving or contact our team for personalized arrangements.',
@@ -33,29 +35,38 @@ const questions = [
   },
 ];
 
-
 export function FAQs() {
-    return (
-        <div className="w-full max-w-3xl mx-auto px-4 py-12 sm:py-16">
-            <div className="mb-8 text-center">
-                <h2 className="text-3xl font-bold tracking-tight mb-2">
-                    Frequently Asked Questions
-                </h2>
-                <p className="text-muted-foreground">Find answers to common questions below</p>
-            </div>
-
-            <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
-                {questions.map((item, index) => (
-                    <AccordionItem key={index} value={`item-${index + 1}`}>
-                        <AccordionTrigger className="text-left hover:no-underline text-md">
-                            <span className="font-medium">{item.q}</span>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                            <p className="text-muted-foreground leading-relaxed">{item.a}</p>
-                        </AccordionContent>
-                    </AccordionItem>
-                ))}
-            </Accordion>
+  return (
+    <section className="w-full max-w-3xl mx-auto px-6 py-16 sm:py-20">
+      <div className="mb-10 text-center">
+        <div className="flex justify-center mb-3">
+          <HelpCircle className="h-10 w-10 text-primary" />
         </div>
-    );
+        <h2 className="text-4xl font-extrabold tracking-tight mb-3">
+          Frequently Asked Questions
+        </h2>
+        <p className="text-muted-foreground text-lg">
+          Find quick answers to common questions below
+        </p>
+      </div>
+
+      <Accordion type="single" collapsible className="space-y-3">
+        {faqs.map((item, index) => (
+          <AccordionItem
+            key={index}
+            value={`item-${index + 1}`}
+            className="border rounded-xl px-4 shadow-sm bg-card hover:shadow-md transition-all duration-200"
+          >
+            <AccordionTrigger className="text-left flex items-center gap-2 text-md py-4 font-medium hover:no-underline focus-visible:ring-2 focus-visible:ring-primary/30">
+              <span className="flex-1">{item.q}</span>
+              <ChevronDown className="h-4 w-4 transition-transform duration-300 accordion-chevron" />
+            </AccordionTrigger>
+            <AccordionContent className="text-muted-foreground leading-relaxed pb-4">
+              {item.a}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
+  );
 }
