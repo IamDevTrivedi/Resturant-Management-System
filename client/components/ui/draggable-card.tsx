@@ -128,7 +128,7 @@ export const DraggableCardBody = ({
 
                 // ✨ faster inertia-like animation
                 animate(info.point.x, info.point.x + currentVelocityX * speedMultiplier, {
-                    duration: 0.4, // very snappy
+                    duration: 0.2, // very snappy
                     ease: [0.16, 1, 0.3, 1], // easeOutQuint-like
                     bounce,
                     type: 'spring',
