@@ -108,13 +108,20 @@ export default function CustomerProfilePage() {
           </div>
 
           <div className="pt-4 flex flex-col gap-2">
-            <Button variant="secondary" onClick={() => setEditMode(true)}>
-              Edit Profile
-            </Button>
-            <Button variant="secondary">View Rewards</Button>
-            <Button variant="secondary">View Comments</Button>
-            <Button variant="secondary">Reservation History</Button>
-          </div>
+  <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => setEditMode(true)}>
+    Edit Profile
+  </Button>
+  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+    View Rewards
+  </Button>
+  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+    View Comments
+  </Button>
+  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+    Reservation History
+  </Button>
+</div>
+
         </Card>
 
         {/* Details Section */}
