@@ -46,8 +46,8 @@ export function DraggableCard() {
                 'absolute top-[55%] left-[45%] -translate-x-[70%] -translate-y-[20%] rotate-[-7deg]',
         },
         {
-            title: 'Chole Bhature',
-            image: '/CholeBhature.avif',
+            title: 'Chicken Lolipop',
+            image: '/ChickenLolipop.avif',
             className:
                 'absolute top-[60%] left-[50%] -translate-x-[50%] -translate-y-[40%] rotate-[4deg]',
         },
