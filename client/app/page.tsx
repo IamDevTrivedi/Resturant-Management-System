@@ -1,4 +1,4 @@
-import { DraggableCard } from '@/components/DraggableCard';
+import { FoodItemSlider } from '@/components/Food-Item-Slider';
 import { FAQs } from '@/components/FAQs';
 import { Feature } from '@/components/Feature';
 import { HeroSection } from '@/components/hero-section';
@@ -13,7 +13,7 @@ export default function Page() {
             <Feature />
             <Separator />
 
-            <DraggableCard />
+            <FoodItemSlider />
             <Separator />
 
             <FAQs />
