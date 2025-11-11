@@ -57,10 +57,10 @@ export function FAQs() {
             value={`item-${index + 1}`}
             className="border rounded-xl px-4 shadow-sm bg-card hover:shadow-md transition-all duration-200"
           >
-            <AccordionTrigger className="text-left flex items-center gap-2 text-md py-4 font-medium hover:no-underline focus-visible:ring-2 focus-visible:ring-primary/30">
-              <span className="flex-1">{item.q}</span>
-              <ChevronDown className="h-4 w-4 transition-transform duration-300 accordion-chevron" />
-            </AccordionTrigger>
+            <AccordionTrigger className="text-left text-md py-4 font-medium hover:no-underline focus-visible:ring-2 focus-visible:ring-primary/30">
+  {item.q}
+</AccordionTrigger>
+
             <AccordionContent className="text-muted-foreground leading-relaxed pb-4">
               {item.a}
             </AccordionContent>
