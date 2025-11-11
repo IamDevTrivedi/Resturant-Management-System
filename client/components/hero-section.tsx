@@ -54,21 +54,21 @@ export function HeroSection() {
                                 <p className="text-end text-sm">Trusted by top restaurants</p>
                             </div>
                             <div className="relative py-6 md:w-[calc(100%-11rem)]">
-                                <InfiniteSlider speed={15} gap={112}>
+                                <InfiniteSlider speed={10} gap={112}>
                                     <div className="flex">
                                         <Image
-                                            className="mx-auto h-5 w-fit dark:invert"
-                                            src="https://html.tailus.io/blocks/customers/nvidia.svg"
+                                            className="mx-auto h-15 w-fit dark:invert"
+                                            src="https://www.svgrepo.com/show/330781/kfc.svg"
                                             alt="Restaurant Partner"
-                                            height="20"
-                                            width="20"
+                                            height="50"
+                                            width="50"
                                         />
                                     </div>
 
                                     <div className="flex">
                                         <Image
-                                            className="mx-auto h-4 w-fit dark:invert"
-                                            src="https://html.tailus.io/blocks/customers/column.svg"
+                                            className="mx-auto h-15 w-fit"
+                                            src="https://cdn.worldvectorlogo.com/logos/mcdonald-s-9.svg"
                                             alt="Restaurant Partner"
                                             height="16"
                                             width="16"
@@ -76,8 +76,8 @@ export function HeroSection() {
                                     </div>
                                     <div className="flex">
                                         <Image
-                                            className="mx-auto h-4 w-fit dark:invert"
-                                            src="https://html.tailus.io/blocks/customers/github.svg"
+                                            className="mx-auto h-15 w-fit dark:invert"
+                                            src="https://cdn.worldvectorlogo.com/logos/burger-king-6.svg"
                                             alt="Restaurant Partner"
                                             height="16"
                                             width="16"
@@ -85,8 +85,8 @@ export function HeroSection() {
                                     </div>
                                     <div className="flex">
                                         <Image
-                                            className="mx-auto h-5 w-fit dark:invert"
-                                            src="https://html.tailus.io/blocks/customers/nike.svg"
+                                            className="mx-auto h-15 w-fit dark:invert"
+                                            src="https://cdn.freebiesupply.com/images/large/2x/starbucks-logo-black-and-white.png"
                                             alt="Restaurant Partner"
                                             height="20"
                                             width="20"
@@ -94,8 +94,8 @@ export function HeroSection() {
                                     </div>
                                     <div className="flex">
                                         <Image
-                                            className="mx-auto h-5 w-fit dark:invert"
-                                            src="https://html.tailus.io/blocks/customers/lemonsqueezy.svg"
+                                            className="mx-auto h-15 w-fit dark:invert "
+                                            src="https://i.pinimg.com/474x/c7/a4/73/c7a47327870cf16b36ddc97454e48443.jpg"
                                             alt="Restaurant Partner"
                                             height="20"
                                             width="20"
@@ -103,8 +103,8 @@ export function HeroSection() {
                                     </div>
                                     <div className="flex">
                                         <Image
-                                            className="mx-auto h-4 w-fit dark:invert"
-                                            src="https://html.tailus.io/blocks/customers/laravel.svg"
+                                            className="mx-auto h-15 w-fit dark:invert bg-amber-200"
+                                            src="https://i.pinimg.com/736x/47/3f/0d/473f0dc59d8d5b6a63cfac4f561e1157.jpg"
                                             alt="Restaurant Partner"
                                             height="16"
                                             width="16"
@@ -112,8 +112,8 @@ export function HeroSection() {
                                     </div>
                                     <div className="flex">
                                         <Image
-                                            className="mx-auto h-7 w-fit dark:invert"
-                                            src="https://html.tailus.io/blocks/customers/lilly.svg"
+                                            className="mx-auto h-15 w-fit dark:invert"
+                                            src="https://cdn.worldvectorlogo.com/logos/taco-bell-2.svg"
                                             alt="Restaurant Partner"
                                             height="28"
                                             width="28"
@@ -122,8 +122,8 @@ export function HeroSection() {
 
                                     <div className="flex">
                                         <Image
-                                            className="mx-auto h-6 w-fit dark:invert"
-                                            src="https://html.tailus.io/blocks/customers/openai.svg"
+                                            className="mx-auto h-10 pt-1 w-fit dark:invert"
+                                            src="https://images.openai.com/static-rsc-1/GjfvtUuZTSO9hOe6C6togiho0qMRpoD-BrqMRm4zzRElNtmDeriLlRQH7J1y63L__EVVifsNB3fpIU7X-w1OWX3ZfGtpfq_HWsN76feWabtLRVbWPgzS-70mzRxWK4FIfGcEl0AH-T57u5MRsUPdgA"
                                             alt="Restaurant Partner"
                                             height="24"
                                             width="24"
