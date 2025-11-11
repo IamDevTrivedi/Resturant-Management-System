@@ -13,7 +13,7 @@ interface InfiniteSliderProps {
 export const InfiniteSlider: React.FC<InfiniteSliderProps> = ({
     children,
     speed = 50,
-    speedOnHover = 20,
+    // speedOnHover = 20.
     gap = 100,
 }) => {
     const [isHovering, setIsHovering] = useState(false);
@@ -35,9 +35,9 @@ export const InfiniteSlider: React.FC<InfiniteSliderProps> = ({
         const scroller = scrollerRef.current;
         if (!scroller) return;
 
-        const currentSpeed = isHovering ? speedOnHover : speed;
-        scroller.style.animation = `scroll ${100 / currentSpeed}s linear infinite`;
-    }, [isHovering, speed, speedOnHover]);
+        // const currentSpeed = isHovering ? speedOnHover : speed;
+        scroller.style.animation = `scroll ${100 / speed}s linear infinite`;
+    }, [isHovering, speed]);
 
     return (
         <div
