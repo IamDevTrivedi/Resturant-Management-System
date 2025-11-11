@@ -49,7 +49,7 @@ export const Navbar = () => {
                                 className="flex items-center space-x-2"
                             >
                                 <Logo />
-                                <span className="text-xl font-semibold lg:block">Company</span>
+                                <span className="text-xl font-semibold lg:block">ReserveBeta</span>
                             </Link>
 
                             <button
