@@ -1,4 +1,4 @@
-import Item from '@/models/menu';
+import Item from '@/models/item';
 import Restaurant, { IRestaurant } from '@/models/restaurant';
 import User from '@/models/user';
 import logger from '@/utils/logger';
