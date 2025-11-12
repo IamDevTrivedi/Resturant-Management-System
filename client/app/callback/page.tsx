@@ -82,7 +82,7 @@ export default function Page() {
         };
 
         fetcher();
-    }, [razorpay_payment_id, razorpay_payment_link_id, razorpay_payment_link_reference_id, razorpay_payment_link_status, razorpay_signature]);
+    }, [router, razorpay_payment_id, razorpay_payment_link_id, razorpay_payment_link_reference_id, razorpay_payment_link_status, razorpay_signature]);
 
     const handleGoHome = () => {
         router.replace("/")
