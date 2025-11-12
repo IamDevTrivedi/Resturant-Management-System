@@ -48,8 +48,8 @@ export const Navbar = () => {
                                 aria-label="home"
                                 className="flex items-center space-x-2"
                             >
-                                <Logo />
-                                <span className="text-xl font-semibold lg:block">Company</span>
+                                <Logo/>
+                                <span className="text-xl font-semibold lg:block">Reserve Beta</span>
                             </Link>
 
                             <button
