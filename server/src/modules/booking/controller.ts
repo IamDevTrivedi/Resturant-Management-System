@@ -5,6 +5,9 @@ import Booking, { IBooking } from '@/models/booking';
 import User from '@/models/user';
 import Restaurant from '@/models/restaurant';
 import logger from '@/utils/logger';
+import { transporter } from '@/config/nodemailer';
+import config from '@/config/env';
+import { bookingAcceptedTemplate, bookingRejectedTemplate } from '@/utils/emailTemplates';
 
 const controller = {
     createBooking: async (req: Request, res: Response) => {
@@ -62,6 +65,7 @@ const controller = {
                 message: 'New booking received!',
                 data: {
                     ...result.data,
+                    bookingID: newBooking._id,
                     fullName: `${existingUser.firstName} ${existingUser.lastName}`,
                     email: existingUser.email,
                 },
@@ -103,6 +107,7 @@ const controller = {
                 const existingUser = await User.findById(booking.userID);
 
                 return {
+                    bookingID: booking._id,
                     userID: booking.userID,
                     restaurantID: booking.restaurantID,
                     bookingAt: booking.bookingAt,
@@ -153,6 +158,7 @@ const controller = {
 
             const data = bookings.map(async (booking: IBooking) => {
                 return {
+                    bookingID: booking._id,
                     userID: booking.userID,
                     restaurantID: booking.restaurantID,
                     bookingAt: booking.bookingAt,
@@ -182,12 +188,13 @@ const controller = {
         }
     },
 
-    acceptBooking: async (req: Request, res: Response) => {
+    changeBookingStatusR: async (req: Request, res: Response) => {
         try {
             const userID = res.locals.userID! as string;
 
             const schema = z.object({
                 bookingID: z.string(),
+                newStatus: z.enum(['accepted', 'rejected']),
             });
 
             const result = schema.safeParse(req.body);
@@ -199,7 +206,7 @@ const controller = {
                 });
             }
 
-            const { bookingID } = result.data;
+            const { bookingID, newStatus } = result.data;
             const existingBooking = await Booking.findById(bookingID);
 
             if (!existingBooking) {
@@ -209,14 +216,98 @@ const controller = {
                 });
             }
 
+            const existingRestaurant = await Restaurant.findOne({
+                _id: existingBooking.restaurantID,
+                owner: userID,
+            });
 
+            if (!existingRestaurant) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Unauthorized: You do not own this restaurant',
+                });
+            }
 
+            if (existingBooking.status !== 'pending') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Cannot change the status of a non-pending booking',
+                });
+            }
 
+            const existingUser = await User.findById(existingBooking.userID);
+
+            if (!existingUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found',
+                });
+            }
+
+            existingBooking.status = newStatus;
+            await existingBooking.save();
+
+            try {
+                if (newStatus === 'rejected') {
+                    const emailHTML = bookingRejectedTemplate(
+                        existingUser.firstName,
+                        existingUser.lastName,
+                        existingBooking.category,
+                        existingBooking.bookingAt.toISOString(),
+                        bookingID,
+                    );
+
+                    const options = {
+                        from: config.SENDER_EMAIL,
+                        to: existingUser.email,
+                        subject: `Booking Cancelled - Booking ID: ${bookingID}`,
+                        html: emailHTML,
+                    };
+
+                    await transporter.sendMail(options);
+
+                    return res.status(200).json({
+                        success: true,
+                        message: 'Booking rejected and notification sent',
+                    });
+                } else {
+                    const emailHTML = bookingAcceptedTemplate(
+                        existingUser.firstName,
+                        existingUser.lastName,
+                        existingBooking.category,
+                        existingBooking.bookingAt.toISOString(),
+                        existingBooking.numberOfGuests,
+                        bookingID,
+                    );
+
+                    const options = {
+                        from: config.SENDER_EMAIL,
+                        to: existingUser.email,
+                        subject: `Booking Confirmed - ${existingBooking.category} at ${new Date(existingBooking.bookingAt).toLocaleString()}`,
+                        html: emailHTML,
+                    };
+
+                    await transporter.sendMail(options);
+
+                    return res.status(200).json({
+                        success: true,
+                        message: 'Booking accepted and confirmation sent',
+                    });
+                }
+            } catch (emailError) {
+                logger.error('Error sending booking status email:', emailError);
+
+                return res.status(200).json({
+                    success: true,
+                    message: 'Booking status updated, but email notification failed',
+                    warning: 'Email could not be sent to the customer',
+                });
+            }
         } catch (error) {
-            logger.error('Error in acceptBooking', error);
+            logger.error('Error in changeBookingStatusR', error);
             return res.status(500).json({
                 success: false,
-                message: 'Failed to accept booking',
+                message: 'Failed to change booking status',
             });
         }
     },

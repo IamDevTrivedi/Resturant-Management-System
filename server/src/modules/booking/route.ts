@@ -22,6 +22,11 @@ router.post(
     controller.getBookingsByCustomer,
 );
 
-router.post('/change-booking-status', protectOwner, protectRoute, controller.acceptBooking);
+router.post(
+    '/change-booking-status-for-restautant',
+    protectOwner,
+    protectRoute,
+    controller.changeBookingStatusR,
+);
 
 export default router;
