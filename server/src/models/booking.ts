@@ -1,53 +1,58 @@
 import mongoose, { InferSchemaType } from 'mongoose';
 const { Schema } = mongoose;
 
-const bookingSchema = new Schema({
-    userID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true,
-    },
+const bookingSchema = new Schema(
+    {
+        userID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user',
+            required: true,
+        },
 
-    restaurantID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'restaurant',
-        required: true,
-    },
+        restaurantID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'restaurant',
+            required: true,
+        },
 
-    bookingAt: {
-        type: Date,
-        required: true,
-    },
+        bookingAt: {
+            type: Date,
+            required: true,
+        },
 
-    numberOfGuests: {
-        type: Number,
-        required: true,
-        min: 1,
-    },
+        numberOfGuests: {
+            type: Number,
+            required: true,
+            min: 1,
+        },
 
-    message: {
-        type: String,
-        trim: true,
-        default: '',
-    },
+        message: {
+            type: String,
+            trim: true,
+            default: '',
+        },
 
-    status: {
-        type: String,
-        enum: ['pending', 'accepted', 'confirmed', 'rejected'],
-        default: 'pending',
-    },
+        status: {
+            type: String,
+            enum: ['pending', 'accepted', 'rejected', 'payment pending', 'confirmed'],
+            default: 'pending',
+        },
 
-    category: {
-        type: String,
-        enum: ['breakfast', 'lunch', 'dinner'],
-        default: 'other',
-    },
+        category: {
+            type: String,
+            enum: ['breakfast', 'lunch', 'dinner'],
+            default: 'other',
+        },
 
-    phoneNumber: {
-        type: String,
-        required: true,
+        phoneNumber: {
+            type: String,
+            required: true,
+        },
     },
-});
+    {
+        timestamps: true,
+    },
+);
 
 const Booking = mongoose.model('booking', bookingSchema);
 export type IBooking = mongoose.Document & InferSchemaType<typeof bookingSchema>;
