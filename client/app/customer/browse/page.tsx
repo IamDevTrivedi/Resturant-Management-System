@@ -15,11 +15,9 @@ import { Toast } from "@/components/Toast";
 import { AxiosError } from "axios";
 import { useBrowseRestaurantStore, type Restaurant } from "@/store/restaurant-browse";
 
-
-
+// ---------- Helpers ----------
 const parseTimeToToday = (timeStr: string): Date | null => {
   if (!timeStr) return null;
-
   try {
     if (timeStr.includes("T")) {
       const utcDate = new Date(timeStr);
@@ -30,7 +28,6 @@ const parseTimeToToday = (timeStr: string): Date | null => {
 
     const match = timeStr.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
     if (!match) return null;
-
     let [, hourStr, minuteStr, period] = match;
     let hour = parseInt(hourStr, 10);
     const minute = parseInt(minuteStr, 10);
@@ -39,7 +36,6 @@ const parseTimeToToday = (timeStr: string): Date | null => {
       if (period === "PM" && hour !== 12) hour += 12;
       if (period === "AM" && hour === 12) hour = 0;
     }
-
     const d = new Date();
     d.setHours(hour, minute, 0, 0);
     return d;
@@ -67,27 +63,19 @@ const isRestaurantOpenNow = (
   temporarilyClosed?: boolean
 ): boolean => {
   if (temporarilyClosed) return false;
-
   const today = new Date();
   const day = today.getDay();
   const isWeekend = day === 0 || day === 6;
-
   const openStr = isWeekend ? openingHours.weekendOpen : openingHours.weekdayOpen;
   const closeStr = isWeekend ? openingHours.weekendClose : openingHours.weekdayClose;
-
   const open = parseTimeToToday(openStr);
   const close = parseTimeToToday(closeStr);
-
-  if (!open || !close) {
-    console.warn("⚠️ Invalid times:", { openStr, closeStr });
-    return false;
-  }
-
+  if (!open || !close) return false;
   const now = new Date();
   return isTimeWithinRange(now, open, close);
 };
 
-// -------------------- Skeleton --------------------
+// ---------- Skeleton ----------
 function RestaurantCardSkeleton(): React.ReactElement {
   return (
     <div className="space-y-4">
@@ -98,10 +86,9 @@ function RestaurantCardSkeleton(): React.ReactElement {
   );
 }
 
-// -------------------- Page --------------------
+// ---------- Page ----------
 export default function RestaurantsPage(): React.ReactElement {
   const router = useRouter();
-
   const { restaurants, setRestaurants, clearRestaurants } = useBrowseRestaurantStore();
 
   const [filters, setFilters] = useState<RestaurantFilters>({
@@ -112,7 +99,6 @@ export default function RestaurantsPage(): React.ReactElement {
     isOpen: false,
     searchQuery: "",
   });
-
   const [location, setLocation] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -122,23 +108,20 @@ export default function RestaurantsPage(): React.ReactElement {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // -------------------- Fetch --------------------
+  // ---------- Fetch ----------
   const fetchRestaurants = async (distance?: number): Promise<void> => {
     try {
       setLoading(true);
       setError("");
-
       const response = await backend.post("/api/v1/restaurants/get-near-by-restaurants", {
         maxDistance: (distance ?? filters.distance) * 1000,
       });
 
-      console.log("📡 Raw backend response:", response.data);
-
       if (response.data.success && response.data.restaurants.length > 0) {
         const mapped: Restaurant[] = response.data.restaurants.map((entry: any) => {
           const [backendRestaurant, city, cuisines] = entry;
+          console.log("entry",backendRestaurant)
           const r = backendRestaurant;
-
           const openNow = isRestaurantOpenNow(
             {
               weekdayOpen: r.openingHours.weekday.start,
@@ -160,6 +143,7 @@ export default function RestaurantsPage(): React.ReactElement {
             address: {
               street: `${r.address.line1 || ""}, ${r.address.line2 || ""}`.trim(),
               city: city || r.address.city || "Unknown",
+              zip : backendRestaurant.address.zip,
             },
             openingHours: {
               weekdayOpen: r.openingHours.weekday.start,
@@ -176,45 +160,40 @@ export default function RestaurantsPage(): React.ReactElement {
         });
 
         setRestaurants(mapped);
-        console.log("✅ Stored in Zustand:", mapped);
         setCuisineOptions([...new Set(mapped.flatMap((r) => r.cuisines))]);
       } else {
         clearRestaurants();
       }
     } catch (err) {
-      console.error("❌ Fetch error:", err);
-      setError("Failed to load restaurants.");
+      const axiosErr = err as AxiosError<{ message?: string }>;
+      const msg = axiosErr.response?.data?.message || "Failed to load restaurants.";
+      setError(msg);
+      Toast.error("Error", { description: msg });
     } finally {
       setLoading(false);
       setInitialLoading(false);
     }
   };
 
-  // Initial fetch only if store is empty
   useEffect(() => {
-    if (restaurants.length === 0) {
-      fetchRestaurants();
-    } else {
+    if (restaurants.length === 0) fetchRestaurants();
+    else {
       setLoading(false);
       setInitialLoading(false);
     }
   }, [restaurants.length]);
 
-  // Debounce distance
   useEffect(() => {
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-
     debounceTimerRef.current = setTimeout(() => {
       fetchRestaurants(filters.distance);
     }, 1000);
-
     return () => {
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.distance]);
 
-  // -------------------- Filter --------------------
+  // ---------- Filter ----------
   const filteredRestaurants = useMemo(() => {
     const now = new Date();
     const day = now.getDay();
@@ -235,7 +214,6 @@ export default function RestaurantsPage(): React.ReactElement {
 
       const locationMatch = !location || r.city.toLowerCase().includes(location.toLowerCase());
       const rating = r.ratingsCount > 0 ? r.ratingsSum / r.ratingsCount : 0;
-
       const ratingMatch =
         filters.minRating === 0 ||
         (filters.minRating === -1 ? rating <= 3.5 : rating >= filters.minRating);
@@ -245,14 +223,13 @@ export default function RestaurantsPage(): React.ReactElement {
       const open = parseTimeToToday(openStr);
       const close = parseTimeToToday(closeStr);
       const isOpenNow = open && close && isTimeWithinRange(now, open, close) && !r.temporarilyClosed;
-
       const statusMatch = !filters.isOpen || isOpenNow;
 
       return searchMatch && cuisineMatch && locationMatch && ratingMatch && statusMatch;
     });
   }, [filters, location, restaurants]);
 
-  // -------------------- UI --------------------
+  // ---------- UI ----------
   return (
     <div className="min-h-screen bg-background">
       <RestaurantsHeader
@@ -273,7 +250,12 @@ export default function RestaurantsPage(): React.ReactElement {
             <div className="p-4 space-y-4">
               <div className="flex items-center justify-between lg:hidden">
                 <h3 className="font-semibold text-sm">Filters</h3>
-                <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="h-8 w-8">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSidebarOpen(false)}
+                  className="h-8 w-8"
+                >
                   <X className="w-4 h-4" />
                 </Button>
               </div>
@@ -330,7 +312,10 @@ export default function RestaurantsPage(): React.ReactElement {
                   <RestaurantCard
                     key={r._id}
                     restaurant={r}
-                    onViewDetails={(id) => router.push(`/browse/${id}`)}
+                    // ✅ Passing restaurant._id only (no userId confusion)
+                    onViewDetails={(restaurantId: string) =>
+                      router.push(`/customer/browse/${restaurantId}`)
+                    }
                     isListView={viewMode === "list"}
                   />
                 ))}

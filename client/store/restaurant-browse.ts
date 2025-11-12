@@ -1,10 +1,10 @@
-// /store/restaurants.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface Address {
   street: string;
   city: string;
+  zip? : string;
 }
 
 export interface OpeningHours {
@@ -33,21 +33,49 @@ export interface Restaurant {
 
 export interface RestaurantStore {
   restaurants: Restaurant[];
+  hydrated: boolean;
   setRestaurants: (restaurants: Restaurant[]) => void;
   clearRestaurants: () => void;
-  getRestaurantById: (id: string) => Restaurant | undefined;
+  getRestaurantById: (id: unknown) => Restaurant | undefined;
+  setHydrated: (hydrated: boolean) => void;
 }
 
 export const useBrowseRestaurantStore = create<RestaurantStore>()(
   persist(
     (set, get) => ({
       restaurants: [],
+      hydrated: false,
+
       setRestaurants: (restaurants) => set({ restaurants }),
       clearRestaurants: () => set({ restaurants: [] }),
-      getRestaurantById: (id) => get().restaurants.find((r) => r._id === id),
+
+      getRestaurantById: (id: unknown) => {
+        // ✅ Safely convert to string and normalize
+        const normalizedId = String(Array.isArray(id) ? id[0] : id ?? "")
+          .trim()
+          .replace(/["']/g, "");
+
+        const list = get().restaurants;
+        const found = list.find(
+          (r) =>
+            String(r._id).trim().replace(/["']/g, "") === normalizedId
+        );
+
+        console.log("🧩 Searching ID:", normalizedId);
+        console.log("📦 Available IDs:", list.map((r) => r._id));
+        console.log("✅ Found:", found);
+
+        return found;
+      },
+
+      setHydrated: (hydrated) => set({ hydrated }),
     }),
     {
-      name: "restaurants-storage", // persisted in localStorage
+      name: "restaurants-storage",
+      version: 1,
+      onRehydrateStorage: () => (store) => {
+        if (store) store.setHydrated(true);
+      },
     }
   )
 );
