@@ -17,6 +17,7 @@ import { RestaurantActions } from "@/components/restaurant-actions"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import type { Restaurant } from "@/store/restaurant"
+import BookingAlert from "@/components/booking-alert"
 
 interface RestaurantResponse {
   success: boolean
@@ -117,6 +118,8 @@ export default function RestaurantDetailsPage(): React.ReactElement {
 
           {/* Action Buttons */}
           <RestaurantActions />
+
+          <BookingAlert restaurantId={restaurant._id} />
         </div>
       </div>
     </main>
