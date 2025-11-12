@@ -7,6 +7,8 @@ import config from '@/config/env';
 import { verifyEmailTransporter } from '@/config/nodemailer';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { createServer } from 'http';
+import { initializeSocket } from '@/config/socket';
 
 async function startServer() {
     try {
@@ -20,6 +22,10 @@ async function startServer() {
 
         // INIT EXPRESS
         const app = express();
+        const httpServer = createServer(app);
+
+        // INIT SOCKET.IO
+        initializeSocket(httpServer);
 
         // CORE MIDDLEWARES
         app.use(express.json());
@@ -36,15 +42,17 @@ async function startServer() {
         const { default: authRoutes } = await import('@/modules/auth/route');
         const { default: restaurantRoutes } = await import('@/modules/restaurant/route');
         const { default: reviewRoutes } = await import('@/modules/review/route');
+        const { default: bookingRoutes } = await import('@/modules/booking/route');
 
         app.use('/', rootRoutes);
         app.use('/api/v1/health', healthRoutes);
         app.use('/api/v1/auth', authRoutes);
         app.use('/api/v1/restaurants', restaurantRoutes);
         app.use('/api/v1/review', reviewRoutes);
+        app.use('/api/v1/booking', bookingRoutes);
 
         // START SERVER
-        app.listen(config.PORT, () => {
+        httpServer.listen(config.PORT, () => {
             logger.info(`Server is running on port ${config.PORT}`);
         });
     } catch (error) {
