@@ -8,9 +8,6 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
-// -------------------- Helper functions --------------------
-
-// Parse ISO or "6:00 PM" to today's date
 const parseTimeToToday = (timeStr: string): Date | null => {
   if (!timeStr) return null
   const looksIso = /\d{4}-\d{2}-\d{2}T/.test(timeStr)
@@ -22,7 +19,6 @@ const parseTimeToToday = (timeStr: string): Date | null => {
   return isNaN(d.getTime()) ? null : d
 }
 
-// Format to readable 12-hour format
 const formatDisplayTime = (timeStr: string): string => {
   if (!timeStr) return "-"
   const looksIso = /\d{4}-\d{2}-\d{2}T/.test(timeStr)
@@ -31,7 +27,7 @@ const formatDisplayTime = (timeStr: string): string => {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
 }
 
-// Handle same-day and overnight schedules
+
 const isTimeWithinRange = (now: Date, open: Date, close: Date): boolean => {
   const toMinutes = (d: Date) => d.getHours() * 60 + d.getMinutes()
   const nowMin = toMinutes(now)
@@ -39,10 +35,10 @@ const isTimeWithinRange = (now: Date, open: Date, close: Date): boolean => {
   const closeMin = toMinutes(close)
 
   if (closeMin > openMin) return nowMin >= openMin && nowMin <= closeMin
-  return nowMin >= openMin || nowMin <= closeMin // overnight handling
+  return nowMin >= openMin || nowMin <= closeMin 
 }
 
-// -------------------- Types --------------------
+
 interface Restaurant {
   _id: string
   restaurantName: string
@@ -71,7 +67,7 @@ interface RestaurantCardProps {
   isListView: boolean
 }
 
-// -------------------- Component --------------------
+
 export function RestaurantCard({
   restaurant,
   onViewDetails,
@@ -81,12 +77,11 @@ export function RestaurantCard({
   const averageRating =
     restaurant.ratingsCount > 0 ? restaurant.ratingsSum / restaurant.ratingsCount : 0
   const deliveryTime = Math.floor(Math.random() * 30) + 20
-
+  console.log("restaurant",restaurant)
   const today = new Date()
   const day = today.getDay()
   const isWeekend = day === 0 || day === 6
 
-  // Determine which hours apply for open/close logic
   const activeOpenStr = isWeekend
     ? restaurant.openingHours.weekendOpen
     : restaurant.openingHours.weekdayOpen
@@ -94,7 +89,6 @@ export function RestaurantCard({
     ? restaurant.openingHours.weekendClose
     : restaurant.openingHours.weekdayClose
 
-  // -------------------- Dynamic Open/Closed Logic --------------------
   const { isOpen, currentStatusText } = useMemo(() => {
     const now = new Date()
     const openTime = parseTimeToToday(activeOpenStr)
@@ -118,7 +112,6 @@ export function RestaurantCard({
     setIsFavorite(!isFavorite)
   }
 
-  // 🕒 Format both weekday & weekend hours (separate lines)
   const formattedWeekdayHours = `${formatDisplayTime(
     restaurant.openingHours.weekdayOpen
   )} - ${formatDisplayTime(restaurant.openingHours.weekdayClose)}`
@@ -126,7 +119,6 @@ export function RestaurantCard({
     restaurant.openingHours.weekendOpen
   )} - ${formatDisplayTime(restaurant.openingHours.weekendClose)}`
 
-  // -------------------- List View --------------------
   if (isListView) {
     return (
       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group">
@@ -186,7 +178,6 @@ export function RestaurantCard({
               </Badge>
             </div>
 
-            {/* Address + Hours */}
             <div className="space-y-1 text-xs">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <MapPin className="w-3 h-3 flex-shrink-0" />
@@ -195,7 +186,6 @@ export function RestaurantCard({
                 </span>
               </div>
 
-              {/* 🕒 Separate lines for weekday & weekend */}
               <div className="flex items-start gap-2 text-muted-foreground">
                 <Clock className="w-3 h-3 flex-shrink-0 mt-0.5" />
                 <div className="flex flex-col leading-tight">
@@ -210,7 +200,6 @@ export function RestaurantCard({
     )
   }
 
-  // -------------------- Grid View --------------------
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group">
       <div className="relative h-40 bg-muted overflow-hidden">
@@ -221,7 +210,6 @@ export function RestaurantCard({
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
-        {/* Logo */}
         <div className="absolute top-3 left-3 w-12 h-12 rounded-full bg-white dark:bg-gray-900 border-2 border-white dark:border-gray-800 overflow-hidden shadow-md">
           <Image
             src={restaurant.logoURL || "/placeholder.svg"}
@@ -273,7 +261,6 @@ export function RestaurantCard({
           <span className="text-xs text-muted-foreground">({restaurant.ratingsCount})</span>
         </div>
 
-        {/* 🕒 Weekday & Weekend timings on separate lines */}
         <div className="space-y-1 text-xs text-muted-foreground">
           <div className="flex items-start gap-2">
             <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 mt-0.5" />
