@@ -29,4 +29,6 @@ router.post(
     controller.changeBookingStatusR,
 );
 
+router.post('/payment-callback', controller.paymentCallback);
+
 export default router;

@@ -27,7 +27,7 @@ export const bookingRejectedTemplate = (
     lastName: string,
     category: string,
     bookingAt: string,
-    bookingID: string
+    bookingID: string,
 ): string => {
     return `
     <!DOCTYPE html>
@@ -82,7 +82,8 @@ export const bookingAcceptedTemplate = (
     category: string,
     bookingAt: string,
     numberOfGuests: number,
-    bookingID: string
+    bookingID: string,
+    paymentLinkURL: string,
 ): string => {
     return `
     <!DOCTYPE html>
@@ -115,6 +116,7 @@ export const bookingAcceptedTemplate = (
             <p><strong>Category:</strong> ${category.charAt(0).toUpperCase() + category.slice(1)}</p>
             <p><strong>Date & Time:</strong> ${new Date(bookingAt).toLocaleString()}</p>
             <p><strong>Number of Guests:</strong> ${numberOfGuests}</p>
+            <p><strong>Payment Link:</strong> <a href="${paymentLinkURL}" target="_blank" style="color: #16a34a;">Complete Your Payment</a></p>
           </div>
           
           <p>Please arrive on time for your reservation. If you need to make any changes or cancel your booking, please contact the restaurant as soon as possible.</p>

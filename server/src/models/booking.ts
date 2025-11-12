@@ -48,6 +48,16 @@ const bookingSchema = new Schema(
             type: String,
             required: true,
         },
+
+        paymentLinkID: {
+            type: String,
+            default: null,
+        },
+
+        paymentLinkURL: {
+            type: String,
+            default: null,
+        },
     },
     {
         timestamps: true,

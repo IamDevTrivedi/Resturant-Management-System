@@ -33,6 +33,9 @@ const envSchema = z.object({
     FRONTEND_URL: z.url(),
 
     GOOGLE_GEMINI_API_KEY: z.string(),
+
+    RAZORPAY_KEY_ID: z.string(),
+    RAZORPAY_KEY_SECRET: z.string(),
 });
 
 type ConfigSchema = z.infer<typeof envSchema>;

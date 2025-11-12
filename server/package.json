@@ -31,7 +31,6 @@
     },
     "dependencies": {
         "@ai-sdk/google": "^2.0.28",
-        "@types/socket.io": "^3.0.2",
         "ai": "^5.0.88",
         "bcrypt": "^6.0.0",
         "cookie-parser": "^1.4.7",
@@ -44,6 +43,7 @@
         "node-geocoder": "^4.4.1",
         "nodemailer": "^7.0.6",
         "rate-limit-redis": "^4.2.3",
+        "razorpay": "^2.9.6",
         "redis": "^5.8.2",
         "remove-markdown": "^0.6.2",
         "socket.io": "^4.8.1",

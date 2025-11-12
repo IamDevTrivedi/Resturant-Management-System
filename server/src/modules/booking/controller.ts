@@ -8,6 +8,13 @@ import logger from '@/utils/logger';
 import { transporter } from '@/config/nodemailer';
 import config from '@/config/env';
 import { bookingAcceptedTemplate, bookingRejectedTemplate } from '@/utils/emailTemplates';
+import Razorpay from 'razorpay';
+import { validatePaymentVerification } from 'razorpay/dist/utils/razorpay-utils';
+
+const razorpay = new Razorpay({
+    key_id: config.RAZORPAY_KEY_ID,
+    key_secret: config.RAZORPAY_KEY_SECRET,
+});
 
 const controller = {
     createBooking: async (req: Request, res: Response) => {
@@ -194,7 +201,7 @@ const controller = {
 
             const schema = z.object({
                 bookingID: z.string(),
-                newStatus: z.enum(['accepted', 'rejected']),
+                newStatus: z.enum(['payment pending', 'rejected']),
             });
 
             const result = schema.safeParse(req.body);
@@ -244,63 +251,74 @@ const controller = {
                 });
             }
 
-            existingBooking.status = newStatus;
-            await existingBooking.save();
+            if (newStatus === 'rejected') {
+                const emailHTML = bookingRejectedTemplate(
+                    existingUser.firstName,
+                    existingUser.lastName,
+                    existingBooking.category,
+                    existingBooking.bookingAt.toISOString(),
+                    bookingID,
+                );
 
-            try {
-                if (newStatus === 'rejected') {
-                    const emailHTML = bookingRejectedTemplate(
-                        existingUser.firstName,
-                        existingUser.lastName,
-                        existingBooking.category,
-                        existingBooking.bookingAt.toISOString(),
-                        bookingID,
-                    );
+                const options = {
+                    from: config.SENDER_EMAIL,
+                    to: existingUser.email,
+                    subject: `Booking Cancelled - Booking ID: ${bookingID}`,
+                    html: emailHTML,
+                };
 
-                    const options = {
-                        from: config.SENDER_EMAIL,
-                        to: existingUser.email,
-                        subject: `Booking Cancelled - Booking ID: ${bookingID}`,
-                        html: emailHTML,
-                    };
+                await transporter.sendMail(options);
 
-                    await transporter.sendMail(options);
-
-                    return res.status(200).json({
-                        success: true,
-                        message: 'Booking rejected and notification sent',
-                    });
-                } else {
-                    const emailHTML = bookingAcceptedTemplate(
-                        existingUser.firstName,
-                        existingUser.lastName,
-                        existingBooking.category,
-                        existingBooking.bookingAt.toISOString(),
-                        existingBooking.numberOfGuests,
-                        bookingID,
-                    );
-
-                    const options = {
-                        from: config.SENDER_EMAIL,
-                        to: existingUser.email,
-                        subject: `Booking Confirmed - ${existingBooking.category} at ${new Date(existingBooking.bookingAt).toLocaleString()}`,
-                        html: emailHTML,
-                    };
-
-                    await transporter.sendMail(options);
-
-                    return res.status(200).json({
-                        success: true,
-                        message: 'Booking accepted and confirmation sent',
-                    });
-                }
-            } catch (emailError) {
-                logger.error('Error sending booking status email:', emailError);
+                existingBooking.status = 'rejected';
+                await existingBooking.save();
 
                 return res.status(200).json({
                     success: true,
-                    message: 'Booking status updated, but email notification failed',
-                    warning: 'Email could not be sent to the customer',
+                    message: 'Booking rejected and notification sent',
+                });
+            } else {
+                const paymentLink = await razorpay.paymentLink.create({
+                    amount: existingBooking.numberOfGuests * 5000,
+                    currency: 'INR',
+                    description: `Reservation Token for Booking #${bookingID}`,
+                    customer: {
+                        name: `${existingUser.firstName} ${existingUser.lastName}`,
+                        email: existingUser.email,
+                    },
+                    notify: {
+                        email: true,
+                    },
+                    callback_url: `${config.FRONTEND_URL}/callback`,
+                    callback_method: 'get',
+                });
+
+                const emailHTML = bookingAcceptedTemplate(
+                    existingUser.firstName,
+                    existingUser.lastName,
+                    existingBooking.category,
+                    existingBooking.bookingAt.toISOString(),
+                    existingBooking.numberOfGuests,
+                    bookingID,
+                    paymentLink.short_url,
+                );
+
+                const options = {
+                    from: config.SENDER_EMAIL,
+                    to: existingUser.email,
+                    subject: `Booking Confirmed - ${existingBooking.category} at ${new Date(existingBooking.bookingAt).toLocaleString()}`,
+                    html: emailHTML,
+                };
+
+                existingBooking.status = 'payment pending';
+                existingBooking.paymentLinkID = paymentLink.id;
+                existingBooking.paymentLinkURL = paymentLink.short_url;
+                await existingBooking.save();
+                logger.debug('aaaaaaaaaaaaaaa');
+                await transporter.sendMail(options);
+                logger.debug('aaaaaaaaaaaaaaa');
+                return res.status(200).json({
+                    success: true,
+                    message: 'Booking accepted and confirmation sent',
                 });
             }
         } catch (error) {
@@ -308,6 +326,112 @@ const controller = {
             return res.status(500).json({
                 success: false,
                 message: 'Failed to change booking status',
+            });
+        }
+    },
+
+    paymentCallback: async (req: Request, res: Response) => {
+        try {
+            /**
+             * 
+             * This is what we get from Razorpay as query params
+             * 
+             * RAZORPAY => client => callback page => server (this endpoint) ==> validate and update booking status
+             * 
+             *  const razorpay_payment_id = searchParams.get("razorpay_payment_id");
+                const razorpay_payment_link_id = searchParams.get("razorpay_payment_link_id");
+                const razorpay_payment_link_reference_id = searchParams.get("razorpay_payment_link_reference_id");
+                const razorpay_payment_link_status = searchParams.get("razorpay_payment_link_status");
+                const razorpay_signature = searchParams.get("razorpay_signature");
+             */
+
+            logger.debug('Payment Callback Body:', req.body);
+
+            const schema = z.object({
+                razorpay_payment_id: z.string(),
+                razorpay_payment_link_id: z.string(),
+                razorpay_payment_link_reference_id: z.string(), // THIS IS NOT ENABLED IN TEST MODE => FOR THE TEST MODE, THIS IS WILL EMPTY STRING
+                razorpay_payment_link_status: z.string(),
+                razorpay_signature: z.string(),
+            });
+
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid request body',
+                    error: z.treeifyError(result.error),
+                    bookingDone: false,
+                });
+            }
+
+            const {
+                razorpay_payment_id,
+                razorpay_payment_link_id,
+                razorpay_payment_link_status,
+                razorpay_payment_link_reference_id,
+                razorpay_signature,
+            } = result.data;
+
+            const existingBooking = await Booking.findOne({
+                paymentLinkID: razorpay_payment_link_id,
+            });
+
+            if (!existingBooking) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Booking not found',
+                    bookingDone: false,
+                });
+            }
+
+            if (razorpay_payment_link_status !== 'paid') {
+                existingBooking.status = 'rejected';
+                await existingBooking.save();
+
+                return res.status(200).json({
+                    success: true,
+                    message: 'Payment not completed, booking rejected',
+                    bookingDone: false,
+                });
+            }
+
+            // PAID CASE : VERIFICATION OF SIGNATURE CAN BE DONE HERE IF NEEDED
+
+            const isValidSignature = validatePaymentVerification(
+                {
+                    payment_link_id: razorpay_payment_link_id,
+                    payment_id: razorpay_payment_id,
+                    payment_link_reference_id: razorpay_payment_link_reference_id,
+                    payment_link_status: razorpay_payment_link_status,
+                },
+                razorpay_signature,
+                config.RAZORPAY_KEY_SECRET,
+            );
+
+            if (!isValidSignature) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid signature, verification failed',
+                });
+            }
+
+            existingBooking.status = 'confirmed';
+            // existingBooking.razorpayPaymentID = razorpay_payment_id;
+            await existingBooking.save();
+
+            return res.status(200).json({
+                success: true,
+                message: 'Status Updated Successfully',
+                bookingDone: true,
+            });
+        } catch (error) {
+            logger.error('Error in payment Callback Funtion', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+                bookingDone: false,
             });
         }
     },

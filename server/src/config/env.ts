@@ -45,6 +45,9 @@ const config = {
         NODE_ENV === 'production' ? process.env.FRONTEND_URL_PROD : process.env.FRONTEND_URL_DEV,
 
     GOOGLE_GEMINI_API_KEY: process.env.GOOGLE_GEMINI_API_KEY as string,
+
+    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID as string,
+    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET as string,
 } as const;
 
 export default config;
