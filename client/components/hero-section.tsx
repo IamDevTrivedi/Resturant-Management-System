@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { InfiniteSlider } from '@/components/ui/infinite-slider';
-// import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 import { AnimatedReservation } from '@/components/animated-reservation';
 import Image from 'next/image';
+import { Search } from 'lucide-react';
 
 export function HeroSection() {
     return (
@@ -21,22 +21,13 @@ export function HeroSection() {
                                     dining to fine cuisine, find your next unforgettable meal in
                                     seconds.
                                 </p>
-
                                 <div className="mt-12 flex flex-col items-center justify-center gap-2 sm:flex-row lg:justify-start">
-                                    <Button asChild size="lg" className="px-5 text-base">
-                                        <Link href="#reservations">
-                                            <span className="text-nowrap">Reserve a Table</span>
-                                        </Link>
-                                    </Button>
                                     <Button
-                                        key={2}
-                                        asChild
-                                        size="lg"
-                                        variant="outline"
-                                        className="px-5 text-base"
+                                        className='w-full'
                                     >
-                                        <Link href="#restaurants">
-                                            <span className="text-nowrap">Browse Restaurants</span>
+                                        <Link href="/customer/browse" className="flex items-center gap-2">
+                                            <Search size={18} />
+                                            Browse Restaurant Now
                                         </Link>
                                     </Button>
                                 </div>

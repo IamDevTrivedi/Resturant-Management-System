@@ -48,7 +48,7 @@ export const Navbar = () => {
                                 aria-label="home"
                                 className="flex items-center space-x-2"
                             >
-                                <Logo/>
+                                <Logo />
                                 <span className="text-xl font-semibold lg:block">Reserve Beta</span>
                             </Link>
 
@@ -136,7 +136,7 @@ export const Navbar = () => {
                                             onClick={() => {
                                                 closeMobileMenu();
                                                 if (user?.role === "customer") {
-                                                    router.push('/customer/browser');
+                                                    router.push('/customer/browse');
                                                 }
                                                 else {
                                                     router.push('/restaurant/dashboard');

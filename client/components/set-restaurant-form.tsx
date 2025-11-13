@@ -265,8 +265,8 @@ export function MultiStepRestaurantForm() {
                                                             field.onChange(
                                                                 e.target.value
                                                                     ? Number.parseInt(
-                                                                          e.target.value,
-                                                                      )
+                                                                        e.target.value,
+                                                                    )
                                                                     : null,
                                                             )
                                                         }

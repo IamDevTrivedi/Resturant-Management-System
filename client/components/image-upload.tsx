@@ -64,7 +64,7 @@ export function PremiumImageUpload({
             const presetKey =
                 preset === 'logo'
                     ? config.PUBLIC_CLOUDINARY_LOGO_PRESET
-                    : preset=='item_logo'?config.PUBLIC_CLOUDINARY_BANNER_PRESET:config.PUBLIC_CLOUDINARY_ITEM_LOGO_PRESET;
+                    : preset == 'item_logo' ? config.PUBLIC_CLOUDINARY_BANNER_PRESET : config.PUBLIC_CLOUDINARY_ITEM_LOGO_PRESET;
 
             if (!presetKey) {
                 throw new Error('Cloudinary preset is not configured');
@@ -142,19 +142,17 @@ export function PremiumImageUpload({
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={triggerFileInput}
-                    className={`relative cursor-pointer transition-all duration-300 p-6 sm:p-8 rounded-lg border-2 border-dashed ${
-                        isDragging
+                    className={`relative cursor-pointer transition-all duration-300 p-6 sm:p-8 rounded-lg border-2 border-dashed ${isDragging
                             ? 'border-accent bg-accent/10 dark:bg-accent/20 scale-105'
                             : 'border-border bg-muted dark:bg-muted hover:border-accent hover:bg-accent/5 dark:hover:bg-accent/20'
-                    }`}
+                        }`}
                 >
                     <div className="flex flex-col items-center gap-3">
                         <div
-                            className={`p-3 rounded-full transition-colors ${
-                                isDragging
+                            className={`p-3 rounded-full transition-colors ${isDragging
                                     ? 'bg-accent/20 dark:bg-accent/30'
                                     : 'bg-muted dark:bg-muted'
-                            }`}
+                                }`}
                         >
                             <Upload
                                 className={`h-6 w-6 ${isDragging ? 'text-accent' : 'text-muted-foreground'}`}
@@ -188,8 +186,8 @@ export function PremiumImageUpload({
                                         {isUploading
                                             ? 'Uploading...'
                                             : isUploadComplete
-                                              ? 'Upload complete'
-                                              : 'Ready to upload'}
+                                                ? 'Upload complete'
+                                                : 'Ready to upload'}
                                     </p>
                                 </div>
                                 <button

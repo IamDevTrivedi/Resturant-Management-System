@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { Github, Linkedin, Twitter } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -18,7 +17,6 @@ export const Footer = () => {
         account: [
             { name: 'Login', href: '/login' },
             { name: 'Create Account', href: '/create-account' },
-            { name: 'My Account', href: '/account' },
             { name: 'Reset Password', href: '/reset-password' },
         ],
     };
