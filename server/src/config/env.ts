@@ -33,6 +33,7 @@ const config = {
     SMTP_USER: process.env.SMTP_USER as string,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD as string,
     SENDER_EMAIL: process.env.SENDER_EMAIL as string,
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY as string,
 
     BACKEND_URL_DEV: process.env.BACKEND_URL_DEV as string,
     BACKEND_URL_PROD: process.env.BACKEND_URL_PROD as string,
