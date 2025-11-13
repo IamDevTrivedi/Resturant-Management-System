@@ -16,7 +16,7 @@ export default function RootLayout({
             router.replace('/login');
         }
         if (!user || user.role == 'customer') {
-            router.replace('/home');
+            router.replace('/');
         }
     }, []);
 

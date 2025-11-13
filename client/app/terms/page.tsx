@@ -13,7 +13,7 @@ export default function Page() {
                     Legal
                 </Badge>
                 <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-                    Terms of Servic
+                    Terms of Service
                 </h1>
                 <p className="text-muted-foreground">
                     Last updated: November 11, 2025

@@ -183,7 +183,7 @@ export function MultiStepRestaurantForm() {
     };
 
     const handleSuccessRedirect = () => {
-        router.push('/dashboard');
+        router.push('/restaurant/dashboard');
     };
 
     return (

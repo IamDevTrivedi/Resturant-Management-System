@@ -241,7 +241,7 @@ export function MultiStepRestaurantFormEdit() {
     };
 
     const handleSuccessRedirect = () => {
-        router.push('/dashboard');
+        router.push('/restaurant/dashboard');
     };
 
     if (isLoading) {

@@ -12,10 +12,10 @@ export default function RootLayout({
     const { user } = useUserData();
     const router = useRouter();
     useEffect(() => {
-        if (!user) {
+        if (!user || user.role !== 'customer') {
             router.replace('/login');
         }
-    }, []);
+    }, [router, user]);
 
     if (!user) {
         return <LoadingPage />;
