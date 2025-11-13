@@ -20,7 +20,6 @@ router.post('/delete-item', protectOwner, protectRoute, controller.deleteItem);
 router.post('/update-item', protectOwner, protectRoute, controller.updateItem);
 router.post(
     '/get-items-by-restaurant',
-    protectOwner,
     protectRoute,
     controller.getItemsByRestaurant,
 );

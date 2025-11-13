@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
+
 interface Address {
   line1: string
   line2: string
@@ -64,6 +65,20 @@ export interface Item {
   updatedAt: string
 }
 
+export interface Booking {
+  bookingID: string
+  userID: string
+  restaurantID: string
+  bookingAt: string
+  numberOfGuests: number
+  message: string
+  status: string
+  category: string
+  phoneNumber: string
+  fullName: string
+  email: string
+}
+
 interface IRestaurantStore {
   restaurant: Restaurant | null
   setRestaurant: (restaurant: Restaurant | null) => void
@@ -76,24 +91,39 @@ interface IRestaurantStore {
   toggleItemPopular: (id: string) => void
   toggleItemAvailability: (id: string) => void
 
+  // Bookings
+  bookings: Booking[]
+  setBookings: (bookings: Booking[]) => void
+  addBooking: (booking: Booking) => void
+  updateBookingStatus: (id: string, status: string) => void
+  clearBookings: () => void
+
   reset: () => void
 }
 
 export const useRestaurantData = create<IRestaurantStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       restaurant: null,
       items: [],
+      bookings: [],
 
+      // Restaurant
       setRestaurant: (restaurant) => set({ restaurant }),
 
+      // Items
       setItems: (items) => set({ items }),
 
-      addItem: (item) => set((state) => ({ items: [...state.items, item] })),
+      addItem: (item) =>
+        set((state) => ({
+          items: [...state.items, item],
+        })),
 
       updateItem: (updatedItem) =>
         set((state) => ({
-          items: state.items.map((item) => (item._id === updatedItem._id ? updatedItem : item)),
+          items: state.items.map((item) =>
+            item._id === updatedItem._id ? updatedItem : item
+          ),
         })),
 
       deleteItem: (id) =>
@@ -103,22 +133,47 @@ export const useRestaurantData = create<IRestaurantStore>()(
 
       toggleItemPopular: (id) =>
         set((state) => ({
-          items: state.items.map((item) => (item._id === id ? { ...item, isPopular: !item.isPopular } : item)),
+          items: state.items.map((item) =>
+            item._id === id ? { ...item, isPopular: !item.isPopular } : item
+          ),
         })),
 
       toggleItemAvailability: (id) =>
         set((state) => ({
-          items: state.items.map((item) => (item._id === id ? { ...item, isAvailable: !item.isAvailable } : item)),
+          items: state.items.map((item) =>
+            item._id === id ? { ...item, isAvailable: !item.isAvailable } : item
+          ),
         })),
+
+      // Bookings
+      setBookings: (bookings) => set({ bookings }),
+
+      addBooking: (booking) =>
+        set((state) => ({
+          bookings: [booking, ...state.bookings],
+        })),
+
+      updateBookingStatus: (id, status) =>
+        set((state) => ({
+          bookings: state.bookings
+            .map((b) => (b.bookingID === id ? { ...b, status } : b))
+            .sort(
+              (a, b) =>
+                new Date(b.bookingAt).getTime() - new Date(a.bookingAt).getTime()
+            ),
+        })),
+
+      clearBookings: () => set({ bookings: [] }),
 
       reset: () =>
         set({
           restaurant: null,
           items: [],
+          bookings: [],
         }),
     }),
     {
       name: "restaurant-storage",
-    },
-  ),
+    }
+  )
 )

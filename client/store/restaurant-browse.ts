@@ -50,7 +50,6 @@ export const useBrowseRestaurantStore = create<RestaurantStore>()(
       clearRestaurants: () => set({ restaurants: [] }),
 
       getRestaurantById: (id: unknown) => {
-        // ✅ Safely convert to string and normalize
         const normalizedId = String(Array.isArray(id) ? id[0] : id ?? "")
           .trim()
           .replace(/["']/g, "");
@@ -60,10 +59,6 @@ export const useBrowseRestaurantStore = create<RestaurantStore>()(
           (r) =>
             String(r._id).trim().replace(/["']/g, "") === normalizedId
         );
-
-        console.log("🧩 Searching ID:", normalizedId);
-        console.log("📦 Available IDs:", list.map((r) => r._id));
-        console.log("✅ Found:", found);
 
         return found;
       },
