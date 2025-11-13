@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { InfiniteSlider } from '@/components/ui/infinite-slider';
-import { ProgressiveBlur } from '@/components/ui/progressive-blur';
+// import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 import { AnimatedReservation } from '@/components/animated-reservation';
 import Image from 'next/image';
 
@@ -86,7 +86,7 @@ export function HeroSection() {
                                     <div className="flex">
                                         <Image
                                             className="mx-auto h-15 w-fit dark:invert"
-                                           
+
                                             src="/stb.svg"
                                             alt="Restaurant Partner"
                                             height="20"
@@ -130,7 +130,7 @@ export function HeroSection() {
                                             width="24"
                                         />
                                     </div>
-                                      <div className="flex">
+                                    <div className="flex">
                                         <Image
                                             className="mx-auto h-15 w-fit dark:invert"
                                             src="/pizzahut.svg"
@@ -140,19 +140,19 @@ export function HeroSection() {
                                         />
                                     </div>
                                 </InfiniteSlider>
-
+                                {/* 
                                 <div className="bg-linear-to-r from-background absolute inset-y-0 left-0 w-20"></div>
-                                <div className="bg-linear-to-l from-background absolute inset-y-0 right-0 w-20"></div>
-                                <ProgressiveBlur
+                                <div className="bg-linear-to-l from-background absolute inset-y-0 right-0 w-20"></div> */}
+                                {/* <ProgressiveBlur
                                     className="pointer-events-none absolute left-0 top-0 h-full w-20"
                                     direction="left"
-                                    blurIntensity={1}
+                                    // blurIntensity={1}
                                 />
                                 <ProgressiveBlur
                                     className="pointer-events-none absolute right-0 top-0 h-full w-20"
                                     direction="right"
-                                    blurIntensity={1}
-                                />
+                                    // blurIntensity={1}
+                                /> */}
                             </div>
                         </div>
                     </div>
