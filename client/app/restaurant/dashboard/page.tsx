@@ -3,7 +3,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { Loader2, AlertCircle } from "lucide-react"
+import { Loader2, AlertCircle, CalendarDays } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { backend } from "@/config/backend"
 import { useRestaurantData } from "@/store/restaurant"
@@ -107,18 +107,23 @@ export default function RestaurantDetailsPage(): React.ReactElement {
 
         {/* Main Content */}
         <div className="space-y-6 md:space-y-8">
-          {/* Info Cards Grid */}
           <RestaurantInfo restaurant={restaurant} />
-
-          {/* About Section */}
           <RestaurantAbout about={restaurant.about} />
-
-          {/* Address Section */}
           <RestaurantAddress address={restaurant.address} />
-
-          {/* Action Buttons */}
           <RestaurantActions />
 
+          {/* View Bookings Button */}
+          <div className="flex justify-center">
+            <Button
+              onClick={() => router.push("/restaurant/dashboard/bookings")}
+              className="flex items-center gap-2 text-white"
+            >
+              <CalendarDays className="w-4 h-4" />
+              View All Bookings
+            </Button>
+          </div>
+
+          {/* Real-Time Booking Alerts */}
           <BookingAlert restaurantId={restaurant._id} />
         </div>
       </div>
