@@ -23,6 +23,7 @@ import { PremiumImageUpload } from '@/components/image-upload';
 import { restaurantSchema, type RestaurantFormData } from '@/lib/restaurant-schema';
 import { backend } from '@/config/backend';
 import { useRestaurantData } from '@/store/restaurant';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 
 const STEPS = [
     {
@@ -297,6 +298,93 @@ export function MultiStepRestaurantForm() {
                                         )}
                                     />
                                 </div>
+                                <FormField
+  control={form.control}
+  name="cuisine"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel className="text-foreground font-semibold">
+        Cuisine Type <span className="text-destructive">*</span>
+      </FormLabel>
+
+      <Select
+        onValueChange={(value) => {
+          const arr = Array.isArray(field.value) ? field.value : [];
+
+          if (arr.includes(value)) {
+            field.onChange(arr.filter((v) => v !== value));
+          } else {
+            field.onChange([...arr, value]);
+          }
+        }}
+      >
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue
+              placeholder="Select cuisine"
+              textValue="Select cuisine"
+            />
+          </SelectTrigger>
+        </FormControl>
+
+        {/* Bigger dropdown menu */}
+        <SelectContent className="w-[300px]">
+          {/* List of cuisines */}
+          {[
+            "indian", "chinese", "thai", "japanese", "korean",
+            "vietnamese", "malaysian", "srilankan", "nepali",
+
+            "italian", "french", "spanish", "greek", "turkish",
+            "mediterranean",
+
+            "american", "mexican", "bbq", "fastfood",
+
+            "lebanese", "arabic", "persian",
+
+            "ethiopian", "moroccan",
+
+            "fusion", "bakery", "cafe", "desserts",
+            "healthy", "streetfood", "other"
+          ].map((item) => (
+            <SelectItem
+              key={item}
+              value={item}
+              className="flex items-center gap-2"
+            >
+              {/* Checkbox inside dropdown */}
+              <input
+                type="checkbox"
+                checked={
+                  Array.isArray(field.value) && field.value.includes(item)
+                }
+                readOnly
+                className="h-4 w-4"
+              />
+
+              <span className="capitalize">
+                {item.replace(/_/g, " ")}
+              </span>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* Selected items shown outside dropdown */}
+      {Array.isArray(field.value) && field.value.length > 0 && (
+        <div className="mt-2 text-sm text-muted-foreground">
+          <strong>Selected:</strong> {field.value.join(", ")}
+        </div>
+      )}
+
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+
+       
+        
+
+
 
                                 <FormField
                                     control={form.control}
