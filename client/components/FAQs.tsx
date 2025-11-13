@@ -7,34 +7,25 @@ import {
 
 const questions = [
     {
-    q: 'How do I reserve a table?',
-    a: 'You can book a table instantly through our platform by selecting your preferred restaurant, date, time, and number of guests. You’ll receive an instant confirmation once the reservation is complete.',
-},
-{
-    q: 'Can I modify or cancel my reservation?',
-    a: 'Yes, you can modify or cancel your reservation easily from your account dashboard. Please note that some restaurants have specific cancellation policies that will be shown during booking.',
-},
-{
-    q: 'How will I know if my reservation is confirmed?',
-    a: 'Once your booking is confirmed, you’ll receive a confirmation email and SMS with all reservation details. You can also view it anytime in your dashboard.',
-},
-{
-    q: 'Do I need to create an account to book a table?',
-    a: 'While guests can browse restaurants freely, an account is required to confirm and manage reservations securely.',
-},
-{
-    q: 'What happens if I’m running late?',
-    a: 'Most restaurants hold your table for 15–20 minutes past your reservation time. We recommend calling the restaurant directly if you expect to be late.',
-},
-{
-    q: 'Do restaurants on Reserve Beta offer special deals?',
-    a: 'Many of our partner restaurants offer exclusive discounts, set menus, or happy hour deals. These offers are displayed on their profile pages.',
-},
-{
-    q: 'How do I contact customer support?',
-    a: 'You can reach our support team anytime through the “Contacts” section or by emailing support@reservebeta.com.',
-}
-
+        q: 'How do I reserve a table?',
+        a: 'You can book a table instantly through our platform by selecting your preferred restaurant, date, time, and number of guests. You’ll receive an instant confirmation once the reservation is complete.',
+    },
+    {
+        q: 'How will I know if my reservation is confirmed?',
+        a: 'Once your booking is confirmed, you’ll receive a confirmation email and SMS with all reservation details. You can also view it anytime in your dashboard.',
+    },
+    {
+        q: 'Do I need to create an account to book a table?',
+        a: 'Yes, an account is required to confirm and manage reservations securely.',
+    },
+    {
+        q: 'What happens if I’m running late?',
+        a: 'Most restaurants hold your table for 15–20 minutes past your reservation time. We recommend calling the restaurant directly if you expect to be late.',
+    },
+    {
+        q: 'How do I contact customer support?',
+        a: 'You can reach our support team anytime through the “Contacts” section or by emailing support@reservebeta.com.',
+    }
 ];
 
 export function FAQs() {
