@@ -92,7 +92,7 @@ export function MultiStepRestaurantForm() {
     });
 
     const stepFieldMap: Record<number, (keyof RestaurantFormData)[]> = {
-        1: ['restaurantName', 'ownerName', 'since', 'slogan', 'about'],
+        1: ['restaurantName', 'ownerName', 'since', 'slogan', 'about','cuisine'],
         2: [
             'address.line1',
             'address.line2',
