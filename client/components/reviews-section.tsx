@@ -1,131 +1,135 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useEffect, useState, useMemo } from "react"
-import axios from "axios"
-import { Loader2, Star, MessageSquare, Filter } from "lucide-react"
-import { backend } from "@/config/backend"
-import { Toast } from "@/components/Toast"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ReviewDialog } from "@/components/review-dialog"
-import { ReviewCard } from "@/components/review-card"
-import { ReviewSummaryDialog } from "@/components/review-summary-dialog"
+import type React from "react";
+import { useEffect, useState, useMemo } from "react";
+import axios from "axios";
+import { Loader2, Star, MessageSquare, Filter } from "lucide-react";
+import { backend } from "@/config/backend";
+import { Toast } from "@/components/Toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReviewDialog } from "@/components/review-dialog";
+import { ReviewCard } from "@/components/review-card";
+import { ReviewSummaryDialog } from "@/components/review-summary-dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 interface Review {
-  name: string
-  content: string
-  rate: number
-  createdAt: string
+  name: string;
+  content: string;
+  rate: number;
+  createdAt: string;
 }
 
 interface ReviewsResponse {
-  success: boolean
-  reviews: Review[]
-  histogram: {
-    1: number
-    2: number
-    3: number
-    4: number
-    5: number
-  }
+  success: boolean;
+  reviews: Review[];
+  histogram: Record<1 | 2 | 3 | 4 | 5, number>;
 }
 
 interface ReviewsSectionProps {
-  restaurantId: string
-  userId: string
+  restaurantId: string;
+  userId: string;
+  onReviewAdded?: () => Promise<void> | void;
 }
 
-type SortOption = "recent" | "highest" | "lowest"
+type SortOption = "recent" | "highest" | "lowest";
 
 export function ReviewsSection({
   restaurantId,
   userId,
+  onReviewAdded,
 }: ReviewsSectionProps): React.ReactElement {
-  const [reviews, setReviews] = useState<Review[]>([])
-  const [histogram, setHistogram] = useState({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 })
-  const [isLoading, setIsLoading] = useState(true)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isSummaryOpen, setIsSummaryOpen] = useState(false)
-  const [sortOption, setSortOption] = useState<SortOption>("recent")
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [histogram, setHistogram] = useState({
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [sortOption, setSortOption] = useState<SortOption>("recent");
 
-  // -------------------- Fetch reviews --------------------
+  // 🔁 Fetch all reviews
   const fetchReviews = async (): Promise<void> => {
     try {
+      setIsLoading(true);
       const restaurantIdStr = Array.isArray(restaurantId)
         ? restaurantId[0]
-        : restaurantId
-      setIsLoading(true)
+        : restaurantId;
+
       const { data } = await backend.post<ReviewsResponse>(
         "/api/v1/review/get-reviews",
-        {
-          restaurantID: restaurantIdStr,
-        }
-      )
+        { restaurantID: restaurantIdStr }
+      );
 
       if (data.success) {
-        setReviews(data.reviews)
-        setHistogram(data.histogram)
+        setReviews(data.reviews);
+        setHistogram(data.histogram);
       }
     } catch (error: unknown) {
-      console.error("Error fetching reviews:", error)
+      console.error("Error fetching reviews:", error);
       if (axios.isAxiosError(error)) {
-        Toast.error("Error", {
+        Toast.error("Error loading reviews", {
           description:
-            error.response?.data?.message || "Failed to load reviews",
-        })
+            error.response?.data?.message || "Please try again later.",
+        });
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
+  // Load reviews on mount
   useEffect(() => {
-    fetchReviews()
-  }, [restaurantId])
+    fetchReviews();
+  }, [restaurantId]);
 
-  const handleReviewAdded = (): void => {
-    setIsDialogOpen(false)
-    fetchReviews()
-  }
+  // ✅ Handle after submitting a review
+  const handleReviewAdded = async (): Promise<void> => {
+    setIsDialogOpen(false); // close immediately
+    Toast.success("Review submitted successfully!");
+    await fetchReviews();
+    if (onReviewAdded) await onReviewAdded(); // refresh parent count
+  };
 
-  // -------------------- Sorting Logic --------------------
+  // Sort logic
   const sortedReviews = useMemo(() => {
-    const sorted = [...reviews]
+    const sorted = [...reviews];
     switch (sortOption) {
       case "highest":
-        return sorted.sort((a, b) => b.rate - a.rate)
+        return sorted.sort((a, b) => b.rate - a.rate);
       case "lowest":
-        return sorted.sort((a, b) => a.rate - b.rate)
+        return sorted.sort((a, b) => a.rate - b.rate);
       default:
         return sorted.sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
+        );
     }
-  }, [reviews, sortOption])
+  }, [reviews, sortOption]);
 
-  // -------------------- UI --------------------
   return (
-    <div className="space-y-6">
+    <section className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Reviews</h2>
+          <h2 className="text-2xl font-semibold text-foreground">Reviews</h2>
           <p className="text-sm text-muted-foreground">
             {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2 items-center">
-          {/* Sort Filter */}
+          {/* Sort */}
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <Select
@@ -143,7 +147,7 @@ export function ReviewsSection({
             </Select>
           </div>
 
-          {/* Add Review + Summary Buttons */}
+          {/* Buttons */}
           <ReviewDialog
             restaurantId={restaurantId}
             userId={userId}
@@ -162,11 +166,13 @@ export function ReviewsSection({
         </div>
       </div>
 
-      {/* Rating Histogram */}
+      {/* Histogram */}
       {Object.values(histogram).some((count) => count > 0) && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Rating Distribution</CardTitle>
+            <CardTitle className="text-base text-foreground">
+              Rating Distribution
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {[5, 4, 3, 2, 1].map((rating) => (
@@ -177,7 +183,7 @@ export function ReviewsSection({
                 </div>
                 <div className="flex-1 bg-muted rounded-full h-2">
                   <div
-                    className="bg-primary h-2 rounded-full"
+                    className="bg-primary h-2 rounded-full transition-all"
                     style={{
                       width: `${
                         reviews.length > 0
@@ -198,7 +204,7 @@ export function ReviewsSection({
         </Card>
       )}
 
-      {/* Reviews List */}
+      {/* Reviews */}
       {isLoading ? (
         <div className="flex justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -207,9 +213,11 @@ export function ReviewsSection({
         <Card>
           <CardContent className="text-center py-12">
             <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-medium mb-2">No reviews yet</h3>
+            <h3 className="text-lg font-medium mb-2 text-foreground">
+              No reviews yet
+            </h3>
             <p className="text-sm text-muted-foreground mb-6">
-              Be the first to share your experience with this restaurant
+              Be the first to share your experience with this restaurant.
             </p>
           </CardContent>
         </Card>
@@ -221,12 +229,12 @@ export function ReviewsSection({
         </div>
       )}
 
-      {/* Review Summary Dialog */}
+      {/* Summary Dialog */}
       <ReviewSummaryDialog
         isOpen={isSummaryOpen}
         onOpenChange={setIsSummaryOpen}
         restaurantId={restaurantId}
       />
-    </div>
-  )
+    </section>
+  );
 }
