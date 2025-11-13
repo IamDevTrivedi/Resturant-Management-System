@@ -9,7 +9,7 @@ const isEarlierTime = (start: string, end: string) => {
 
 export const restaurantSchema = z.object({
     restaurantName: z.string().min(2, 'Restaurant name must be at least 2 characters'),
-    
+    cuisine: z.string().min(1, "Cuisine type is required"),
     address: z.object({
         line1: z.string().min(3, 'Address line 1 must be at least 3 characters'),
         line2: z.string().min(3, 'Address line 2 must be at least 3 characters'),
