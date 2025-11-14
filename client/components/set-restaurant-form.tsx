@@ -5,14 +5,22 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Building2, MapPin, Clock, ImageIcon, CheckCircle } from 'lucide-react';
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Building2,
+  MapPin,
+  Clock,
+  ImageIcon,
+  CheckCircle,
+  CreditCard,
+} from 'lucide-react';
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -20,74 +28,140 @@ import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ProgressIndicator } from '@/components/progress-indicator';
 import { PremiumImageUpload } from '@/components/image-upload';
+import { Toast } from '@/components/Toast';
+
 import { restaurantSchema, type RestaurantFormData } from '@/lib/restaurant-schema';
 import { backend } from '@/config/backend';
 import { useRestaurantData } from '@/store/restaurant';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 
+
 const STEPS = [
-    {
-        number: 1,
-        label: 'Basic Info',
-        icon: '🏠',
-    },
-    {
-        number: 2,
-        label: 'Address',
-        icon: '📍',
-    },
-    {
-        number: 3,
-        label: 'Hours & Contact',
-        icon: '🕓',
-    },
-    {
-        number: 4,
-        label: 'Branding',
-        icon: '🖼️',
-    },
+  { number: 1, label: 'Basic Info', icon: '🏠' },
+  { number: 2, label: 'Address', icon: '📍' },
+  { number: 3, label: 'Hours & Contact', icon: '🕓' },
+  { number: 4, label: 'Branding', icon: '🖼' },
+  { number: 5, label: 'Bank Details', icon: '💳' },
 ];
 
-export function MultiStepRestaurantForm() {
-    const router = useRouter();
-    const [currentStep, setCurrentStep] = useState(1);
-    const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const { restaurant, setRestaurant } = useRestaurantData();
+export function MultiStepRestaurantForm(): React.ReactElement {
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
 
-    const form = useForm<RestaurantFormData>({
-        resolver: zodResolver(restaurantSchema),
-        mode: 'onChange',
-        defaultValues: {
-            restaurantName: '',
-            ownerName: '',
-            phoneNumber: '',
-            restaurantEmail: '',
-            websiteURL: '',
-            socialMedia: {
-                facebook: '',
-                twitter: '',
-                instagram: '',
-            },
-            address: {
-                line1: '',
-                line2: '',
-                line3: '',
-                city: '',
-                state: '',
-                country: '',
-                zip: '',
-            },
-            openingHours: {
-                weekday: { start: '09:00', end: '22:00' },
-                weekend: { start: '10:00', end: '23:00' },
-            },
-            logoURL: '',
-            bannerURL: '',
-            about: '',
-            since: new Date().getFullYear(),
-            slogan: '',
+  const { restaurant, setRestaurant } = useRestaurantData();
+
+  const form = useForm<RestaurantFormData>({
+    resolver: zodResolver(restaurantSchema),
+    mode: 'onChange',
+    defaultValues: {
+      restaurantName: '',
+      ownerName: '',
+      phoneNumber: '',
+      restaurantEmail: '',
+      websiteURL: '',
+      socialMedia: {
+        facebook: '',
+        twitter: '',
+        instagram: '',
+      },
+      address: {
+        line1: '',
+        line2: '',
+        line3: '',
+        city: '',
+        state: '',
+        country: '',
+        zip: '',
+      },
+      openingHours: {
+        weekday: { start: '09:00', end: '22:00' },
+        weekend: { start: '10:00', end: '23:00' },
+      },
+      logoURL: '',
+      bannerURL: '',
+      about: '',
+      since: new Date().getFullYear(),
+      slogan: '',
+
+      bankAccount: {
+        name: '',
+        number: '',
+        IFSC: '',
+      },
+    },
+  });
+
+  const stepFieldMap: Record<number, (keyof RestaurantFormData)[] | any> = {
+    1: ['restaurantName', 'ownerName', 'since', 'slogan', 'about'],
+    2: [
+      'address.line1',
+      'address.line2',
+      'address.city',
+      'address.state',
+      'address.country',
+      'address.zip',
+    ],
+    3: ['phoneNumber', 'restaurantEmail', 'websiteURL', 'openingHours'],
+    4: ['logoURL', 'bannerURL', 'socialMedia'],
+    5: ['bankAccount.name', 'bankAccount.number', 'bankAccount.IFSC'],
+  };
+
+  const handleStepChange = async (nextStep: number) => {
+    // clamp step range
+    if (nextStep < 1) nextStep = 1;
+    if (nextStep > STEPS.length) nextStep = STEPS.length;
+
+    // going back - just set
+    if (nextStep < currentStep) {
+      setCurrentStep(nextStep);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const fieldsToValidate = stepFieldMap[currentStep] || [];
+    const ok = await form.trigger(fieldsToValidate);
+    if (!ok) return;
+
+    if (!completedSteps.includes(currentStep)) {
+      setCompletedSteps((s) => [...s, currentStep]);
+    }
+
+    setCurrentStep(nextStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const onSubmit = async (fData: RestaurantFormData) => {
+    setIsSubmitting(true);
+    try {
+      const today = new Date().toISOString().split('T')[0];
+
+      const formattedOpeningHours = {
+        weekday: {
+          start: ${today}T${fData.openingHours.weekday.start}:00,
+          end: ${today}T${fData.openingHours.weekday.end}:00,
+        },
+        weekend: {
+          start: ${today}T${fData.openingHours.weekend.start}:00,
+          end: ${today}T${fData.openingHours.weekend.end}:00,
+        },
+      };
+
+      const payload = {
+        ...fData,
+        openingHours: formattedOpeningHours,
+        websiteURL: fData.websiteURL || undefined,
+        socialMedia: {
+          facebook: fData.socialMedia?.facebook?.trim() || undefined,
+          twitter: fData.socialMedia?.twitter?.trim() || undefined,
+          instagram: fData.socialMedia?.instagram?.trim() || undefined,
+        },
+        bankAccount: {
+          name: fData.bankAccount.name?.trim() || '',
+          number: fData.bankAccount.number?.trim() || '',
+          IFSC: fData.bankAccount.IFSC?.trim() || '',
         },
     });
 
@@ -112,8 +186,127 @@ export function MultiStepRestaurantForm() {
             return;
         }
 
-        const fieldsToValidate = stepFieldMap[currentStep];
-        const isValid = await form.trigger(fieldsToValidate);
+        setShowSuccessModal(true);
+        Toast.success('Restaurant created', { description: data.message || 'Successfully created' });
+
+        // small delay so user sees modal
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          router.replace('/restaurant/dashboard');
+        }, 1200);
+      } else {
+        Toast.error('Failed', { description: data.message || 'Failed to create restaurant' });
+      }
+    } catch (error: unknown) {
+      console.error('Submit error:', error);
+      if (axios.isAxiosError(error)) {
+        Toast.error('Error', { description: error.response?.data?.message || 'Submission failed' });
+      } else if (error instanceof Error) {
+        Toast.error('Error', { description: error.message });
+      } else {
+        Toast.error('Error', { description: 'An unexpected error occurred' });
+      }
+
+      // move to last step to show bank errors (if any)
+      setCurrentStep(5);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSuccessRedirect = () => {
+    setShowSuccessModal(false);
+    router.push('/restaurant/dashboard');
+  };
+
+  return (
+    <div className="w-full space-y-6 sm:space-y-8">
+      {/* Progress Indicator */}
+      <ProgressIndicator steps={STEPS} currentStep={currentStep} completedSteps={completedSteps} />
+
+      <Card className="shadow-lg border-border">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8 p-6 sm:p-8">
+            {/* -----------------------
+               Step 1 — Basic Info
+               ----------------------- */}
+            {currentStep === 1 && (
+              <div className="space-y-4 sm:space-y-6 animate-in fade-in">
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
+                  <Building2 className="h-5 w-5 sm:h-6 sm:w-6" />
+                  Basic Information
+                </h2>
+
+                <FormField
+                  control={form.control}
+                  name="restaurantName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground font-semibold">
+                        Restaurant Name <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., The Golden Fork" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="ownerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground font-semibold">
+                        Owner Name <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="since"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-semibold">Since Year</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="2020"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(e.target.value ? Number.parseInt(e.target.value, 10) : undefined)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="slogan"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground font-semibold">
+                          Slogan <span className="text-destructive">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="Your restaurant motto" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
         if (isValid) {
             if (!completedSteps.includes(currentStep)) {
@@ -871,7 +1064,117 @@ export function MultiStepRestaurantForm() {
                         </Button>
                     </Card>
                 </div>
+              </div>
             )}
+
+            {/* -----------------------
+               Step 5 — Bank Details (NEW)
+               ----------------------- */}
+            {currentStep === 5 && (
+              <div className="space-y-4 sm:space-y-6 animate-in fade-in">
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
+                  <CreditCard className="h-5 w-5 sm:h-6 sm:w-6" />
+                  Bank Account Details
+                </h2>
+
+                <FormField
+                  control={form.control}
+                  name="bankAccount.name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground font-semibold">Account Holder Name <span className="text-destructive">*</span></FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., John Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="bankAccount.number"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground font-semibold">Account Number <span className="text-destructive">*</span></FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., 123456789012" {...field} maxLength={24} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="bankAccount.IFSC"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground font-semibold">IFSC Code <span className="text-destructive">*</span></FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., HDFC0001234" {...field} maxLength={11} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+
+            {/* -----------------------
+               Navigation Buttons (Prev / Next / Submit)
+               ----------------------- */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between pt-6 sm:pt-8 border-t border-border">
+  <Button
+    type="button"
+    variant="outline"
+    onClick={() => handleStepChange(currentStep - 1)}
+    disabled={currentStep === 1}
+    className="w-full sm:w-auto"
+  >
+    Previous
+  </Button>
+
+  {currentStep < STEPS.length ? (
+    <Button
+      type="button"
+      onClick={() => handleStepChange(currentStep + 1)}
+      className="w-full sm:w-auto"
+    >
+      Next Step
+    </Button>
+  ) : (
+    <Button
+      type="submit"
+      disabled={isSubmitting}
+      className="w-full sm:w-auto"
+    >
+      {isSubmitting ? 'Submitting...' : 'Submit'}
+    </Button>
+  )}
+</div>
+
+          </form>
+        </Form>
+      </Card>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <Card className="w-full max-w-md p-6 sm:p-8 space-y-4">
+            <div className="flex justify-center">
+              <CheckCircle className="h-16 w-16 text-primary" />
+            </div>
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-foreground">Restaurant Created!</h2>
+              <p className="text-sm text-muted-foreground">Your restaurant was successfully created. Redirecting to profile...</p>
+            </div>
+            <div>
+              <Button onClick={handleSuccessRedirect} className="w-full">Go to Dashboard</Button>
+            </div>
+          </Card>
         </div>
-    );
+      )}
+    </div>
+  );
 }
