@@ -1,3 +1,4 @@
+// components/reviews-section.tsx
 "use client";
 
 import type React from "react";
@@ -18,6 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  useBrowseRestaurantStore,
+  type Restaurant,
+} from "@/store/restaurant-browse";
 
 interface Review {
   name: string;
@@ -40,6 +45,45 @@ interface ReviewsSectionProps {
 
 type SortOption = "recent" | "highest" | "lowest";
 
+// 🔥 MAP BACKEND RESTAURANT → STORE RESTAURANT SHAPE
+const mapBackendRestaurantToStore = (
+  backendRestaurant: any,
+  cityName: string,
+  cuisinesList: string[]
+): Restaurant => {
+  const r = backendRestaurant;
+
+  const street = [r.address?.line1, r.address?.line2, r.address?.line3]
+    .filter(Boolean)
+    .join(", ");
+
+  return {
+    _id: r._id,
+    restaurantName: r.restaurantName,
+    logoURL: r.logoURL || "/placeholder.svg",
+    bannerURL: r.bannerURL || "/placeholder.svg",
+    ratingsSum: r.ratingsSum ?? 0,
+    ratingsCount: r.ratingsCount ?? 0,
+    slogan: r.slogan ?? "",
+    address: {
+      street,
+      city: cityName || r.address?.city || "Unknown",
+      zip: r.address?.zip,
+    },
+    openingHours: {
+      weekdayOpen: r.openingHours?.weekday?.start ?? "",
+      weekdayClose: r.openingHours?.weekday?.end ?? "",
+      weekendOpen: r.openingHours?.weekend?.start ?? "",
+      weekendClose: r.openingHours?.weekend?.end ?? "",
+    },
+    status: r.status?.temporarilyClosed ? "closed" : "open",
+    city: cityName || r.address?.city || "Unknown",
+    cuisines: cuisinesList?.length ? cuisinesList : ["General"],
+    temporarilyClosed: r.status?.temporarilyClosed ?? false,
+    isOpen: !r.status?.temporarilyClosed,
+  };
+};
+
 export function ReviewsSection({
   restaurantId,
   userId,
@@ -58,29 +102,24 @@ export function ReviewsSection({
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   const [sortOption, setSortOption] = useState<SortOption>("recent");
 
-  // 🔁 Fetch all reviews
+  // Fetch all reviews
   const fetchReviews = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      const restaurantIdStr = Array.isArray(restaurantId)
-        ? restaurantId[0]
-        : restaurantId;
 
       const { data } = await backend.post<ReviewsResponse>(
         "/api/v1/review/get-reviews",
-        { restaurantID: restaurantIdStr }
+        { restaurantID: restaurantId }
       );
 
       if (data.success) {
         setReviews(data.reviews);
         setHistogram(data.histogram);
       }
-    } catch (error: unknown) {
-      console.error("Error fetching reviews:", error);
+    } catch (error) {
       if (axios.isAxiosError(error)) {
         Toast.error("Error loading reviews", {
-          description:
-            error.response?.data?.message || "Please try again later.",
+          description: error.response?.data?.message,
         });
       }
     } finally {
@@ -88,20 +127,44 @@ export function ReviewsSection({
     }
   };
 
-  // Load reviews on mount
+  // Load on mount
   useEffect(() => {
     fetchReviews();
   }, [restaurantId]);
 
-  // ✅ Handle after submitting a review
+  // After review is added
   const handleReviewAdded = async (): Promise<void> => {
-    setIsDialogOpen(false); // close immediately
-    Toast.success("Review submitted successfully!");
+    setIsDialogOpen(false);
+    Toast.success("Review submitted!");
+
+    // refresh reviews
     await fetchReviews();
-    if (onReviewAdded) await onReviewAdded(); // refresh parent count
+
+    // refresh review count outside
+    onReviewAdded && (await onReviewAdded());
+
+    // refresh ALL RESTAURANTS globally in Zustand
+    try {
+      const { setRestaurants } = useBrowseRestaurantStore.getState();
+
+      const { data } = await backend.post(
+        "/api/v1/restaurants/get-near-by-restaurants",
+        { maxDistance: 200000 }
+      );
+
+      if (data.success) {
+        const refreshed = data.restaurants.map(
+          ([restaurantObj, cityName, cuisinesList]: [any, string, string[]]) =>
+            mapBackendRestaurantToStore(restaurantObj, cityName, cuisinesList)
+        );
+
+        setRestaurants(refreshed);
+      }
+    } catch (err) {
+      console.error("Store refresh failed:", err);
+    }
   };
 
-  // Sort logic
   const sortedReviews = useMemo(() => {
     const sorted = [...reviews];
     switch (sortOption) {
@@ -119,35 +182,32 @@ export function ReviewsSection({
 
   return (
     <section className="space-y-6">
-      {/* Header */}
+      {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-semibold text-foreground">Reviews</h2>
+          <h2 className="text-2xl font-semibold">Reviews</h2>
           <p className="text-sm text-muted-foreground">
             {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 items-center">
-          {/* Sort */}
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <Select
-              value={sortOption}
-              onValueChange={(v: SortOption) => setSortOption(v)}
-            >
-              <SelectTrigger className="w-[160px]">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="recent">Most Recent</SelectItem>
-                <SelectItem value="highest">Highest Rated</SelectItem>
-                <SelectItem value="lowest">Lowest Rated</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="flex gap-2 items-center flex-wrap">
+          <Filter className="h-4 w-4 text-muted-foreground" />
 
-          {/* Buttons */}
+          <Select
+            value={sortOption}
+            onValueChange={(v: SortOption) => setSortOption(v)}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent">Most Recent</SelectItem>
+              <SelectItem value="highest">Highest Rated</SelectItem>
+              <SelectItem value="lowest">Lowest Rated</SelectItem>
+            </SelectContent>
+          </Select>
+
           <ReviewDialog
             restaurantId={restaurantId}
             userId={userId}
@@ -155,6 +215,7 @@ export function ReviewsSection({
             onOpenChange={setIsDialogOpen}
             onReviewAdded={handleReviewAdded}
           />
+
           <Button
             variant="outline"
             onClick={() => setIsSummaryOpen(true)}
@@ -166,24 +227,24 @@ export function ReviewsSection({
         </div>
       </div>
 
-      {/* Histogram */}
-      {Object.values(histogram).some((count) => count > 0) && (
+      {/* HISTOGRAM */}
+      {Object.values(histogram).some((x) => x > 0) && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base text-foreground">
-              Rating Distribution
-            </CardTitle>
+            <CardTitle className="text-base">Rating Distribution</CardTitle>
           </CardHeader>
+
           <CardContent className="space-y-3">
             {[5, 4, 3, 2, 1].map((rating) => (
               <div key={rating} className="flex items-center gap-4">
                 <div className="flex items-center gap-1 w-16">
-                  <span className="text-sm font-medium">{rating}</span>
+                  <span>{rating}</span>
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                 </div>
+
                 <div className="flex-1 bg-muted rounded-full h-2">
                   <div
-                    className="bg-primary h-2 rounded-full transition-all"
+                    className="bg-primary h-2 rounded-full"
                     style={{
                       width: `${
                         reviews.length > 0
@@ -195,7 +256,8 @@ export function ReviewsSection({
                     }}
                   />
                 </div>
-                <span className="text-sm text-muted-foreground w-12 text-right">
+
+                <span className="w-10 text-sm text-muted-foreground">
                   {histogram[rating as keyof typeof histogram]}
                 </span>
               </div>
@@ -204,32 +266,36 @@ export function ReviewsSection({
         </Card>
       )}
 
-      {/* Reviews */}
+      {/* REVIEWS LIST */}
       {isLoading ? (
-        <div className="flex justify-center py-8">
+        <div className="flex justify-center py-10">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
         </div>
       ) : sortedReviews.length === 0 ? (
         <Card>
-          <CardContent className="text-center py-12">
-            <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-medium mb-2 text-foreground">
-              No reviews yet
-            </h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              Be the first to share your experience with this restaurant.
-            </p>
+          <CardContent className="py-12 text-center">
+            <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+            No reviews yet
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
+        <div
+          className="
+            max-h-[550px]
+            overflow-y-auto
+            pr-2
+            scrollbar-thin
+            scrollbar-thumb-rounded-lg
+            scrollbar-thumb-muted
+            space-y-3
+          "
+        >
           {sortedReviews.map((review, index) => (
             <ReviewCard key={index} review={review} />
           ))}
         </div>
       )}
 
-      {/* Summary Dialog */}
       <ReviewSummaryDialog
         isOpen={isSummaryOpen}
         onOpenChange={setIsSummaryOpen}
