@@ -34,7 +34,7 @@ const bookingSchema = new Schema(
 
         status: {
             type: String,
-            enum: ['pending', 'accepted', 'rejected', 'payment pending', 'confirmed'],
+            enum: ['pending', 'accepted', 'rejected', 'payment pending', 'confirmed', 'executed'],
             default: 'pending',
         },
 
@@ -49,14 +49,22 @@ const bookingSchema = new Schema(
             required: true,
         },
 
+        // CUSTOMER PAYMENT LINK ID
         paymentLinkID: {
             type: String,
             default: null,
         },
 
+        // CUSTOMER PAYMENT LINK
         paymentLinkURL: {
             type: String,
             default: null,
+        },
+
+        // USED by CRON JOB to check if the booking details have been transferred to restaurant system
+        transferredToRestaurant: {
+            type: Boolean,
+            default: false,
         },
     },
     {

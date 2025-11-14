@@ -8,13 +8,8 @@ import logger from '@/utils/logger';
 import { transporter } from '@/config/nodemailer';
 import config from '@/config/env';
 import { bookingAcceptedTemplate, bookingRejectedTemplate } from '@/utils/emailTemplates';
-import Razorpay from 'razorpay';
 import { validatePaymentVerification } from 'razorpay/dist/utils/razorpay-utils';
-
-const razorpay = new Razorpay({
-    key_id: config.RAZORPAY_KEY_ID,
-    key_secret: config.RAZORPAY_KEY_SECRET,
-});
+import { razorpay } from '@/config/razorpay';
 
 const controller = {
     createBooking: async (req: Request, res: Response) => {
@@ -201,7 +196,7 @@ const controller = {
 
             const schema = z.object({
                 bookingID: z.string(),
-                newStatus: z.enum(['payment pending', 'rejected']),
+                newStatus: z.enum(['payment pending', 'rejected', 'executed']),
             });
 
             const result = schema.safeParse(req.body);
@@ -276,7 +271,7 @@ const controller = {
                     success: true,
                     message: 'Booking rejected and notification sent',
                 });
-            } else {
+            } else if (newStatus === 'payment pending') {
                 const paymentLink = await razorpay.paymentLink.create({
                     amount: existingBooking.numberOfGuests * 5000,
                     currency: 'INR',
@@ -432,6 +427,75 @@ const controller = {
                 success: false,
                 message: 'Internal Server Error',
                 bookingDone: false,
+            });
+        }
+    },
+
+    exceuteBooking: async (req: Request, res: Response) => {
+        try {
+            const userID = res.locals.userID! as string;
+
+            const schema = z.object({
+                bookingID: z.string(),
+            });
+
+            const result = schema.safeParse(req.body);
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid Usage',
+                    error: z.treeifyError(result.error),
+                });
+            }
+
+            const { bookingID } = result.data;
+
+            const existingRestaurant = await Restaurant.findOne({
+                owner: userID,
+            });
+
+            if (!existingRestaurant) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Unauthorized: You do not own this restaurant',
+                });
+            }
+
+            const existingBooking = await Booking.findOne({
+                _id: bookingID,
+                restaurantID: existingRestaurant._id,
+                status: 'confirmed',
+            });
+
+            if (!existingBooking) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Booking Not Found',
+                });
+            }
+
+            const ok = new Date() > existingBooking.bookingAt;
+
+            if (!ok) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Cannot exceute the Booking Before booking time',
+                });
+            }
+
+            existingBooking.status = 'executed';
+            await existingBooking.save();
+
+            return res.status(200).json({
+                success: true,
+                message: 'Booking Executed',
+                note: `You will receive ${existingBooking.numberOfGuests * 40} Rs in 3-4 Working Days`,
+            });
+        } catch (error) {
+            logger.error('Error in Exceute Booking', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
             });
         }
     },

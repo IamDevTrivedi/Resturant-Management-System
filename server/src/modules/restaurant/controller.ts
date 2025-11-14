@@ -1,3 +1,6 @@
+import config from '@/config/env';
+// import { razorpay } from '@/config/razorpay';
+import axios from 'axios';
 import Item from '@/models/item';
 import Restaurant, { IRestaurant } from '@/models/restaurant';
 import User from '@/models/user';
@@ -50,6 +53,12 @@ const controller = {
                 about: z.string().min(10).trim().optional(),
                 since: z.number().optional(),
                 slogan: z.string().min(5).trim().optional(),
+
+                bankAccount: z.object({
+                    name: z.string().min(2),
+                    number: z.string().min(5),
+                    IFSC: z.string().min(5),
+                }),
             });
 
             const result = schema.safeParse(req.body);
@@ -94,7 +103,6 @@ const controller = {
             });
 
             newRestaurant.address.line3 = newRestaurant.address.line3 || undefined;
-
             await newRestaurant.save();
 
             return res.status(201).json({
@@ -103,8 +111,7 @@ const controller = {
                 restaurantID: newRestaurant._id,
             });
         } catch (error) {
-            logger.error('Error in add restaurant controller:', error);
-
+            console.error('Error in add restaurant controller:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Internal server error',
@@ -121,7 +128,7 @@ const controller = {
                     .object({
                         line1: z.string().min(3).trim().optional(),
                         line2: z.string().min(3).trim().optional(),
-                        line3: z.string().min(3).trim().optional(),
+                        line3: z.string().trim().optional(),
                         zip: z.string().trim().optional(),
                         city: z.string().min(2).optional(),
                         state: z.string().min(2).optional(),
@@ -165,6 +172,14 @@ const controller = {
                 about: z.string().min(10).trim().optional(),
                 since: z.number().optional(),
                 slogan: z.string().min(5).trim().optional(),
+
+                bankAccount: z
+                    .object({
+                        name: z.string().min(2).optional(),
+                        number: z.string().min(2).optional(),
+                        IFSC: z.string().min(5).optional(),
+                    })
+                    .optional(),
             });
 
             const result = schema.safeParse(req.body);
@@ -177,6 +192,7 @@ const controller = {
             }
 
             const data = result.data;
+            console.log('Update restaurant data:', JSON.stringify(data, null, 2));
             const owner = res.locals.userID as string;
 
             const existingRestaurant = (await Restaurant.findOne({ owner })) as IRestaurant | null;
@@ -202,7 +218,17 @@ const controller = {
             if (data.address) {
                 if (data.address.line1) existingRestaurant.address.line1 = data.address.line1;
                 if (data.address.line2) existingRestaurant.address.line2 = data.address.line2;
-                if (data.address.line3) existingRestaurant.address.line3 = data.address.line3;
+                if (data.address.line3 !== undefined) {
+                    console.log('aaaa');
+                    if (data.address.line3.length > 0) {
+                        console.log('bbbb');
+                        console.log('line3:', data.address.line3);
+                        existingRestaurant.address.line3 = data.address.line3;
+                    } else {
+                        logger.debug('cccc');
+                        existingRestaurant.address.line3 = undefined;
+                    }
+                }
                 if (data.address.zip) existingRestaurant.address.zip = data.address.zip;
                 if (data.address.city) existingRestaurant.address.city = data.address.city;
                 if (data.address.state) existingRestaurant.address.state = data.address.state;
@@ -241,6 +267,18 @@ const controller = {
                         existingRestaurant.openingHours.weekday.end = new Date(
                             data.openingHours.weekday.end,
                         );
+                }
+            }
+
+            if (data.bankAccount) {
+                if (data.bankAccount.name) {
+                    existingRestaurant.bankAccount.name = data.bankAccount.name;
+                }
+                if (data.bankAccount.number) {
+                    existingRestaurant.bankAccount.number = data.bankAccount.number;
+                }
+                if (data.bankAccount.IFSC) {
+                    existingRestaurant.bankAccount.IFSC = data.bankAccount.IFSC;
                 }
             }
 

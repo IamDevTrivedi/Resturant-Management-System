@@ -18,7 +18,6 @@ const addressSchema = new Schema(
         line3: {
             type: String,
             required: false,
-            minLength: 3,
             trim: true,
             default: '',
         },
@@ -113,6 +112,28 @@ const statusSchema = new Schema(
     { _id: false },
 );
 
+const accountSchema = new Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+
+        number: {
+            type: String,
+            required: true,
+        },
+
+        IFSC: {
+            type: String,
+            required: true,
+        },
+    },
+    {
+        _id: false,
+    },
+);
+
 const restaurantSchema = new Schema(
     {
         restaurantName: {
@@ -193,6 +214,10 @@ const restaurantSchema = new Schema(
             required: true,
             default: () => ({}),
         },
+        bankAccount: {
+            type: accountSchema,
+            required: true,
+        },
     },
     {
         timestamps: true,
@@ -206,6 +231,7 @@ export type ISocialMedia = InferSchemaType<typeof socialMediaSchema>;
 export type ITimeSlot = InferSchemaType<typeof timeSlotSchema>;
 export type IOpeningHours = InferSchemaType<typeof openingHoursSchema>;
 export type IStatus = InferSchemaType<typeof statusSchema>;
+export type IAccount = InferSchemaType<typeof accountSchema>;
 export type IRestaurant = mongoose.Document & InferSchemaType<typeof restaurantSchema>;
 
 export default Restaurant;
