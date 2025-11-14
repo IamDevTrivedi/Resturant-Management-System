@@ -12,8 +12,6 @@ const menuItems = [
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Privacy', href: '/privacy' },
-    { name: 'Terms', href: '/terms' },
 ];
 
 export const Navbar = () => {
@@ -136,7 +134,7 @@ export const Navbar = () => {
                                             onClick={() => {
                                                 closeMobileMenu();
                                                 if (user?.role === "customer") {
-                                                    router.push('/customer/browse');
+                                                    router.push('/customer/dashboard');
                                                 }
                                                 else {
                                                     router.push('/restaurant/dashboard');
@@ -144,9 +142,7 @@ export const Navbar = () => {
                                             }}
                                         >
                                             <User />
-                                            {
-                                                user?.role === "owner" ? "Dashboard" : "Browser"
-                                            }
+                                            Dashboard
                                         </Button>
                                     </>
                                 )}
