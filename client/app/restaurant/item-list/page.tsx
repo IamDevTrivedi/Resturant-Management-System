@@ -112,7 +112,9 @@ if (!restaurant) {
   const fetchItems = async (): Promise<void> => {
     try {
       setLoading(true)
-      const response = await backend.post("/api/v1/restaurants/get-items-by-restaurant")
+      const response = await backend.post("/api/v1/restaurants/get-items-by-restaurant",{
+        restaurantID:restaurant._id
+      })
       if (response.data.success && response.data.items) {
         const fetchedItems: Item[] = response.data.items.map((item: Item) => ({
           ...item,
@@ -258,12 +260,7 @@ if (!restaurant) {
           </div>
           <div className="flex gap-3">
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="lg" className="gap-2 bg-transparent">
-                  <Eye className="h-5 w-5" />
-                  Preview Menu
-                </Button>
-              </DialogTrigger>
+              
               <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
                   <DialogTitle>Customer Menu Preview</DialogTitle>
