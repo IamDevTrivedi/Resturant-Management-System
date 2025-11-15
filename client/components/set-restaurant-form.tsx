@@ -36,6 +36,7 @@ import { useRestaurantData } from '@/store/restaurant';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 
 
+
 const STEPS = [
   { number: 1, label: 'Basic Info', icon: '🏠' },
   { number: 2, label: 'Address', icon: '📍' },
