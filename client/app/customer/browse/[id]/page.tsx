@@ -211,6 +211,16 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
             </p>
           </div>
         </div>
+        {/* Reserve Table Button */}
+<div className="flex justify-center mb-8">
+  <Button
+    size="lg"
+    onClick={() => router.push(`/customer/browse/${restaurantId}/booking`)}
+    className="px-6 py-5 text-lg font-medium"
+  >
+    Reserve Table
+  </Button>
+</div>
 
         {/* Menu */}
         <section className="mb-10">

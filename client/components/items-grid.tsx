@@ -34,8 +34,9 @@ export function ItemsGrid({ items, onEdit, onDelete }: ItemsGridProps) {
     
         const { data } = await backend.post('/api/v1/restaurants/update-item', {
           itemID: id,
-          isAvailable: item?.isAvailable,
+          isAvailable: !item?.isAvailable,
         });
+        console.log("d ",data)
     
         Toast.success(data?.message || 'Item availability updated successfully');
       } catch (error: unknown) {
