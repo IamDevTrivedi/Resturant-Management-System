@@ -211,6 +211,17 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
             </p>
           </div>
         </div>
+        {/* Reserve Table Button */}
+<div className="flex justify-center mb-8">
+  <Button
+    size="lg"
+    onClick={() => router.push(`/customer/browse/${restaurantId}/booking`)}
+    className="px-6 py-5 text-lg font-medium"
+  >
+    Reserve Table
+  </Button>
+</div>
+
 
         {/* Menu */}
         <section className="mb-10">
@@ -223,7 +234,7 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
             </Alert>
           )}
 
-          {!menuLoading &&
+          {!menuLoading &&groupedMenu?
             Object.entries(groupedMenu).map(([cuisine, categories]) => (
               <div key={cuisine} className="mb-8">
                 <h3 className="text-xl font-semibold mb-3">{cuisine}</h3>
@@ -246,7 +257,7 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
                   </Card>
                 ))}
               </div>
-            ))}
+            )):<h3>No Menu Available</h3>}
         </section>
 
         {/* Info Section */}

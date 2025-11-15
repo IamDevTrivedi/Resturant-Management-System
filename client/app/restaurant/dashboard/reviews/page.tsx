@@ -262,7 +262,7 @@ export default function OwnerReviewsPage(): React.ReactElement {
 
             {/* Summary button */}
             <Button
-              className="flex items-center gap-2 bg-primary text-white"
+              className="flex items-center gap-2 bg-primary text-primary-foreground"
               onClick={handleGetSummary}
               disabled={summaryLoading}
             >

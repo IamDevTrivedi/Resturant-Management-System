@@ -1,5 +1,5 @@
 'use client';
-import { MultiStepRestaurantFormEdit } from '@/components/set-restaurant-update-form';
+import  MultiStepRestaurantFormEdit  from '@/components/set-restaurant-update-form';
 import { Card } from '@/components/ui/card';
 import { useRestaurantData } from '@/store/restaurant';
 import { useRouter } from 'next/navigation';

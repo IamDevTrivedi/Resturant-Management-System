@@ -588,21 +588,25 @@ const controller = {
 
     getItemsByRestaurant: async (req: Request, res: Response) => {
         try {
-            const owner = res.locals.userID! as string;
 
-            const restaurant = await Restaurant.findOne({
-                owner: owner,
+            const schema = z.object({
+                restaurantID: z.string(),
             });
 
-            if (!restaurant) {
-                return res.status(404).json({
+            const result = schema.safeParse(req.body);
+
+            if (!result.success) {
+                return res.status(400).json({
                     success: false,
-                    message: 'Restaurant not found for the owner',
+                    message: 'Invalid restaurant ID provided',
+                    errors: z.treeifyError(result.error),
                 });
             }
 
+            const { restaurantID } = result.data;
+
             const items = await Item.find({
-                restaurantID: restaurant._id,
+                restaurantID: restaurantID,
             });
 
             if (items.length === 0) {
