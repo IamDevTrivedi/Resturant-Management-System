@@ -33,6 +33,15 @@ import { Toast } from '@/components/Toast';
 import { restaurantSchema, type RestaurantFormData } from '@/lib/restaurant-schema';
 import { backend } from '@/config/backend';
 import { useRestaurantData } from '@/store/restaurant';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
 
 
 const STEPS = [
@@ -49,6 +58,8 @@ export function MultiStepRestaurantForm(): React.ReactElement {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+
 
   const { restaurant, setRestaurant } = useRestaurantData();
 
@@ -109,28 +120,34 @@ export function MultiStepRestaurantForm(): React.ReactElement {
   };
 
   const handleStepChange = async (nextStep: number) => {
-    // clamp step range
-    if (nextStep < 1) nextStep = 1;
-    if (nextStep > STEPS.length) nextStep = STEPS.length;
-
-    // going back - just set
+    // Backward navigation — no validation
     if (nextStep < currentStep) {
-      setCurrentStep(nextStep);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
+        setCurrentStep(nextStep);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
     }
 
-    const fieldsToValidate = stepFieldMap[currentStep] || [];
+    // If moving to Step 5 (last step) — DO NOT validate Step 5
+    if (nextStep === 5) {
+        // Validate Step 4 before entering Step 5
+        const ok = await form.trigger(stepFieldMap[currentStep]);
+        if (!ok) return;
+
+        setCompletedSteps((prev) => [...new Set([...prev, currentStep])]);
+        setCurrentStep(5);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+    }
+
+    // Normal validation for Steps 1 → 2 → 3 → 4
+    const fieldsToValidate = stepFieldMap[currentStep];
     const ok = await form.trigger(fieldsToValidate);
     if (!ok) return;
 
-    if (!completedSteps.includes(currentStep)) {
-      setCompletedSteps((s) => [...s, currentStep]);
-    }
-
+    setCompletedSteps((prev) => [...new Set([...prev, currentStep])]);
     setCurrentStep(nextStep);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+};
 
   const onSubmit = async (fData: RestaurantFormData) => {
     setIsSubmitting(true);
@@ -716,23 +733,28 @@ export function MultiStepRestaurantForm(): React.ReactElement {
     Previous
   </Button>
 
-  {currentStep < STEPS.length ? (
-    <Button
-      type="button"
-      onClick={() => handleStepChange(currentStep + 1)}
-      className="w-full sm:w-auto"
-    >
-      Next Step
-    </Button>
-  ) : (
-    <Button
-      type="submit"
-      disabled={isSubmitting}
-      className="w-full sm:w-auto"
-    >
-      {isSubmitting ? 'Submitting...' : 'Submit'}
-    </Button>
-  )}
+  {/* Steps 1–4 → normal Next */}
+{currentStep < 5 && (
+  <Button
+    type="button"
+    onClick={() => handleStepChange(currentStep + 1)}
+    className="w-full sm:w-auto"
+  >
+    Next Step
+  </Button>
+)}
+
+{/* Step 5 → Show Confirm Dialog instead of submitting */}
+{currentStep === 5 && (
+  <Button
+    type="button"
+    className="w-full sm:w-auto"
+    onClick={() => setConfirmOpen(true)}
+  >
+    Submit
+  </Button>
+)}
+
 </div>
 
           </form>
@@ -756,6 +778,40 @@ export function MultiStepRestaurantForm(): React.ReactElement {
           </Card>
         </div>
       )}
+
+<Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+  <DialogContent className="sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle>Confirm Submission</DialogTitle>
+      <DialogDescription>
+        Are you sure you want to create your restaurant profile?  
+        Once submitted, your restaurant will go live.
+      </DialogDescription>
+    </DialogHeader>
+
+    <DialogFooter className="flex justify-end gap-3 pt-4">
+      <Button
+        variant="outline"
+        onClick={() => setConfirmOpen(false)}
+        className="w-full sm:w-auto"
+      >
+        Cancel
+      </Button>
+
+      <Button
+        className="w-full sm:w-auto"
+        disabled={isSubmitting}
+        onClick={() => {
+          setConfirmOpen(false);
+          void form.handleSubmit(onSubmit)();
+        }}
+      >
+        {isSubmitting ? "Submitting..." : "Confirm Submit"}
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
     </div>
   );
 }
