@@ -40,7 +40,7 @@ const formatTime = (timeStr: string): string => {
     hours = hours % 12 || 12;
     const formattedMinutes = minutes.toString().padStart(2, "0");
 
-    return `${hours}:${formattedMinutes} ${period}`;
+    return ${hours}:${formattedMinutes} ${period};
   } catch {
     return timeStr;
   }
@@ -274,7 +274,7 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
                     }`
                   );
                   window.open(
-                    `https://www.google.com/maps/search/?api=1&query=${q}`,
+                    https://www.google.com/maps/search/?api=1&query=${q},
                     "_blank"
                   );
                 }}
