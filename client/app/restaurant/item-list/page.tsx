@@ -233,7 +233,7 @@ if (!restaurant) {
   }
 
   const groupedItems: GroupedItemsMap = filteredItems.reduce((acc: GroupedItemsMap, item: Item) => {
-    const key: string = `${item.cuisine}-${item.category}`
+    const key: string = ${item.cuisine}-${item.category}
     if (!acc[key]) {
       acc[key] = { cuisine: item.cuisine, category: item.category, items: [] }
     }

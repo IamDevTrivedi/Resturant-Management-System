@@ -40,7 +40,7 @@ const formatTime = (timeStr: string): string => {
     hours = hours % 12 || 12;
     const formattedMinutes = minutes.toString().padStart(2, "0");
 
-    return `${hours}:${formattedMinutes} ${period}`;
+    return ${hours}:${formattedMinutes} ${period};
   } catch {
     return timeStr;
   }
@@ -222,7 +222,6 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
   </Button>
 </div>
 
-
         {/* Menu */}
         <section className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Menu</h2>
@@ -234,7 +233,7 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
             </Alert>
           )}
 
-          {!menuLoading &&groupedMenu?
+          {!menuLoading &&
             Object.entries(groupedMenu).map(([cuisine, categories]) => (
               <div key={cuisine} className="mb-8">
                 <h3 className="text-xl font-semibold mb-3">{cuisine}</h3>
@@ -257,7 +256,7 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
                   </Card>
                 ))}
               </div>
-            )):<h3>No Menu Available</h3>}
+            ))}
         </section>
 
         {/* Info Section */}
@@ -285,7 +284,7 @@ export default function CustomerRestaurantDetailsPage(): React.ReactElement {
                     }`
                   );
                   window.open(
-                    `https://www.google.com/maps/search/?api=1&query=${q}`,
+                    https://www.google.com/maps/search/?api=1&query=${q},
                     "_blank"
                   );
                 }}
