@@ -2,15 +2,21 @@ import dotenv from 'dotenv';
 import process from 'process';
 
 const NODE_ENV = process.env.NODE_ENV as 'production' | 'development';
-const fileName = NODE_ENV === 'production' ? '.env' : '.env.development';
 
-const result = dotenv.config({
-    path: fileName,
-});
-
-if (result.error) {
-    console.error('Env Files not configured');
-    process.exit(1);
+if (NODE_ENV === 'development') {
+    const result = dotenv.config({
+        path: '.env.development',
+    });
+    if (result.error) {
+        console.error('Env Files not configured');
+        process.exit(1);
+    }
+} else {
+    const result = dotenv.config();
+    if (result.error) {
+        console.error('Env Files not configured');
+        process.exit(1);
+    }
 }
 
 const config = {
