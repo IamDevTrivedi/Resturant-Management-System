@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import process from 'process';
 
-const NODE_ENV = process.env.NODE_ENV;
-const fileName = `.env.${NODE_ENV}`;
+const NODE_ENV = process.env.NODE_ENV as 'production' | 'development';
+const fileName = NODE_ENV === 'production' ? '.env' : '.env.development';
 
 const result = dotenv.config({
     path: fileName,
@@ -14,7 +14,7 @@ if (result.error) {
 }
 
 const config = {
-    NODE_ENV: NODE_ENV as 'production' | 'development',
+    NODE_ENV,
     isProduction: NODE_ENV === 'production',
 
     PORT: Number(process.env.PORT) as number,
@@ -41,9 +41,13 @@ const config = {
     FRONTEND_URL_PROD: process.env.FRONTEND_URL_PROD as string,
 
     BACKEND_URL:
-        NODE_ENV === 'production' ? process.env.BACKEND_URL_PROD : process.env.BACKEND_URL_DEV,
+        NODE_ENV === 'production'
+            ? (process.env.BACKEND_URL_PROD as string)
+            : (process.env.BACKEND_URL_DEV as string),
     FRONTEND_URL:
-        NODE_ENV === 'production' ? process.env.FRONTEND_URL_PROD : process.env.FRONTEND_URL_DEV,
+        NODE_ENV === 'production'
+            ? (process.env.FRONTEND_URL_PROD as string)
+            : (process.env.FRONTEND_URL_DEV as string),
 
     GOOGLE_GEMINI_API_KEY: process.env.GOOGLE_GEMINI_API_KEY as string,
 
