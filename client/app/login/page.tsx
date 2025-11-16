@@ -22,6 +22,7 @@ import { backend } from '@/config/backend';
 import { IUser, useUserData } from '@/store/user';
 import { useRouter } from 'next/navigation';
 import { useBrowseRestaurantStore, type Restaurant } from '@/store/restaurant-browse';
+import { Eye, EyeOff } from 'lucide-react';
 
 interface IFormError {
   email: string;
@@ -102,6 +103,7 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const validate = (): boolean => {
     let valid = true;
@@ -295,13 +297,23 @@ export default function Page() {
                   Forgot password?
                 </Link>
               </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center text-muted-foreground"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              
               {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
             <Button
