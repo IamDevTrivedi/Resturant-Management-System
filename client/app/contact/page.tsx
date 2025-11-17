@@ -24,26 +24,34 @@ export default function Page() {
             {/* Contact Cards Grid */}
             <div className="grid md:grid-cols-2 gap-6 mb-12">
                 {/* Location Card */}
-                <Card className="hover:shadow-lg transition-all">
+                <Card className="group transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl transition-all duration-300">
                     <CardHeader>
                         <div className="flex items-center gap-3">
                             <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center">
                                 <MapPin className="w-6 h-6 text-primary" />
                             </div>
-                            <CardTitle className="text-xl">Our Location</CardTitle>
+                            <CardTitle className="text-2xl">Our Location</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div>
-                            <p className="text-sm font-medium mb-1">Head Office</p>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                Dharmsinh Desai University<br />
-                                College Road, Nadiad<br />
-                                Gujarat 387001, India
+                            <p className="text-base font-medium mb-1">Head Office</p>
+                            <p className="text-base text-muted-foreground leading-relaxed">
+                                Dhirubhai Ambani University<br />
+                                Near Indroda Circle, Gandhinagar<br />
+                                Gujarat 382007, India
                             </p>
+                            <a
+                                href="https://maps.app.goo.gl/T8WNtedU67z1q4Jc7"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-base text-primary hover:underline inline-block mt-2"
+                            >
+                                View on map →
+                            </a>
                         </div>
                         <div className="pt-2">
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-sm text-muted-foreground">
                                 Visit us during business hours: Monday - Friday, 9:00 AM - 6:00 PM IST
                             </p>
                         </div>
@@ -51,36 +59,36 @@ export default function Page() {
                 </Card>
 
                 {/* Phone Card */}
-                <Card className="hover:shadow-lg transition-all">
+                <Card className="group transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl transition-all duration-300">
                     <CardHeader>
                         <div className="flex items-center gap-3">
                             <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center">
                                 <Phone className="w-6 h-6 text-primary" />
                             </div>
-                            <CardTitle className="text-xl">Phone</CardTitle>
+                            <CardTitle className="text-2xl">Phone</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div>
-                            <p className="text-sm font-medium mb-1">Customer Support</p>
+                            <p className="text-base font-medium mb-1">Customer Support</p>
                             <a
                                 href="tel:+911234567890"
-                                className="text-sm text-primary hover:underline"
+                                className="text-base text-primary hover:underline"
                             >
                                 +91 (123) 456-7890
                             </a>
                         </div>
                         <div>
-                            <p className="text-sm font-medium mb-1">Restaurant Partners</p>
+                            <p className="text-base font-medium mb-1">Restaurant Partners</p>
                             <a
                                 href="tel:+911234567891"
-                                className="text-sm text-primary hover:underline"
+                                className="text-base text-primary hover:underline"
                             >
                                 +91 (123) 456-7891
                             </a>
                         </div>
                         <div className="pt-2">
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-sm text-muted-foreground">
                                 Available Monday - Saturday, 9:00 AM - 8:00 PM IST
                             </p>
                         </div>
@@ -88,45 +96,45 @@ export default function Page() {
                 </Card>
 
                 {/* Email Card */}
-                <Card className="hover:shadow-lg transition-all">
+                <Card className="group transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl transition-all duration-300">
                     <CardHeader>
                         <div className="flex items-center gap-3">
                             <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center">
                                 <Mail className="w-6 h-6 text-primary" />
                             </div>
-                            <CardTitle className="text-xl">Email</CardTitle>
+                            <CardTitle className="text-2xl">Email</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div>
-                            <p className="text-sm font-medium mb-1">General Inquiries</p>
+                            <p className="text-base font-medium mb-1">General Inquiries</p>
                             <a
                                 href="mailto:info@restaurantreservation.com"
-                                className="text-sm text-primary hover:underline break-all"
+                                className="text-base text-primary hover:underline break-all"
                             >
                                 info@restaurantreservation.com
                             </a>
                         </div>
                         <div>
-                            <p className="text-sm font-medium mb-1">Customer Support</p>
+                            <p className="text-base font-medium mb-1">Customer Support</p>
                             <a
                                 href="mailto:support@restaurantreservation.com"
-                                className="text-sm text-primary hover:underline break-all"
+                                className="text-base text-primary hover:underline break-all"
                             >
                                 support@restaurantreservation.com
                             </a>
                         </div>
                         <div>
-                            <p className="text-sm font-medium mb-1">Restaurant Partners</p>
+                            <p className="text-base font-medium mb-1">Restaurant Partners</p>
                             <a
                                 href="mailto:partners@restaurantreservation.com"
-                                className="text-sm text-primary hover:underline break-all"
+                                className="text-base text-primary hover:underline break-all"
                             >
                                 partners@restaurantreservation.com
                             </a>
                         </div>
                         <div className="pt-2">
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-sm text-muted-foreground">
                                 We typically respond within 24-48 hours
                             </p>
                         </div>
@@ -134,36 +142,36 @@ export default function Page() {
                 </Card>
 
                 {/* Legal Card */}
-                <Card className="hover:shadow-lg transition-all">
+                <Card className="group transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl transition-all duration-300">
                     <CardHeader>
                         <div className="flex items-center gap-3">
                             <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center">
                                 <Scale className="w-6 h-6 text-primary" />
                             </div>
-                            <CardTitle className="text-xl">Legal & Privacy</CardTitle>
+                            <CardTitle className="text-2xl">Legal & Privacy</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div>
-                            <p className="text-sm font-medium mb-1">Privacy Policy</p>
-                            <p className="text-sm text-muted-foreground mb-2">
+                            <p className="text-base font-medium mb-1">Privacy Policy</p>
+                            <p className="text-base text-muted-foreground mb-2">
                                 Learn how we protect and handle your data
                             </p>
                             <Link
                                 href="/privacy"
-                                className="text-sm text-primary hover:underline inline-block"
+                                className="text-base text-primary hover:underline inline-block"
                             >
                                 Read Privacy Policy →
                             </Link>
                         </div>
                         <div className="pt-2">
-                            <p className="text-sm font-medium mb-1">Terms of Service</p>
-                            <p className="text-sm text-muted-foreground mb-2">
+                            <p className="text-base font-medium mb-1">Terms of Service</p>
+                            <p className="text-base text-muted-foreground mb-2">
                                 Review our terms and conditions
                             </p>
                             <Link
                                 href="/terms"
-                                className="text-sm text-primary hover:underline inline-block"
+                                className="text-base text-primary hover:underline inline-block"
                             >
                                 View Terms →
                             </Link>
@@ -185,7 +193,7 @@ export default function Page() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* Twitter */}
-                    <Card className="hover:shadow-lg transition-all group cursor-pointer">
+                    <Card className="group transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl transition-all duration-300 group cursor-pointer">
                         <CardContent className="pt-6 pb-6">
                             <a
                                 href="https://twitter.com"
@@ -197,15 +205,15 @@ export default function Page() {
                                     <Twitter className="w-7 h-7 text-primary" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="font-medium text-sm">Twitter</p>
-                                    <p className="text-xs text-muted-foreground">@restaurant_res</p>
+                                    <p className="font-medium text-base">Twitter</p>
+                                    <p className="text-sm text-muted-foreground">@restaurant_res</p>
                                 </div>
                             </a>
                         </CardContent>
                     </Card>
 
                     {/* Facebook */}
-                    <Card className="hover:shadow-lg transition-all group cursor-pointer">
+                    <Card className="group transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl transition-all duration-300 group cursor-pointer">
                         <CardContent className="pt-6 pb-6">
                             <a
                                 href="https://facebook.com"
@@ -217,15 +225,15 @@ export default function Page() {
                                     <Facebook className="w-7 h-7 text-primary" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="font-medium text-sm">Facebook</p>
-                                    <p className="text-xs text-muted-foreground">/restaurantres</p>
+                                    <p className="font-medium text-base">Facebook</p>
+                                    <p className="text-sm text-muted-foreground">/restaurantres</p>
                                 </div>
                             </a>
                         </CardContent>
                     </Card>
 
                     {/* LinkedIn */}
-                    <Card className="hover:shadow-lg transition-all group cursor-pointer">
+                    <Card className="group transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl transition-all duration-300 group cursor-pointer">
                         <CardContent className="pt-6 pb-6">
                             <a
                                 href="https://linkedin.com"
@@ -237,15 +245,15 @@ export default function Page() {
                                     <Linkedin className="w-7 h-7 text-primary" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="font-medium text-sm">LinkedIn</p>
-                                    <p className="text-xs text-muted-foreground">/restaurant-res</p>
+                                    <p className="font-medium text-base">LinkedIn</p>
+                                    <p className="text-sm text-muted-foreground">/restaurant-res</p>
                                 </div>
                             </a>
                         </CardContent>
                     </Card>
 
                     {/* GitHub */}
-                    <Card className="hover:shadow-lg transition-all group cursor-pointer">
+                    <Card className="group transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl transition-all duration-300 group cursor-pointer">
                         <CardContent className="pt-6 pb-6">
                             <a
                                 href="https://github.com/IamDevTrivedi/Resturant-Management-System"
@@ -257,8 +265,8 @@ export default function Page() {
                                     <Github className="w-7 h-7 text-primary" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="font-medium text-sm">GitHub</p>
-                                    <p className="text-xs text-muted-foreground">View Project</p>
+                                    <p className="font-medium text-base">GitHub</p>
+                                    <p className="text-sm text-muted-foreground">View Project</p>
                                 </div>
                             </a>
                         </CardContent>
@@ -270,7 +278,7 @@ export default function Page() {
 
             {/* Footer Note */}
             <div className="text-center my-12">
-                <strong className="text-sm text-muted-foreground">
+                <strong className="text-base text-muted-foreground">
                     We&apos;re committed to providing excellent service and support to all our users.
                     <br />
                     Thank you for choosing our Restaurant Reservation System!
