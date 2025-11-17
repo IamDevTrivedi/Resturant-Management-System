@@ -49,6 +49,15 @@ const controller = {
             const { restaurantID, bookingAt, numberOfGuests, message, category, phoneNumber } =
                 result.data;
 
+            const existingRestaurant = await Restaurant.findById(restaurantID);
+
+            if (!existingRestaurant) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Restaurant Not Found',
+                });
+            }
+
             const newBooking = new Booking({
                 userID: userID,
                 restaurantID: restaurantID,
@@ -68,6 +77,7 @@ const controller = {
                 data: {
                     ...result.data,
                     bookingID: newBooking._id,
+                    timestamp: new Date(bookingAt),
                     fullName: `${existingUser.firstName} ${existingUser.lastName}`,
                     email: existingUser.email,
                 },

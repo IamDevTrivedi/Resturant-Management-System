@@ -15,14 +15,9 @@ export default function BookingAlert({ restaurantId }: BookingAlertProps) {
         if (newBooking) {
 
             toast.success(newBooking.message, {
-                description: `New booking received at ${new Date(newBooking.timestamp).toLocaleString()}`,
+                description: `New booking received`,
                 duration: 5000,
             });
-
-            // You can also trigger other actions like:
-            // - Play a sound
-            // - Update a booking list
-            // - Show a modal
 
             clearNotification();
         }
