@@ -11,11 +11,21 @@ import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { resetPasswordVerifyTemplate, verifyEmailTemplate } from '@/utils/emailTemplates';
 import { packUserData } from '@/utils/packUserData';
-import NodeGeocoder from 'node-geocoder';
+import axios from 'axios';
 
-const geocoder = NodeGeocoder({
-    provider: 'openstreetmap',
-});
+async function geocode(query: string) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+
+    const { data } = await axios.get(url, {
+        headers: {
+            'User-Agent': 'Resturant Management System - (contact:devtrivedi@duck.com)',
+            Referer: 'https://reservebeta.vercel.app',
+        },
+    });
+
+    console.log(data);
+    return data;
+}
 
 const controller = {
     sendOTPForVerification: async (req: Request, res: Response) => {
@@ -181,8 +191,8 @@ const controller = {
             const { email, firstName, lastName, password, role } = result.data;
             let cityName = result.data.cityName.trim();
             cityName = cityName.charAt(0).toUpperCase() + cityName.slice(1).toLowerCase();
-            const geoInfo = await geocoder.geocode(cityName);
-            const coordinates = [geoInfo[0].longitude, geoInfo[0].latitude];
+            const geoInfo = await geocode(cityName);
+            const coordinates = [geoInfo[0].lon, geoInfo[0].lat];
 
             const key = await redisClient.get(`upcomingEmail:${email}`);
             if (!key) {
