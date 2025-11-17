@@ -12,6 +12,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { resetPasswordVerifyTemplate, verifyEmailTemplate } from '@/utils/emailTemplates';
 import { packUserData } from '@/utils/packUserData';
 import axios from 'axios';
+import { getUserProfile } from '@/utils/getUserProfile';
 
 async function geocode(query: string) {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
@@ -593,6 +594,95 @@ const controller = {
             return res.status(500).json({
                 success: false,
                 message: 'Internal Server Error',
+            });
+        }
+    },
+
+    
+    getMyProfile: async (req: Request, res: Response) => {
+        try {
+            const userID = res.locals.userID as string;
+
+            const user = await User.findById(userID);
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User not found",
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "Profile loaded successfully",
+                data: getUserProfile(user),
+            });
+        } catch (error) {
+            console.error("Error in getMyProfile:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal Server Error",
+            });
+        }
+    },
+
+    updateProfile: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({
+                firstName: z.string().min(1).optional(),
+                lastName: z.string().min(1).optional(),
+                email: z.email().optional(),
+                cityName: z.string().min(2).optional(),
+            });
+
+            const result = schema.safeParse(req.body);
+            if (!result.success) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid input",
+                    errors: z.treeifyError(result.error),
+                });
+            }
+
+            const updates = result.data;
+            const userID = res.locals.userID!;
+
+            const user = await User.findById(userID);
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User not found",
+                });
+            }
+            
+            // Handle city updates + geocoding
+            if (updates.cityName) {
+                updates.cityName = updates.cityName.trim();
+                updates.cityName =
+                    updates.cityName.charAt(0).toUpperCase() + updates.cityName.slice(1).toLowerCase();
+
+                const geo = await geocode(updates.cityName);
+                if (geo?.length) {
+                    (updates as any).location = {
+                        type: "Point",
+                        coordinates: [geo[0].lon, geo[0].lat],
+                    };
+                }
+            }
+
+            // Update database
+            Object.assign(user, updates);
+            await user.save();
+
+            return res.status(200).json({
+                success: true,
+                message: "Profile updated successfully",
+                data: packUserData(user),
+            });
+        } catch (error) {
+            console.error("Error in updateProfile:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
             });
         }
     },
