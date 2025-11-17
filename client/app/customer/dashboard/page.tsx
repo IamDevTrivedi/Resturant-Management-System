@@ -1,9 +1,11 @@
 "use client"
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from "react"
 import { backend } from "@/config/backend"
 import { useUserData } from "@/store/user"
 import { useBrowseRestaurantStore } from "@/store/restaurant-browse"
+
 import {
   Card,
   CardContent,
@@ -96,19 +98,32 @@ export default function UserDashboardPage() {
       </div>
     )
   }
-
+   const router = useRouter();
+   
   return (
     <main className="min-h-screen bg-background px-4 py-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Greeting */}
-        <div>
-          <h1 className="text-2xl font-semibold">
-            Welcome, {user?.firstName} 👋
-          </h1>
-          <p className="text-muted-foreground">
-            Here’s a summary of your dining experiences.
-          </p>
+        <div className="flex items-center justify-between space-y-2 md:space-y-0">
+          <div>
+            <h1 className="text-2xl font-semibold">
+              Welcome, {user?.firstName} 👋
+            </h1>
+            <p className="text-muted-foreground">
+              Here’s a summary of your dining experiences.
+            </p>
+          </div>
+          <Button
+            className='cursor-pointer mr-15'
+            size="sm"
+            onClick={() => {
+            router.push('/customer/dashboard/profile');
+            }}
+          >
+            Profile
+          </Button>
         </div>
+
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -186,7 +201,7 @@ export default function UserDashboardPage() {
                               fill
                               className="object-cover transition-transform duration-300 group-hover:scale-110"
                             />
-                            <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                           </div>
                         )}
                         <CardHeader className="pb-2">
