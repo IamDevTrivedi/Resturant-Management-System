@@ -64,10 +64,10 @@ export function ItemsGrid({ items, onEdit, onDelete }: ItemsGridProps) {
             {items.map((item: Item) => (
                 <Card
                     key={item._id}
-                    className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/40 group border-border/60 hover:border-primary/60 flex flex-col"
+                    className="overflow-hidden transition-all duration-300 hover:shadow-lg  group border-border/60 hover:border-primary/60 flex flex-col"
                 >
                     {/* Image Section */}
-                    <div className="relative h-40 w-full bg-gradient-to-br from-muted/50 to-muted overflow-hidden">
+                    <div className="relative h-40 w-full bg-linear-to-br from-muted/50 to-muted overflow-hidden">
                         {item.imageURL ? (
                             <img
                                 src={item.imageURL || '/placeholder.svg'}
@@ -75,7 +75,7 @@ export function ItemsGrid({ items, onEdit, onDelete }: ItemsGridProps) {
                                 className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-300"
                             />
                         ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-muted">
+                            <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-primary/10 via-primary/5 to-muted">
                                 <div className="text-center">
                                     <div className="text-3xl mb-1">🍽️</div>
                                     <span className="text-xs text-muted-foreground font-medium">
@@ -130,7 +130,7 @@ export function ItemsGrid({ items, onEdit, onDelete }: ItemsGridProps) {
                                     ₹{item.price.toFixed(0)}
                                 </span>
                             </div>
-                            <Badge variant="secondary" className="text-xs px-2 py-1 flex-shrink-0">
+                            <Badge variant="secondary" className="text-xs px-2 py-1 shrink-0">
                                 {item.category}
                             </Badge>
                         </div>

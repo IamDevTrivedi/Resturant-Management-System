@@ -58,7 +58,7 @@ export function ItemsFilter({ filters, onFilterChange, cuisines, categories, foo
   ].reduce((sum: number, val: number) => sum + val, 0)
 
   return (
-    <Card className="mb-8 border shadow-sm bg-gradient-to-r from-card/50 to-card/30 backdrop-blur-sm">
+    <Card className="mb-8 border shadow-sm bg-linear-to-r from-card/50 to-card/30 backdrop-blur-sm">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between p-4 text-left font-semibold hover:bg-accent/30 transition-colors"

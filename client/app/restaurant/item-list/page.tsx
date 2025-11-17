@@ -232,14 +232,24 @@ if (!restaurant) {
     }
   }
 
-  const groupedItems: GroupedItemsMap = filteredItems.reduce((acc: GroupedItemsMap, item: Item) => {
-    const key: string = ${item.cuisine}-${item.category}
-    if (!acc[key]) {
-      acc[key] = { cuisine: item.cuisine, category: item.category, items: [] }
-    }
-    acc[key].items.push(item)
-    return acc
-  }, {})
+  const groupedItems: GroupedItemsMap = filteredItems.reduce(
+    (acc: GroupedItemsMap, item: Item) => {
+      const key: string = `${item.cuisine}-${item.category}`
+  
+      if (!acc[key]) {
+        acc[key] = {
+          cuisine: item.cuisine,
+          category: item.category,
+          items: []
+        }
+      }
+  
+      acc[key].items.push(item)
+      return acc
+    },
+    {}
+  )
+  
 
   return (
     <div className="min-h-screen bg-linear-to-br from-background via-background to-muted/30">

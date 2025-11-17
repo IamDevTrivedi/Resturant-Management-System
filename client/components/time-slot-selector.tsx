@@ -2,9 +2,11 @@
 
 import { useMemo, useState } from "react"
 import { ChevronDown } from "lucide-react"
+import { RestaurantFormData } from "@/lib/restaurant-schema"
+import { Restaurant } from "@/store/restaurant-browse"
 
 interface TimeSlotSelectorProps {
-  restaurant: any
+  restaurant: Restaurant
   selectedDate: Date
   selectedTime: string | null
   onTimeChange: (displayTime: string, time24: string) => void

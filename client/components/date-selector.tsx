@@ -1,9 +1,10 @@
 "use client"
 
+import { Restaurant } from "@/store/restaurant-browse"
 import { useState } from "react"
 
 interface DateSelectorProps {
-  restaurant: any
+  restaurant: Restaurant
   selectedDate: Date | null
   onDateChange: (date: Date) => void
 }

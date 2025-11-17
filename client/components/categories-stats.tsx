@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ totalItems, totalCategories, activeItems, popularItems }: HeroSectionProps) {
   return (
-    <div className="mb-8 rounded-lg bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 p-6 md:p-8">
+    <div className="mb-8 rounded-lg bg-linear-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 p-6 md:p-8">
       <div className="mb-6">
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Welcome to Menu Manager</h1>
         <p className="text-muted-foreground">Manage, organize, and showcase your restaurant's delicious offerings</p>

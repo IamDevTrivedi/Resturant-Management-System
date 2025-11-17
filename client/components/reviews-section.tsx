@@ -23,6 +23,8 @@ import {
   useBrowseRestaurantStore,
   type Restaurant,
 } from "@/store/restaurant-browse";
+import { RestaurantFormData } from "@/lib/restaurant-schema";
+import { RestaurantSuper } from "@/store/restaurant";
 
 interface Review {
   name: string;
@@ -45,9 +47,9 @@ interface ReviewsSectionProps {
 
 type SortOption = "recent" | "highest" | "lowest";
 
-// 🔥 MAP BACKEND RESTAURANT → STORE RESTAURANT SHAPE
+
 const mapBackendRestaurantToStore = (
-  backendRestaurant: any,
+  backendRestaurant: RestaurantSuper,
   cityName: string,
   cuisinesList: string[]
 ): Restaurant => {

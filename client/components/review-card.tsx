@@ -33,7 +33,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3 flex-1">
               {/* Avatar */}
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shrink-0">
                 <span className="text-xs font-bold text-primary-foreground">{initials}</span>
               </div>
               <div>

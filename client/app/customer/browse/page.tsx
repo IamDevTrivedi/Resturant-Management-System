@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Toast } from "@/components/Toast";
 import { AxiosError } from "axios";
 import { useBrowseRestaurantStore, type Restaurant } from "@/store/restaurant-browse";
+import { RestaurantFormData } from "@/lib/restaurant-schema";
+import { RestaurantSuper } from "@/store/restaurant";
 
 // ---------- Helpers ----------
 const parseTimeToToday = (timeStr: string): Date | null => {
@@ -75,6 +77,12 @@ const isRestaurantOpenNow = (
   return isTimeWithinRange(now, open, close);
 };
 
+type Tuple = [
+  RestaurantSuper,          // backendRestaurant
+  string | null,    // city
+  string[] | null   // cuisines
+];
+
 // ---------- Skeleton ----------
 function RestaurantCardSkeleton(): React.ReactElement {
   return (
@@ -118,7 +126,7 @@ export default function RestaurantsPage(): React.ReactElement {
       });
 
       if (response.data.success && response.data.restaurants.length > 0) {
-        const mapped: Restaurant[] = response.data.restaurants.map((entry: any) => {
+        const mapped: Restaurant[] = response.data.restaurants.map((entry: Tuple) => {
           const [backendRestaurant, city, cuisines] = entry;
           console.log("entry",backendRestaurant)
           const r = backendRestaurant;

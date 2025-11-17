@@ -2,10 +2,10 @@
 import type React from "react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
-import type { Restaurant } from "@/store/restaurant"
+import type { RestaurantSuper } from "@/store/restaurant"
 
 interface RestaurantHeroProps {
-  restaurant: Restaurant
+  restaurant: RestaurantSuper
 }
 
 export function RestaurantHero({ restaurant }: RestaurantHeroProps): React.ReactElement {
@@ -24,7 +24,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps): React.React
           priority
         />
         {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/30 to-transparent" />
       </div>
 
       {/* Logo, Name & Slogan Section (Below Banner) */}

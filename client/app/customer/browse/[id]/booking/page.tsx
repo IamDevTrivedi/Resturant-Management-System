@@ -2,16 +2,17 @@
 
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { useBrowseRestaurantStore } from "@/store/restaurant-browse"
+import { Restaurant, RestaurantStore, useBrowseRestaurantStore } from "@/store/restaurant-browse"
 import BookingForm from "@/components/booking-form"
 import { ChevronLeft } from "lucide-react"
+import { RestaurantSuper } from "@/store/restaurant"
 
 export default function BookingPage() {
   const params = useParams()
   const router = useRouter()
   const restaurantId = params.id as string
   const { getRestaurantById } = useBrowseRestaurantStore()
-  const [restaurant, setRestaurant] = useState<any>(null)
+  const [restaurant, setRestaurant] = useState<Restaurant>()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

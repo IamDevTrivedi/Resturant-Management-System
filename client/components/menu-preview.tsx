@@ -109,7 +109,7 @@ export function MenuPreview({ items }: MenuPreviewProps) {
                             <img
                               src={item.imageURL || "/placeholder.svg"}
                               alt={item.dishName}
-                              className="w-20 h-20 object-cover rounded flex-shrink-0"
+                              className="w-20 h-20 object-cover rounded shrink-0"
                             />
                           )}
                           <div className="flex-1 min-w-0">

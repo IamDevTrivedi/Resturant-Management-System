@@ -153,7 +153,7 @@ export function RestaurantCard({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 flex-shrink-0"
+                className="h-8 w-8 shrink-0"
                 onClick={handleFavoriteToggle}
               >
                 <Heart className={`w-4 h-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
@@ -180,14 +180,14 @@ export function RestaurantCard({
 
             <div className="space-y-1 text-xs">
               <div className="flex items-center gap-2 text-muted-foreground">
-                <MapPin className="w-3 h-3 flex-shrink-0" />
+                <MapPin className="w-3 h-3 shrink-0" />
                 <span className="line-clamp-1">
                   {restaurant.address.street}, {restaurant.address.city}
                 </span>
               </div>
 
               <div className="flex items-start gap-2 text-muted-foreground">
-                <Clock className="w-3 h-3 flex-shrink-0 mt-0.5" />
+                <Clock className="w-3 h-3 shrink-0 mt-0.5" />
                 <div className="flex flex-col leading-tight">
                   <span>Weekday: {formattedWeekdayHours}</span>
                   <span>Weekend: {formattedWeekendHours}</span>
@@ -263,14 +263,14 @@ export function RestaurantCard({
 
         <div className="space-y-1 text-xs text-muted-foreground">
           <div className="flex items-start gap-2">
-            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 mt-0.5" />
+            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0 mt-0.5" />
             <span className="line-clamp-1">
               {restaurant.address.street}, {restaurant.address.city}
             </span>
           </div>
 
           <div className="flex items-start gap-2">
-            <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 mt-0.5" />
+            <Clock className="w-3 h-3 sm:w-4 sm:h-4 shrink-0 mt-0.5" />
             <div className="flex flex-col leading-tight">
               <span>Weekday: {formattedWeekdayHours}</span>
               <span>Weekend: {formattedWeekendHours}</span>

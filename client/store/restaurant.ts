@@ -27,7 +27,7 @@ interface Status {
   temporarilyClosed: boolean
 }
 
-export interface Restaurant {
+export interface RestaurantSuper {
   _id: string
   owner: string
   ownerName: string
@@ -80,8 +80,8 @@ export interface Booking {
 }
 
 interface IRestaurantStore {
-  restaurant: Restaurant | null
-  setRestaurant: (restaurant: Restaurant | null) => void
+  restaurant: RestaurantSuper | null
+  setRestaurant: (restaurant: RestaurantSuper | null) => void
 
   items: Item[]
   setItems: (items: Item[]) => void
