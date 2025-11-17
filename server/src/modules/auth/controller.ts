@@ -304,7 +304,7 @@ const controller = {
             } = {
                 httpOnly: true,
                 secure: config.isProduction,
-                sameSite: 'strict',
+                sameSite: config.isProduction ? 'none' : 'strict',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: '/',
             };
