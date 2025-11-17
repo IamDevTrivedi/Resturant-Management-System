@@ -20,7 +20,7 @@ export function RestaurantAbout({ about }: RestaurantAboutProps): React.ReactEle
     <Card className="p-4 sm:p-6">
       <h2 className="text-lg sm:text-xl font-bold mb-4 text-foreground">About</h2>
 
-      <p className="text-sm sm:text-base text-foreground leading-relaxed whitespace-pre-wrap break-words">
+      <p className="text-sm sm:text-base text-foreground leading-relaxed whitespace-pre-wrap wrap-break-word">
         {displayText}
       </p>
 

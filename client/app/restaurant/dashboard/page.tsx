@@ -19,7 +19,7 @@ import { useUserData } from "@/store/user";
 import { Toast } from "@/components/Toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import type { Restaurant } from "@/store/restaurant";
+import type { RestaurantSuper } from "@/store/restaurant";
 import BookingAlert from "@/components/booking-alert";
 import { RestaurantInfo } from "@/components/restaurant-info";
 import { RestaurantAbout } from "@/components/restaurant-about";
@@ -29,7 +29,7 @@ import { RestaurantActions } from "@/components/restaurant-actions";
 interface RestaurantResponse {
   success: boolean;
   found: boolean;
-  restaurant: Restaurant | null;
+  restaurant: RestaurantSuper | null;
   message: string;
 }
 
@@ -152,7 +152,7 @@ export default function RestaurantDetailsPage(): React.ReactElement {
           />
 
           {/* Bottom black blur */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/75 to-transparent" />
 
           {/* Logo + Name + Ratings */}
           <div className="absolute bottom-4 left-4 flex items-center gap-4">

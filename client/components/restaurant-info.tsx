@@ -3,10 +3,10 @@
 import type React from "react"
 import { Mail, Phone, Calendar, Clock } from "lucide-react"
 import { Card } from "@/components/ui/card"
-import type { Restaurant } from "@/store/restaurant"
+import type { RestaurantSuper } from "@/store/restaurant"
 
 interface RestaurantInfoProps {
-  restaurant: Restaurant
+  restaurant: RestaurantSuper
 }
 
 // Utility function to format ISO date → local time only
@@ -28,7 +28,7 @@ export function RestaurantInfo({ restaurant }: RestaurantInfoProps): React.React
         <div className="space-y-3 sm:space-y-4">
           {/* Email */}
           <div className="flex items-start gap-3 sm:gap-4">
-            <Mail className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-muted-foreground">Email</p>
               <a
@@ -42,7 +42,7 @@ export function RestaurantInfo({ restaurant }: RestaurantInfoProps): React.React
 
           {/* Phone */}
           <div className="flex items-start gap-3 sm:gap-4">
-            <Phone className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <Phone className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-muted-foreground">Phone</p>
               <a href={`tel:${restaurant.phoneNumber}`} className="text-sm sm:text-base text-primary hover:underline">
@@ -53,7 +53,7 @@ export function RestaurantInfo({ restaurant }: RestaurantInfoProps): React.React
 
           {/* Since */}
           <div className="flex items-start gap-3 sm:gap-4">
-            <Calendar className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-muted-foreground">Since</p>
               <p className="text-sm sm:text-base font-medium">{restaurant.since}</p>
@@ -69,7 +69,7 @@ export function RestaurantInfo({ restaurant }: RestaurantInfoProps): React.React
         <div className="space-y-3 sm:space-y-4">
           {/* Weekdays */}
           <div className="flex items-start gap-3 sm:gap-4">
-            <Clock className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <Clock className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-muted-foreground">Weekdays</p>
               <p className="text-sm sm:text-base font-medium">
@@ -80,7 +80,7 @@ export function RestaurantInfo({ restaurant }: RestaurantInfoProps): React.React
 
           {/* Weekends */}
           <div className="flex items-start gap-3 sm:gap-4">
-            <Clock className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <Clock className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div className="min-w-0 flex-1">
               <p className="text-xs sm:text-sm text-muted-foreground">Weekends</p>
               <p className="text-sm sm:text-base font-medium">

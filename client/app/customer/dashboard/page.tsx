@@ -186,7 +186,7 @@ export default function UserDashboardPage() {
                               fill
                               className="object-cover transition-transform duration-300 group-hover:scale-110"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
                           </div>
                         )}
                         <CardHeader className="pb-2">

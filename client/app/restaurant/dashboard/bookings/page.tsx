@@ -29,6 +29,9 @@ import { Toast } from "@/components/Toast"
 import { useRouter } from "next/navigation"
 import { useRestaurantData } from "@/store/restaurant"
 
+type FilterStatus = "all" | "pending" | "payment pending" | "rejected" | "confirmed";
+
+
 export default function RestaurantBookingsPage() {
   const router = useRouter()
   const { restaurant, bookings, setBookings, updateBookingStatus } = useRestaurantData()
@@ -38,7 +41,7 @@ export default function RestaurantBookingsPage() {
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null)
   const [filterStatus, setFilterStatus] = useState<
-    "all" | "pending" | "payment pending" | "rejected" | "confirmed"
+    FilterStatus
   >("all")
 
   // Fetch bookings on mount
@@ -154,7 +157,7 @@ export default function RestaurantBookingsPage() {
                 key={status}
                 size="sm"
                 variant={filterStatus === status ? "default" : "outline"}
-                onClick={() => setFilterStatus(status as any)}
+                onClick={() => setFilterStatus(status as FilterStatus)}
               >
                 {status === "all"
                   ? "All"

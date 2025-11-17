@@ -142,7 +142,7 @@ export default function MultiStepRestaurantFormEdit(): React.ReactElement {
           return;
         }
 
-        const restaurantData = data.restaurant as any;
+        const restaurantData = data.restaurant as RestaurantFormData;
 
         const parseTime = (iso?: string): string => {
           if (!iso) return '09:00';

@@ -19,9 +19,10 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
+import { Restaurant } from "@/store/restaurant-browse"
 
 interface BookingFormProps {
-  restaurant: any
+  restaurant: Restaurant
 }
 
 export default function BookingForm({ restaurant }: BookingFormProps) {
