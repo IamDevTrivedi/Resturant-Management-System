@@ -80,9 +80,9 @@ router.post('/reset-password/change-password', controller.changePassword_resetPa
 
 router.post('/is-authenticated', protectRoute, controller.isAuthenticated);
 
-router.get("/my-profile", protectRoute, controller.getMyProfile);
+router.post("/my-profile", protectRoute, controller.getMyProfile);
 
-router.patch("/update-profile", protectRoute, controller.updateProfile);
+router.post("/update-profile", protectRoute, controller.updateProfile);
 
 
 export default router;
