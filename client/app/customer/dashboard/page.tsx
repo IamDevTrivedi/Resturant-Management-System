@@ -33,6 +33,9 @@ import { Toast } from "@/components/Toast"
 import Image from "next/image"
 
 export default function UserDashboardPage() {
+
+  const router = useRouter();
+
   const { user, bookings, setBookings } = useUserData()
   const { getRestaurantById } = useBrowseRestaurantStore()
   const [loading, setLoading] = useState(true)
@@ -98,7 +101,7 @@ export default function UserDashboardPage() {
       </div>
     )
   }
-   const router = useRouter();
+   
    
   return (
     <main className="min-h-screen bg-background px-4 py-8">
@@ -201,7 +204,7 @@ export default function UserDashboardPage() {
                               fill
                               className="object-cover transition-transform duration-300 group-hover:scale-110"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to- from-black/50 to-transparent"></div>
                           </div>
                         )}
                         <CardHeader className="pb-2">
