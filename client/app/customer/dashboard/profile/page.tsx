@@ -25,7 +25,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await backend.get("/api/v1/auth/my-profile");
+        const { data } = await backend.post("/api/v1/auth/my-profile");
         if (data?.success) {
           setProfile(data.data);
         } else {
@@ -72,13 +72,16 @@ export default function ProfilePage() {
           <ProfileRow label="City" value={profile.cityName} />
         </CardContent>
 
-        <div className="flex justify-around p-4 w-full">
-
-            {/* <Button onClick={() => router.push("/dashboard/profile/edit")}>
-            Reset Password
-          </Button> */}
-          <Button 
-            className="cursor-pointer"
+        <div className="flex gap-2 justify-around p-4 w-full">
+          <Button onClick={() => router.push("/customer/dashboard")}
+            className="cursor-pointer w-1/2"
+            type="button"
+            variant="outline"
+          >
+            Back
+          </Button>
+          <Button
+            className="cursor-pointer w-1/2"
             onClick={() => router.push("/customer/dashboard/profile/edit")}>
             Edit Profile
           </Button>
@@ -95,4 +98,4 @@ function ProfileRow({ label, value }: { label: string; value: string }) {
       <span className="text-muted-foreground">{value || "-"}</span>
     </div>
   );
-}
+};
