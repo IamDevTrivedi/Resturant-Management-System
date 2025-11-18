@@ -302,10 +302,11 @@ const controller = {
                 sameSite: 'strict' | 'lax' | 'none';
                 maxAge: number;
                 path: string;
+                domain?: string;
             } = {
                 httpOnly: true,
                 secure: config.isProduction,
-                sameSite: 'strict',
+                sameSite: config.isProduction ? 'none' : 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: '/',
             };
