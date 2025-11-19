@@ -1,6 +1,3 @@
-import config from '@/config/env';
-// import { razorpay } from '@/config/razorpay';
-import axios from 'axios';
 import Item from '@/models/item';
 import Restaurant, { IRestaurant } from '@/models/restaurant';
 import User from '@/models/user';
@@ -588,7 +585,6 @@ const controller = {
 
     getItemsByRestaurant: async (req: Request, res: Response) => {
         try {
-
             const schema = z.object({
                 restaurantID: z.string(),
             });

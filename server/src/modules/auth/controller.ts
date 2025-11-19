@@ -643,43 +643,47 @@ const controller = {
                 });
             }
 
-            const updates = {
-                ...result.data,
-                location: {},
-            };
-
             const userID = res.locals.userID!;
 
-            const user = await User.findById(userID);
-            if (!user) {
+            const existingUser = await User.findById(userID);
+            if (!existingUser) {
                 return res.status(404).json({
                     success: false,
                     message: 'User not found',
                 });
             }
 
-            // Handle city updates + geocoding
-            if (updates.cityName) {
-                updates.cityName = updates.cityName.trim();
-                updates.cityName =
-                    updates.cityName.charAt(0).toUpperCase() +
-                    updates.cityName.slice(1).toLowerCase();
-                const geo = await geocode(updates.cityName);
-                const coordinates = [geo[0].lon, geo[0].lat];
-                updates.location = {
+            const { firstName, lastName, cityName } = result.data;
+
+            if (firstName !== undefined) {
+                existingUser.firstName = firstName;
+            }
+
+            if (lastName !== undefined) {
+                existingUser.lastName = lastName;
+            }
+
+            if (cityName !== undefined) {
+                const trimmedCityName = cityName.trim();
+                const formattedCityName =
+                    trimmedCityName.charAt(0).toUpperCase() +
+                    trimmedCityName.slice(1).toLowerCase();
+                const geoInfo = await geocode(formattedCityName);
+                const coordinates = [geoInfo[0].lon, geoInfo[0].lat];
+
+                existingUser.cityName = formattedCityName;
+                existingUser.location = {
                     type: 'Point',
                     coordinates,
                 };
             }
 
-            // Update database
-            Object.assign(user, updates);
-            await user.save();
+            await existingUser.save();
 
             return res.status(200).json({
                 success: true,
                 message: 'Profile updated successfully',
-                data: packUserData(user),
+                data: getProf(existingUser),
             });
         } catch (error) {
             console.error('Error in updateProfile:', error);
