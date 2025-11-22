@@ -8,7 +8,7 @@ import { backend } from "@/config/backend";
 import { Toast } from "@/components/Toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { useUserData } from '@/store/user';// adjust path if different
+import { useUserData } from '@/store/user';
 
 interface UserProfile {
     firstName: string;
@@ -22,7 +22,7 @@ export default function EditProfilePage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const router = useRouter();
-    const { setUser } = useUserData();   // <-- new
+    const { setUser } = useUserData();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -52,11 +52,14 @@ export default function EditProfilePage() {
             const { data } = await backend.post("/api/v1/auth/update-profile", profile);
 
             if (data.success) {
-                setProfile(data.data); // keep local form in sync
-                setUser({ ...profile, ...data.data }); // or simply setUser(data.data)
+                setProfile(data.data);
+                setUser({
+                    ...profile, ...data.data,
+                    role: "customer"
+                });
                 Toast.success("Profile updated successfully");
                 router.push("/customer/dashboard/profile");
-                // router.refresh();
+
             } else {
                 Toast.error(data.message || "Update failed");
             }
