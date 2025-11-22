@@ -422,6 +422,140 @@ const controller = {
     },
 
 
+    // CUSTOMER SEGMENTATION (no revenue fields)
+    getCustomerSegments: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({ from: z.string().optional(), to: z.string().optional() });
+            const parsed = schema.safeParse(req.query);
+            if (!parsed.success) return res.status(400).json({ success: false, message: 'Invalid query', error: z.treeifyError(parsed.error) });
+
+            const from = parsed.data.from ? new Date(parsed.data.from) : undefined;
+            const to = parsed.data.to ? new Date(parsed.data.to) : undefined;
+            const ownerId = res.locals.userID as string;
+
+            const matchDates: any = {};
+            if (from) matchDates.$gte = from;
+            if (to) matchDates.$lte = to;
+
+            const pipeline: any[] = [];
+            const statusFilter = { $in: ['accepted', 'confirmed', 'executed'] };
+            const matchStage: any = { status: statusFilter };
+            if (from || to) matchStage.createdAt = matchDates;
+            pipeline.push(
+                { $match: matchStage },
+                { $lookup: { from: 'restaurants', localField: 'restaurantID', foreignField: '_id', as: 'restaurant' } },
+                { $unwind: '$restaurant' },
+                { $match: { 'restaurant.owner': new mongoose.Types.ObjectId(ownerId) } },
+                {
+                    $group: {
+                        _id: '$userID',
+                        visits: { $sum: 1 },
+                        guests: { $sum: '$numberOfGuests' },
+                        firstVisit: { $min: '$bookingAt' },
+                        lastVisit: { $max: '$bookingAt' },
+                        avgPartySize: { $avg: '$numberOfGuests' },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        userID: '$_id',
+                        visits: 1,
+                        guests: 1,
+                        firstVisit: 1,
+                        lastVisit: 1,
+                        avgPartySize: { $round: ['$avgPartySize', 2] },
+                    },
+                },
+                { $sort: { visits: -1 } },
+            );
+
+            const rows = await (Booking as any).aggregate(pipeline);
+
+            // Simple segmentation buckets
+            const now = new Date();
+            const withSegments = rows.map((r: any) => {
+                const daysSinceLast = Math.floor((now.getTime() - new Date(r.lastVisit).getTime()) / (1000 * 60 * 60 * 24));
+                const freq = r.visits;
+                const segment = freq <= 1 ? 'new' : freq <= 4 ? 'regular' : 'loyal';
+                const churnRisk = daysSinceLast > 60 ? 'high' : daysSinceLast > 30 ? 'medium' : 'low';
+                return { ...r, segment, churnRisk };
+            });
+
+            return res.status(200).json({ success: true, data: withSegments });
+        } catch (error) {
+            logger.error('Error in getCustomerSegments', error);
+            return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
+
+    exportCustomerSegmentsCsv: async (req: Request, res: Response) => {
+        try {
+            // Reuse getCustomerSegments logic quickly by invoking aggregation again
+            const schema = z.object({ from: z.string().optional(), to: z.string().optional() });
+            const parsed = schema.safeParse(req.query);
+            if (!parsed.success) return res.status(400).json({ success: false, message: 'Invalid query', error: z.treeifyError(parsed.error) });
+
+            const from = parsed.data.from ? new Date(parsed.data.from) : undefined;
+            const to = parsed.data.to ? new Date(parsed.data.to) : undefined;
+            const ownerId = res.locals.userID as string;
+
+            const matchDates: any = {};
+            if (from) matchDates.$gte = from;
+            if (to) matchDates.$lte = to;
+
+            const pipeline: any[] = [];
+            const statusFilter = { $in: ['confirmed', 'executed'] };
+            const matchStage: any = { status: statusFilter };
+            if (from || to) matchStage.createdAt = matchDates;
+            pipeline.push(
+                { $match: matchStage },
+                { $lookup: { from: 'restaurants', localField: 'restaurantID', foreignField: '_id', as: 'restaurant' } },
+                { $unwind: '$restaurant' },
+                { $match: { 'restaurant.owner': new mongoose.Types.ObjectId(ownerId) } },
+                {
+                    $group: {
+                        _id: '$userID',
+                        visits: { $sum: 1 },
+                        guests: { $sum: '$numberOfGuests' },
+                        firstVisit: { $min: '$bookingAt' },
+                        lastVisit: { $max: '$bookingAt' },
+                        avgPartySize: { $avg: '$numberOfGuests' },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        userID: '$_id',
+                        visits: 1,
+                        guests: 1,
+                        firstVisit: 1,
+                        lastVisit: 1,
+                        avgPartySize: { $round: ['$avgPartySize', 2] },
+                    },
+                },
+                { $sort: { visits: -1 } },
+            );
+
+            const rows = await (Booking as any).aggregate(pipeline);
+            const now = new Date();
+            const lines = rows.map((r: any) => {
+                const daysSinceLast = Math.floor((now.getTime() - new Date(r.lastVisit).getTime()) / (1000 * 60 * 60 * 24));
+                const freq = r.visits;
+                const segment = freq <= 1 ? 'new' : freq <= 4 ? 'regular' : 'loyal';
+                const churnRisk = daysSinceLast > 60 ? 'high' : daysSinceLast > 30 ? 'medium' : 'low';
+                return `${r.userID},${r.visits},${r.guests},${r.avgPartySize},${segment},${churnRisk},${new Date(r.firstVisit).toISOString()},${new Date(r.lastVisit).toISOString()}`;
+            });
+
+            const header = 'userID,visits,guests,avgPartySize,segment,churnRisk,firstVisit,lastVisit\n';
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename="customer-segments.csv"');
+            return res.status(200).send(header + lines.join('\n'));
+        } catch (error) {
+            logger.error('Error in exportCustomerSegmentsCsv', error);
+            return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
 
 };
 
