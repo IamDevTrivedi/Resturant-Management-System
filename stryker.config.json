@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "packageManager": "npm",
+  "reporters": ["html", "clear-text", "progress"],
+  "testRunner": "jest",
+  "coverageAnalysis": "perTest",
+  "jest": {
+    "projectType": "custom",
+    "configFile": "jest.config.js",
+    "enableFindRelatedTests": true
+  },
+  "mutate": [
+    "server/src/utils/TimeValidator.ts",
+    "server/src/utils/generateOTP.ts",
+    "server/src/utils/date.ts",
+    "server/src/utils/packUserData.ts",
+    "server/src/utils/emailTemplates.ts",
+    "server/src/middlewares/protectRoute.ts",
+    "client/lib/restaurant-schema.ts",
+    "!server/**/*.test.ts",
+    "!client/**/*.test.ts"
+  ]
+}
