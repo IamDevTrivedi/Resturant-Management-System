@@ -147,6 +147,58 @@ const controller = {
         }
     },
 
+    // FUNNEL
+    getFunnel: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({ from: z.string().optional(), to: z.string().optional(), span: z.string().optional() });
+            const parsed = schema.safeParse(req.query);
+            if (!parsed.success) return res.status(400).json({ success: false, message: 'Invalid query', error: z.treeifyError(parsed.error) });
+
+            const spanDays = parsed.data.span ? Math.max(1, parseInt(parsed.data.span, 10)) : 30;
+            const hasFrom = !!parsed.data.from;
+            const hasTo = !!parsed.data.to;
+            const to = hasTo ? new Date(parsed.data.to as string) : new Date();
+            const from = hasFrom ? new Date(parsed.data.from as string) : new Date(to.getTime() - spanDays * DAY_MS);
+            const ownerId = res.locals.userID as string;
+
+            const rows = await (Booking as any).aggregate([
+                { $match: { createdAt: { $gte: from, $lte: to } } },
+                { $lookup: { from: 'restaurants', localField: 'restaurantID', foreignField: '_id', as: 'restaurant' } },
+                { $unwind: '$restaurant' },
+                { $match: { 'restaurant.owner': new mongoose.Types.ObjectId(ownerId) } },
+                { $group: { _id: '$status', count: { $sum: 1 } } },
+                { $project: { _id: 0, status: '$_id', count: 1 } },
+            ]);
+
+            const byStatus = Object.fromEntries(rows.map((r: any) => [r.status, r.count])) as Record<string, number>;
+            const pending = byStatus['pending'] || 0;
+            const accepted = byStatus['accepted'] || 0;
+            const paymentPending = byStatus['payment pending'] || 0;
+            const confirmed = byStatus['confirmed'] || 0;
+            const executed = byStatus['executed'] || 0;
+            const rejected = byStatus['rejected'] || 0;
+
+            const pct = (n: number, d: number) => (d > 0 ? Number(((n / d) * 100).toFixed(1)) : 0);
+            const totalPipeline = pending + accepted + paymentPending + confirmed;
+            const conversions = {
+                pending_to_confirmed: pct(confirmed, pending),
+                confirmed_to_executed: pct(executed, confirmed),
+                overall_to_executed: pct(executed, totalPipeline),
+            };
+            return res.status(200).json({
+                success: true,
+                data: {
+                    counts: { pending, accepted, paymentPending, confirmed, executed, rejected },
+                    conversions,
+                },
+            });
+        } catch (error) {
+            logger.error('Error in getFunnel', error);
+            return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
+
+
 };
 
 export default controller;
