@@ -245,7 +245,94 @@ const controller = {
             return res.status(500).json({ success: false, message: 'Internal Server Error' });
         }
     },
-    
+
+    // HEATMAP
+    getHeatmap: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({ from: z.string().optional(), to: z.string().optional(), span: z.string().optional() });
+            const parsed = schema.safeParse(req.query);
+            if (!parsed.success) return res.status(400).json({ success: false, message: 'Invalid query', error: z.treeifyError(parsed.error) });
+
+            const spanDays = parsed.data.span ? Math.max(1, parseInt(parsed.data.span, 10)) : 30;
+            const hasFrom = !!parsed.data.from;
+            const hasTo = !!parsed.data.to;
+            const to = hasTo ? new Date(parsed.data.to as string) : new Date();
+            const from = hasFrom ? new Date(parsed.data.from as string) : new Date(to.getTime() - spanDays * DAY_MS);
+            if (from > to) return res.status(400).json({ success: false, message: 'Invalid date range' });
+            const ownerId = res.locals.userID as string;
+
+            const rows = await (Booking as any).aggregate([
+                { $match: { status: 'executed', bookingAt: { $gte: from, $lte: to } } },
+                { $lookup: { from: 'restaurants', localField: 'restaurantID', foreignField: '_id', as: 'restaurant' } },
+                { $unwind: '$restaurant' },
+                { $match: { 'restaurant.owner': new mongoose.Types.ObjectId(ownerId) } },
+                { $group: { _id: { weekday: { $dayOfWeek: '$bookingAt' }, hour: { $hour: '$bookingAt' } }, count: { $sum: 1 } } },
+                { $project: { _id: 0, weekday: '$_id.weekday', hour: '$_id.hour', count: 1 } },
+                { $sort: { weekday: 1, hour: 1 } },
+            ]);
+
+            return res.status(200).json({ success: true, data: rows });
+        } catch (error) {
+            logger.error('Error in getHeatmap', error);
+            return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
+
+    // COMPARE (bookings & guests only)
+    getCompare: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({ from: z.string().optional(), to: z.string().optional(), days: z.string().optional() });
+            const parsed = schema.safeParse(req.query);
+            if (!parsed.success) return res.status(400).json({ success: false, message: 'Invalid query', error: z.treeifyError(parsed.error) });
+
+            const spanDays = parsed.data.days ? Math.max(1, parseInt(parsed.data.days, 10)) : 7;
+            const hasFrom = !!parsed.data.from;
+            const hasTo = !!parsed.data.to;
+            const to = hasTo ? new Date(parsed.data.to as string) : new Date();
+            const from = hasFrom ? new Date(parsed.data.from as string) : new Date(to.getTime() - spanDays * DAY_MS);
+            if (from > to) return res.status(400).json({ success: false, message: 'Invalid date range' });
+
+            const spanMsRaw = to.getTime() - from.getTime();
+            const spanMs = spanMsRaw > 0 ? spanMsRaw : DAY_MS;
+            const prevTo = new Date(from.getTime());
+            const prevFrom = new Date(prevTo.getTime() - spanMs);
+            const ownerId = res.locals.userID as string;
+
+            const agg = async (fromDate: Date, toDate: Date) => (Booking as any)
+                .aggregate([
+                    { $match: { status: 'executed', bookingAt: { $gte: fromDate, $lte: toDate } } },
+                    { $lookup: { from: 'restaurants', localField: 'restaurantID', foreignField: '_id', as: 'restaurant' } },
+                    { $unwind: '$restaurant' },
+                    { $match: { 'restaurant.owner': new mongoose.Types.ObjectId(ownerId) } },
+                    { $group: { _id: null, bookings: { $sum: 1 }, guests: { $sum: '$numberOfGuests' } } },
+                    { $project: { _id: 0, bookings: 1, guests: 1 } },
+                ])
+                .then((r: any[]) => (r[0] || { bookings: 0, guests: 0 }));
+
+            const [current, previous] = await Promise.all([agg(from, to), agg(prevFrom, prevTo)]);
+            const growthPct = (a: number, b: number) => (b === 0 ? (a > 0 ? 100 : 0) : Number((((a - b) / b) * 100).toFixed(1)));
+            const diff = (a: number, b: number) => a - b;
+
+            return res.status(200).json({
+                success: true,
+                days: Math.max(1, Math.ceil(spanMs / DAY_MS)),
+                current,
+                previous,
+                growth: {
+                    bookings: growthPct(current.bookings, previous.bookings),
+                    guests: growthPct(current.guests, previous.guests),
+                },
+                diff: {
+                    bookings: diff(current.bookings, previous.bookings),
+                    guests: diff(current.guests, previous.guests),
+                },
+            });
+        } catch (error) {
+            logger.error('Error in getCompare', error);
+            return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
+
 
 };
 
