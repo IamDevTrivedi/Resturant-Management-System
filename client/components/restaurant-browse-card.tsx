@@ -21,6 +21,7 @@ const parseTimeToToday = (timeStr: string): Date | null => {
 
 const formatDisplayTime = (timeStr: string): string => {
   if (!timeStr) return "-"
+  if (/[\?]/.test(timeStr)) return timeStr
   const looksIso = /\d{4}-\d{2}-\d{2}T/.test(timeStr)
   const date = looksIso ? new Date(timeStr) : new Date("1970-01-01 " + timeStr)
   if (isNaN(date.getTime())) return timeStr
@@ -77,7 +78,6 @@ export function RestaurantCard({
   const averageRating =
     restaurant.ratingsCount > 0 ? restaurant.ratingsSum / restaurant.ratingsCount : 0
   const deliveryTime = Math.floor(Math.random() * 30) + 20
-  console.log("restaurant",restaurant)
   const today = new Date()
   const day = today.getDay()
   const isWeekend = day === 0 || day === 6

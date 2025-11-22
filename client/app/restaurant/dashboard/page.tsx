@@ -11,6 +11,7 @@ import {
   Pencil,
   ChefHat,
   Star,
+  BarChart3,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { backend } from "@/config/backend";
@@ -216,6 +217,14 @@ export default function RestaurantDetailsPage(): React.ReactElement {
           >
             <CalendarDays className="w-4 h-4" />
             View Bookings
+          </Button>
+
+          <Button
+            onClick={() => router.push("/restaurant/dashboard/analytics")}
+            className="flex items-center gap-2 secondary"
+          >
+            <BarChart3 className="w-4 h-4" />
+            Analytics
           </Button>
         </div>
 
