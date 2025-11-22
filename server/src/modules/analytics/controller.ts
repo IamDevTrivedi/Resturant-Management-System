@@ -198,6 +198,54 @@ const controller = {
         }
     },
 
+    // CATEGORY PERFORMANCE (guests only, no rate)
+    getCategoryPerformance: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({ from: z.string().optional(), to: z.string().optional(), span: z.string().optional() });
+            const parsed = schema.safeParse(req.query);
+            if (!parsed.success)
+                return res
+                    .status(400)
+                    .json({ success: false, message: 'Invalid query', error: z.treeifyError(parsed.error) });
+
+            const spanDays = parsed.data.span ? Math.max(1, parseInt(parsed.data.span, 10)) : 30;
+            const hasFrom = !!parsed.data.from;
+            const hasTo = !!parsed.data.to;
+            const to = hasTo ? new Date(parsed.data.to as string) : new Date();
+            const from = hasFrom ? new Date(parsed.data.from as string) : new Date(to.getTime() - spanDays * 24 * 60 * 60 * 1000);
+            const ownerId = res.locals.userID as string;
+
+            const rows = await (Booking as any).aggregate([
+                { $match: { status: 'executed', bookingAt: { $gte: from, $lte: to } } },
+                {
+                    $lookup: {
+                        from: 'restaurants',
+                        localField: 'restaurantID',
+                        foreignField: '_id',
+                        as: 'restaurant',
+                    },
+                },
+                { $unwind: '$restaurant' },
+                { $match: { 'restaurant.owner': new mongoose.Types.ObjectId(ownerId) } },
+                { $group: { _id: '$category', bookings: { $sum: 1 }, guests: { $sum: '$numberOfGuests' } } },
+                { $project: { _id: 0, category: '$_id', bookings: 1, guests: 1 } },
+                { $sort: { category: 1 } },
+            ]);
+
+            const data = rows.map((r: any) => ({
+                category: r.category,
+                bookings: r.bookings,
+                guests: r.guests,
+                avgPartySize: r.bookings > 0 ? Number((r.guests / r.bookings).toFixed(2)) : 0,
+            }));
+
+            return res.status(200).json({ success: true, data });
+        } catch (error) {
+            logger.error('Error in getCategoryPerformance', error);
+            return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
+    
 
 };
 
