@@ -334,6 +334,95 @@ const controller = {
     },
 
 
+
+    // CSV: category performance (guests only, no rate)
+    exportCategoryCsv: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({ from: z.string().optional(), to: z.string().optional(), span: z.string().optional() });
+            const parsed = schema.safeParse(req.query);
+            if (!parsed.success)
+                return res
+                    .status(400)
+                    .json({ success: false, message: 'Invalid query', error: z.treeifyError(parsed.error) });
+
+            const from = parsed.data.from
+                ? new Date(parsed.data.from)
+                : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+            const to = parsed.data.to ? new Date(parsed.data.to) : new Date();
+            const ownerId = res.locals.userID as string;
+
+            const rows = await (Booking as any).aggregate([
+                { $match: { status: { $in: ['accepted', 'confirmed', 'executed'] }, bookingAt: { $gte: from, $lte: to } } },
+                {
+                    $lookup: {
+                        from: 'restaurants',
+                        localField: 'restaurantID',
+                        foreignField: '_id',
+                        as: 'restaurant',
+                    },
+                },
+                { $unwind: '$restaurant' },
+                { $match: { 'restaurant.owner': new mongoose.Types.ObjectId(ownerId) } },
+                { $group: { _id: '$category', bookings: { $sum: 1 }, guests: { $sum: '$numberOfGuests' } } },
+                { $project: { _id: 0, category: '$_id', bookings: 1, guests: 1 } },
+                { $sort: { category: 1 } },
+            ]);
+
+            const header = 'category,bookings,guests,avgPartySize\n';
+            const body = rows
+                .map((r: any) => {
+                    const avg = r.bookings > 0 ? (r.guests / r.bookings).toFixed(2) : '0';
+                    return `${r.category},${r.bookings},${r.guests},${avg}`;
+                })
+                .join('\n');
+
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename="category-performance.csv"');
+            return res.status(200).send(header + body);
+        } catch (error) {
+            logger.error('Error in exportCategoryCsv', error);
+            return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
+
+    // CSV: heatmap
+    exportHeatmapCsv: async (req: Request, res: Response) => {
+        try {
+            const schema = z.object({ from: z.string().optional(), to: z.string().optional(), span: z.string().optional() });
+            const parsed = schema.safeParse(req.query);
+            if (!parsed.success) return res.status(400).json({ success: false, message: 'Invalid query', error: z.treeifyError(parsed.error) });
+
+            const spanDays = parsed.data.span ? Math.max(1, parseInt(parsed.data.span, 10)) : 30;
+            const hasFrom = !!parsed.data.from;
+            const hasTo = !!parsed.data.to;
+            const to = hasTo ? new Date(parsed.data.to as string) : new Date();
+            const from = hasFrom ? new Date(parsed.data.from as string) : new Date(to.getTime() - spanDays * DAY_MS);
+            if (from > to) return res.status(400).json({ success: false, message: 'Invalid date range' });
+            const ownerId = res.locals.userID as string;
+
+            const rows = await (Booking as any).aggregate([
+                { $match: { status: { $ne: 'rejected' }, bookingAt: { $gte: from, $lte: to } } },
+                { $lookup: { from: 'restaurants', localField: 'restaurantID', foreignField: '_id', as: 'restaurant' } },
+                { $unwind: '$restaurant' },
+                { $match: { 'restaurant.owner': new mongoose.Types.ObjectId(ownerId) } },
+                { $group: { _id: { weekday: { $dayOfWeek: '$bookingAt' }, hour: { $hour: '$bookingAt' } }, count: { $sum: 1 } } },
+                { $project: { _id: 0, weekday: '$_id.weekday', hour: '$_id.hour', count: 1 } },
+                { $sort: { weekday: 1, hour: 1 } },
+            ]);
+
+            const header = 'weekday,hour,count\n';
+            const body = rows.map((r: any) => `${r.weekday},${r.hour},${r.count}`).join('\n');
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename="heatmap.csv"');
+            return res.status(200).send(header + body);
+        } catch (error) {
+            logger.error('Error in exportHeatmapCsv', error);
+            return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
+    },
+
+
+
 };
 
 export default controller;
