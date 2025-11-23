@@ -25,6 +25,8 @@ export function ModeToggle() {
                 size="icon"
                 onClick={() => setTheme('system')}
                 className="rounded-full h-6 w-6"
+                aria-pressed={theme === 'system'}
+                data-active={theme === 'system'}
             >
                 <Monitor className="h-4 w-4" />
                 <span className="sr-only">System mode</span>
@@ -34,6 +36,8 @@ export function ModeToggle() {
                 size="icon"
                 onClick={() => setTheme('light')}
                 className="rounded-full h-6 w-6"
+                aria-pressed={theme === 'light'}
+                data-active={theme === 'light'}
             >
                 <Sun className="h-4 w-4" />
                 <span className="sr-only">Light mode</span>
@@ -43,6 +47,8 @@ export function ModeToggle() {
                 size="icon"
                 onClick={() => setTheme('dark')}
                 className="rounded-full h-6 w-6"
+                aria-pressed={theme === 'dark'}
+                data-active={theme === 'dark'}
             >
                 <Moon className="h-4 w-4" />
                 <span className="sr-only">Dark mode</span>

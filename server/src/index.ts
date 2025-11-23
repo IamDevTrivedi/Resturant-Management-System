@@ -43,6 +43,7 @@ async function startServer() {
         const { default: restaurantRoutes } = await import('@/modules/restaurant/route');
         const { default: reviewRoutes } = await import('@/modules/review/route');
         const { default: bookingRoutes } = await import('@/modules/booking/route');
+        const { default: analyticsRoutes } = await import('@/modules/analytics/route');
 
         app.use('/', rootRoutes);
         app.use('/api/v1/health', healthRoutes);
@@ -50,6 +51,7 @@ async function startServer() {
         app.use('/api/v1/restaurants', restaurantRoutes);
         app.use('/api/v1/review', reviewRoutes);
         app.use('/api/v1/booking', bookingRoutes);
+        app.use('/api/v1/analytics', analyticsRoutes);
 
         // START SERVER
         httpServer.listen(config.PORT, () => {
